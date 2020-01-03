@@ -189,17 +189,22 @@ namespace Infrastructure.DataAccess
             modelBuilder.Entity<Report>().Property(p => p.Status).IsRequired();
             modelBuilder.Entity<Report>().Property(p => p.CreatedDateTimestamp).IsRequired();
             modelBuilder.Entity<Report>().Property(p => p.Comment).IsRequired();
-            modelBuilder.Entity<Report>().HasOne(p => p.Person);
+            modelBuilder.Entity<Report>().HasOne(p => p.Person).WithMany(p => p.Reports);
             modelBuilder.Entity<Report>().HasOne(p => p.Employment);
+            modelBuilder.Entity<Report>().HasOne(p => p.ApprovedBy);
+            modelBuilder.Entity<Report>().HasOne(p => p.ActualLeader);
             modelBuilder.Entity<Report>().HasMany(c => c.ResponsibleLeaders);
+            
+
+
             // todo is many-to-many really needed here?
-                //.WithMany()
-                //.Map(x =>
-                //{
-                //    x.MapLeftKey("ReportId");
-                //    x.MapRightKey("PersonId");
-                //    x.ToTable("ReportPersonMapping");
-                //});
+            //.WithMany()
+            //.Map(x =>
+            //{
+            //    x.MapLeftKey("ReportId");
+            //    x.MapRightKey("PersonId");
+            //    x.ToTable("ReportPersonMapping");
+            //});
         }
 
         private void ConfigurePropertiesForEmployment(ModelBuilder modelBuilder)

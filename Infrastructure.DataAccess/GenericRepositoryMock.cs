@@ -102,5 +102,20 @@ namespace Presentation.Web.Test.Controllers
         {
             return (int)entity.GetType().GetProperty("Id").GetValue(entity);
         }
+
+        public IQueryable<T> AsQueryableLazy()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void DetectChanges()
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public void SetChangeTrackingEnabled(bool value)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

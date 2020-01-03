@@ -29,5 +29,8 @@ namespace Core.DomainServices
         void DeleteRange(IEnumerable<T> entities);
 
         PropertyInfo GetPrimaryKeyProperty();
+        IQueryable<T> AsQueryableLazy();
+        void DetectChanges();
+        void SetChangeTrackingEnabled(bool value);
     }
 }
