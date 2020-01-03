@@ -2,6 +2,7 @@
 using Core.DomainModel;
 using Core.DomainServices;
 using Core.DomainServices.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -16,16 +17,16 @@ namespace Core.ApplicationServices.MailerService.Impl
         private readonly IGenericRepository<Person> _personRepo;
         private readonly IMailSender _mailSender;
         private readonly ILogger _logger;
-        private readonly ICustomSettings _customSettings;
+        private readonly IConfiguration _configuration;
 
-        public MailService(IGenericRepository<DriveReport> driveRepo, IGenericRepository<Substitute> subRepo, IGenericRepository<Person> personRepo, IMailSender mailSender, ILogger logger, ICustomSettings customSettings)
+        public MailService(IGenericRepository<DriveReport> driveRepo, IGenericRepository<Substitute> subRepo, IGenericRepository<Person> personRepo, IMailSender mailSender, ILogger<MailService> logger, IConfiguration configuration)
         {
             _driveRepo = driveRepo;
             _subRepo = subRepo;
             _personRepo = personRepo;
             _mailSender = mailSender;
             _logger = logger;
-            _customSettings = customSettings;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -37,7 +38,7 @@ namespace Core.ApplicationServices.MailerService.Impl
             var mailBody = "";
             if (string.IsNullOrEmpty(customText))
             {
-                mailBody = _customSettings.MailBody;
+                mailBody = _configuration["Mail:DriveMail:Body"];
                 if (string.IsNullOrEmpty(mailBody))
                 {
                     _logger.LogDebug($"{this.GetType().Name}, SendMails(): Mail body is null or empty, check value in CustomSettings.config");
@@ -50,7 +51,7 @@ namespace Core.ApplicationServices.MailerService.Impl
             mailBody = mailBody.Replace("####", payRoleDateTime.ToString("dd-MM-yyyy"));
 
 
-            var mailSubject = _customSettings.MailSubject;
+            var mailSubject = _configuration["Mail:DriveMail:Subject"];
             if (string.IsNullOrEmpty(mailSubject))
             {
                 _logger.LogDebug($"{this.GetType().Name}, SendMails(): Mail subject is null or empty, check value in CustomSettings.config");
@@ -58,7 +59,7 @@ namespace Core.ApplicationServices.MailerService.Impl
 
             foreach (var mailAddress in mailAddresses)
             {
-                _mailSender.SendMail(mailAddress, _customSettings.MailSubject, mailBody);
+                _mailSender.SendMail(mailAddress, mailSubject, mailBody);
             }
         }
 

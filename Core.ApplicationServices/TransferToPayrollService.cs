@@ -3,6 +3,7 @@ using Core.ApplicationServices.Interfaces;
 using Core.DomainModel;
 using Core.DomainServices;
 using Core.DomainServices.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Linq;
@@ -15,21 +16,21 @@ namespace Core.ApplicationServices
         private readonly IGenericRepository<DriveReport> _driveReportRepo;
         private readonly ISdClient _sdClient;
         private readonly ILogger _logger;
-        private readonly ICustomSettings _customSettings;
+        private readonly IConfiguration _configuration;
 
-        public TransferToPayrollService(IReportGenerator reportGenerator, IGenericRepository<DriveReport> driveReportRepo, ISdClient sdClient, ILogger logger, ICustomSettings customSettings)
+        public TransferToPayrollService(IReportGenerator reportGenerator, IGenericRepository<DriveReport> driveReportRepo, ISdClient sdClient, ILogger<TransferToPayrollService> logger, IConfiguration configuration)
         {
             _reportGenerator = reportGenerator;
             _driveReportRepo = driveReportRepo;
             _sdClient = sdClient;
             _logger = logger;
-            _customSettings = customSettings;
+            _configuration = configuration;
         }
 
         public void TransferReportsToPayroll()
         {
-            _logger.LogDebug($"{GetType().Name}, TransferReportsToPayroll(), UseSd configuration = {_customSettings.SdIsEnabled}");
-            if (_customSettings.SdIsEnabled)
+            _logger.LogDebug($"{GetType().Name}, TransferReportsToPayroll(), UseSd configuration = {_configuration["SD:Enabled"]}");
+            if (Boolean.Parse(_configuration["SD:Enabled"]))
             {
                 SendDataToSD();
             }
@@ -129,7 +130,7 @@ namespace Core.ApplicationServices
         {
             SdKoersel.AnsaettelseKoerselOpretInputType opretInputType = new SdKoersel.AnsaettelseKoerselOpretInputType();
 
-            opretInputType.Item = _customSettings.SdInstitutionNumber; // InstitutionIdentifikator
+            opretInputType.Item = _configuration["SD:InstitutionNumber"]; // InstitutionIdentifikator
             if (string.IsNullOrEmpty(opretInputType.Item))
             {
                 throw new SdConfigException("PROTECTED_institutionNumber må ikke være tom");
@@ -160,8 +161,8 @@ namespace Core.ApplicationServices
             {
                 operationRequest = new SDService.KoerselOpret20120201OperationRequest();
                 portTypeClient = new SDService.KoerselOpret20120201PortTypeClient();
-                portTypeClient.ClientCredentials.UserName.UserName = _customSettings.SdUsername ?? "";
-                portTypeClient.ClientCredentials.UserName.Password = _customSettings.SdPassword ?? "";
+                portTypeClient.ClientCredentials.UserName.UserName = _configuration["SD:Username"] ?? "";
+                portTypeClient.ClientCredentials.UserName.Password = _configuration["SD:Password"] ?? "";
 
                 operationRequest.InddataStruktur = new SDService.KoerselOpretRequestType();
             }
@@ -184,7 +185,7 @@ namespace Core.ApplicationServices
                 {
                     operationRequest.InddataStruktur.AarsagTekst = report.Purpose;
                     operationRequest.InddataStruktur.AnsaettelseIdentifikator = report.Employment.EmploymentId;
-                    operationRequest.InddataStruktur.InstitutionIdentifikator = _customSettings.SdInstitutionNumber ?? "";
+                    operationRequest.InddataStruktur.InstitutionIdentifikator = _configuration["SD:InstitutionNumber"] ?? "";
                     operationRequest.InddataStruktur.PersonnummerIdentifikator = report.Person.CprNumber;
                     operationRequest.InddataStruktur.RegistreringTypeIdentifikator = report.TFCode;
                     operationRequest.InddataStruktur.KoerselDato = KoerseldateTime.Date;

@@ -1,5 +1,6 @@
 ﻿using Core.ApplicationServices.MailerService.Interface;
 using Core.DomainServices.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Net;
@@ -11,33 +12,32 @@ namespace Core.ApplicationServices.MailerService.Impl
     {
         private readonly SmtpClient _smtpClient;
         private readonly ILogger _logger;
-        private readonly ICustomSettings _customSettings;
+        private readonly IConfiguration _configuration;
 
-        public MailSender(ILogger logger, ICustomSettings customSettings)
+        public MailSender(ILogger<MailSender> logger, IConfiguration configuration)
         {
             _logger = logger;
-            _customSettings = customSettings;
+            _configuration = configuration;
           
             try
             {
                 int port;
-                bool hasPortValue = int.TryParse(_customSettings.SMTPHostPort, out port);
+                bool hasPortValue = int.TryParse(_configuration["Mail:Port"], out port);
 
                 _smtpClient = new SmtpClient()
                 {
-                    Host = _customSettings.SMTPHost,
+                    Host = _configuration["Mail:Host"],
                     
                     EnableSsl = false,
                     Credentials = new NetworkCredential()
                     {
-                        UserName = _customSettings.SMTPUser,
-                        Password = _customSettings.SMTPPassword
+                        UserName = _configuration["Mail:User"],
+                        Password = _configuration["Mail:password"]
                     }
                 };
                
                 if (hasPortValue)
                 {
-                    _logger.LogDebug($"{this.GetType().Name}, tryParse on PROTECTED_SMTP_HOST_PORT. port = {port}");
                     _smtpClient.Port = port;
                 }
             }
@@ -62,7 +62,7 @@ namespace Core.ApplicationServices.MailerService.Impl
             }
             var msg = new MailMessage();
             msg.To.Add(to);
-            msg.From = new MailAddress(_customSettings.MailFromAddress);
+            msg.From = new MailAddress(_configuration["Mail:FromAddress"]);
             msg.Body = body;
             msg.Subject = subject;
             try

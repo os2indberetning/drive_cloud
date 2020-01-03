@@ -1,4 +1,5 @@
 ﻿using Core.DomainServices.Interfaces;
+using Microsoft.Extensions.Configuration;
 using System.Configuration;
 
 namespace Core.DomainServices.RoutingClasses
@@ -8,11 +9,11 @@ namespace Core.DomainServices.RoutingClasses
         private const string _coordinateToAddressUrl = @"https://dawa.aws.dk/adgangsadresser/reverse?";
         private const string _coordinatesURL = @"https://dawa.aws.dk/adresser?";
         private const string _launderingUrl = @"https://dawa.aws.dk/adgangsadresser?";
-        private ICustomSettings _customSettings;
+        private string apiKey;
 
-        public UrlDefinitions(ICustomSettings customSettings)
+        public UrlDefinitions(IConfiguration configuration)
         {
-            _customSettings = customSettings;
+            apiKey = configuration["HelpText:SEPTIMA_API_KEY"];
         }
 
         /// <summary>
@@ -44,7 +45,6 @@ namespace Core.DomainServices.RoutingClasses
         {
             get
             {
-                var apiKey = _customSettings.SeptimaApiKey;
                 return "http://new-routing.septima.dk/" + apiKey + "/car/viaroute?";
             }
         }
@@ -56,7 +56,6 @@ namespace Core.DomainServices.RoutingClasses
         {
             get
             {
-                var apiKey = _customSettings.SeptimaApiKey;
                 return "http://new-routing.septima.dk/" + apiKey + "/bicycle/viaroute?";
             }
         }

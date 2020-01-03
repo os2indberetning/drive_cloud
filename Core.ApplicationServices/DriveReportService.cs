@@ -5,6 +5,7 @@ using Core.DomainServices;
 using Core.DomainServices.Interfaces;
 using Core.DomainServices.RoutingClasses;
 using Microsoft.AspNet.OData;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -27,9 +28,9 @@ namespace Core.ApplicationServices
         private readonly IMailService _mailService;
 
         private readonly ILogger _logger;
-        private readonly ICustomSettings _customSettings;
+        private readonly IConfiguration _configuration;
 
-        public DriveReportService(IMailService mailService, IGenericRepository<DriveReport> driveReportRepository, IReimbursementCalculator calculator, IGenericRepository<OrgUnit> orgUnitRepository, IGenericRepository<Employment> employmentRepository, IGenericRepository<Substitute> substituteRepository, IAddressCoordinates coordinates, IRoute<RouteInformation> route, IGenericRepository<RateType> rateTypeRepo, IGenericRepository<Person> personRepo, ILogger logger, ICustomSettings customSettings)
+        public DriveReportService(IMailService mailService, IGenericRepository<DriveReport> driveReportRepository, IReimbursementCalculator calculator, IGenericRepository<OrgUnit> orgUnitRepository, IGenericRepository<Employment> employmentRepository, IGenericRepository<Substitute> substituteRepository, IAddressCoordinates coordinates, IRoute<RouteInformation> route, IGenericRepository<RateType> rateTypeRepo, IGenericRepository<Person> personRepo, ILogger<DriveReportService> logger, IConfiguration configuration)
         {
             _route = route;
             _rateTypeRepo = rateTypeRepo;
@@ -42,7 +43,7 @@ namespace Core.ApplicationServices
             _driveReportRepository = driveReportRepository;
             _personRepository = personRepo;
             _logger = logger;
-            _customSettings = customSettings;
+            _configuration = configuration;
         }
 
         /// <summary>
@@ -323,7 +324,7 @@ namespace Core.ApplicationServices
             var currentTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
 
             // If the municipality uses SD/IDM instead of KMD/SOFD, the level property is not used, and we need to look at the parent instead og level.
-            if (_customSettings.SdIsEnabled)
+            if (Boolean.Parse(_configuration["SD:Enabled"]))
             {
                 while ((leaderOfOrgUnit == null && orgUnit != null && orgUnit.Parent != null) ||
                     (leaderOfOrgUnit != null && leaderOfOrgUnit.PersonId == personId))
@@ -452,7 +453,7 @@ namespace Core.ApplicationServices
             }
 
             // If the municipality uses SD/IDM instead of KMD/SOFD, the level property is not used, and we need to look at the parent instead og level.
-            if (_customSettings.SdIsEnabled)
+            if (Boolean.Parse(_configuration["SD:Enabled"]))
             {
                 while ((leaderOfOrgUnit == null && orgUnit.Parent != null) || (leaderOfOrgUnit != null && leaderOfOrgUnit.PersonId == person.Id))
                 {

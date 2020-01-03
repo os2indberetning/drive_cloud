@@ -3,6 +3,7 @@ using Core.DomainModel;
 using Core.DomainServices;
 using Core.DomainServices.Interfaces;
 using Core.DomainServices.RoutingClasses;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
@@ -28,9 +29,9 @@ namespace Core.ApplicationServices
         private const double CoordinateThreshold = 0.001;
 
         private readonly ILogger _logger;
-        private readonly ICustomSettings _customSettings;
+        private readonly IConfiguration _configuration;
 
-        public ReimbursementCalculator(IRoute<RouteInformation> route, IPersonService personService, IGenericRepository<Person> personRepo, IGenericRepository<Employment> emplrepo, IGenericRepository<AddressHistory> addressHistoryRepo, ILogger logger, ICustomSettings customeSettings, IGenericRepository<RateType> rateTypeRepo, IGenericRepository<DriveReport> driveReportRepo, IGenericRepository<Address> addressRepo)
+        public ReimbursementCalculator(IRoute<RouteInformation> route, IPersonService personService, IGenericRepository<Person> personRepo, IGenericRepository<Employment> emplrepo, IGenericRepository<AddressHistory> addressHistoryRepo, ILogger<ReimbursementCalculator> logger, IConfiguration configuration, IGenericRepository<RateType> rateTypeRepo, IGenericRepository<DriveReport> driveReportRepo, IGenericRepository<Address> addressRepo)
         {
             _route = route;
             _personService = personService;
@@ -38,7 +39,7 @@ namespace Core.ApplicationServices
             _emplrepo = emplrepo;
             _addressHistoryRepo = addressHistoryRepo;
             _logger = logger;
-            _customSettings = customeSettings;
+            _configuration = configuration;
             _rateTypeRepo = rateTypeRepo;
             _driveReportRepository = driveReportRepo;
             _addressRepo = addressRepo;
@@ -182,9 +183,7 @@ namespace Core.ApplicationServices
                         // Norddjurs Kommune uses an alternative way of calculating the amount to reimburse. Instead of subtracting the distance from home to work from the driven distance,
                         // either the home-to-destination or work-to-destination distance is used, which ever is shortest. This only applies to routes starting from home, in any other case
                         // the standard calculation method is used.
-                        bool useNorddjursAltCalculation;
-                        bool parseSucces = bool.TryParse(_customSettings.AlternativeCalculationMethod, out useNorddjursAltCalculation);
-                        useNorddjursAltCalculation = parseSucces ? useNorddjursAltCalculation : false;
+                        bool useNorddjursAltCalculation = Boolean.Parse(_configuration["AlternativeCalculationMethod"]);
 
                         // Use Norddjurs alternative reimbursemnt calculation method if configured so.
                         if (useNorddjursAltCalculation)

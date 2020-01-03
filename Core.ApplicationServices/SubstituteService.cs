@@ -18,7 +18,7 @@ namespace Core.ApplicationServices
         private readonly ILogger _logger;
 
 
-        public SubstituteService(IGenericRepository<Substitute> subRepo, IOrgUnitService orgService, IDriveReportService driveService, IGenericRepository<DriveReport> driveRepo, ILogger logger)
+        public SubstituteService(IGenericRepository<Substitute> subRepo, IOrgUnitService orgService, IDriveReportService driveService, IGenericRepository<DriveReport> driveRepo, ILogger<SubstituteService> logger)
         {
             _subRepo = subRepo;
             _orgService = orgService;

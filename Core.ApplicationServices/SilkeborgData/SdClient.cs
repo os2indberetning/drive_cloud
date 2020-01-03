@@ -1,5 +1,5 @@
 ﻿using Core.ApplicationServices.SdKoersel;
-using Core.DomainServices.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 using System;
 
@@ -9,43 +9,44 @@ namespace Core.ApplicationServices
     {
         private AnsaettelseKoerselOpret20170501PortTypeClient _portTypeClient;
         private ILogger _logger;
-        private ICustomSettings _customSettings;
+        private readonly IConfiguration _configuration;
 
-        public SdClient (ILogger logger, ICustomSettings customSettings)
+        public SdClient (ILogger logger, IConfiguration configuration)
         {
             _logger = logger;
-            _customSettings = customSettings;
+            _configuration = configuration;
 
             try
             {
-                _portTypeClient = new AnsaettelseKoerselOpret20170501PortTypeClient();
-                _portTypeClient.ClientCredentials.UserName.UserName = _customSettings.SdUsername;
-                _portTypeClient.ClientCredentials.UserName.Password = _customSettings.SdPassword;
+                if (Boolean.Parse(configuration["SD:Enabled"]))
+                {
+                    _portTypeClient = new AnsaettelseKoerselOpret20170501PortTypeClient();
+                    _portTypeClient.ClientCredentials.UserName.UserName = configuration["SD:Username"];
+                    _portTypeClient.ClientCredentials.UserName.Password = configuration["SD:Password"];
+                }
             }
             catch (Exception e)
             {
-                if (_customSettings.SdIsEnabled)
-                {
-                    _logger.LogError($"{this.GetType().ToString()}, sendDataToSd(), Error when initiating SD client", e);
-                    throw e; 
-                }
+                _logger.LogError($"{this.GetType().ToString()}, sendDataToSd(), Error when initiating SD client", e);
+                throw e; 
             }
         }
 
         public AnsaettelseKoerselOpret20170501Type SendRequest(AnsaettelseKoerselOpretInputType requestData)
         {
-#if !DEBUG
             try
             {
+                if (!Boolean.Parse(_configuration["SD:Enabled"]))
+                {
+                    return null;
+                }
                 return _portTypeClient.AnsaettelseKoerselOpret20170501Operation(requestData);
             }
-            catch (Exception)
+            catch (Exception e)
             {
-                _logger.LogError($"{this.GetType().ToString()}, SendRequest(), Error when sending data to SD");
-                throw;
+                _logger.LogError(e, $"{this.GetType().ToString()}, SendRequest(), Error when sending data to SD");
+                throw e;
             }
-#endif
-            return null;
         }
     }
 }

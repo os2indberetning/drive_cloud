@@ -4,6 +4,7 @@ using System.Linq;
 using Core.DomainModel;
 using Core.DomainServices;
 using Core.DomainServices.Interfaces;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Logging;
 
 namespace Core.ApplicationServices.FileGenerator
@@ -13,14 +14,14 @@ namespace Core.ApplicationServices.FileGenerator
         private readonly IGenericRepository<DriveReport> _reportRepo;
         private readonly IReportFileWriter _fileWriter;
         private ILogger _logger;
-        private ICustomSettings _customSettings;
+        private IConfiguration _configuration;
         
-        public ReportGenerator(IGenericRepository<DriveReport> reportRepo, IReportFileWriter fileWriter, ILogger logger, ICustomSettings customSettings)
+        public ReportGenerator(IGenericRepository<DriveReport> reportRepo, IReportFileWriter fileWriter, ILogger logger, IConfiguration configuration)
         {
             _reportRepo = reportRepo;
             _fileWriter = fileWriter;
             _logger = logger;
-            _customSettings = customSettings;
+            _configuration = configuration;
         }
 
         public void WriteRecordsToFileAndAlterReportStatus()
@@ -123,7 +124,7 @@ namespace Core.ApplicationServices.FileGenerator
                     {
                         if (currentDriveReport != null)
                         {
-                            fileRecords.Add(new FileRecord(currentDriveReport, cpr, _customSettings));
+                            fileRecords.Add(new FileRecord(currentDriveReport, cpr, _configuration));
                         }
                         currentMonth = driveDate.Month;
                         currentTfCode = driveReport.TFCode;
@@ -143,7 +144,7 @@ namespace Core.ApplicationServices.FileGenerator
                 }
                 if (currentDriveReport != null)
                 {
-                    fileRecords.Add(new FileRecord(currentDriveReport, cpr, _customSettings));
+                    fileRecords.Add(new FileRecord(currentDriveReport, cpr, _configuration));
                 }
             }
 

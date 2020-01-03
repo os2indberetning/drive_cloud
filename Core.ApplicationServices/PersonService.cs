@@ -20,7 +20,7 @@ namespace Core.ApplicationServices
         private readonly IAddressCoordinates _coordinates;
         private readonly ILogger _logger;
 
-        public PersonService(IGenericRepository<PersonalAddress> personalAddressRepo,IGenericRepository<Address> addressRepo, IGenericRepository<Employment> employmentRepo, IGenericRepository<OrgUnit> orgUnitsRepo, IRoute<RouteInformation> route, IAddressCoordinates coordinates, ILogger logger)
+        public PersonService(IGenericRepository<PersonalAddress> personalAddressRepo,IGenericRepository<Address> addressRepo, IGenericRepository<Employment> employmentRepo, IGenericRepository<OrgUnit> orgUnitsRepo, IRoute<RouteInformation> route, IAddressCoordinates coordinates, ILogger<PersonService> logger)
         {
             _personalAddressRepo = personalAddressRepo;
             _addressRepo = addressRepo;

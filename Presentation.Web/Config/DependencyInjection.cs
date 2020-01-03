@@ -42,6 +42,9 @@ namespace Presentation.Web.Config
             services.AddScoped<IOrgUnitService,OrgUnitService>();
             services.AddScoped<IAppLoginService,AppLoginService>();
             services.AddScoped<IDriveReportService,DriveReportService>();
+            services.AddScoped<APIService>();
+            services.AddScoped<IUrlDefinitions,UrlDefinitions>();
+            services.AddScoped<IRouter, SeptimaRouter>();
             return services;
         }
     }

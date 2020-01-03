@@ -1,4 +1,5 @@
 ﻿using Core.DomainServices.Interfaces;
+using Microsoft.Extensions.Configuration;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -9,13 +10,15 @@ namespace Core.ApplicationServices.FileGenerator
 {
     public class ReportFileWriter : IReportFileWriter
     {
-        private readonly string _filePathName = GetSetting("PROTECTED_KMDFilePath") + @"\" + GetSetting("PROTECTED_KMDFileName");
-        private readonly string _backupFilePathName = GetSetting("PROTECTED_KMDBackupFilePath") + @"\" + DateTime.Now.ToString("yyyyMMdd-hhmmss");
-        private ICustomSettings _customSettings;
+        private readonly string _filePathName;
+        private readonly string _backupFilePathName;
+        private readonly IConfiguration _configuration;
 
-        public ReportFileWriter(ICustomSettings customSettings)
+        public ReportFileWriter(IConfiguration configuration)
         {
-            _customSettings = customSettings;
+            _configuration = configuration;
+            _filePathName = configuration["KMD:FilePath"] + @"\" + configuration["KMD:FileName"];
+            _backupFilePathName = configuration["KMD:BackupFilePath"] + @"\" + DateTime.Now.ToString("yyyyMMdd-hhmmss");
         }
 
         public bool WriteRecordsToFile(ICollection<FileRecord> recordList)
@@ -61,7 +64,7 @@ namespace Core.ApplicationServices.FileGenerator
         {
             using (var writer = new StreamWriter(_filePathName))
             {
-                writer.WriteLine(GetSetting("PROTECTED_KMDHeader"));
+                writer.WriteLine(_configuration["KMD:Header"]);
                 writer.Close();
             }
         }
@@ -97,13 +100,6 @@ namespace Core.ApplicationServices.FileGenerator
                     newReader.Close();
                 }
             return tempList;
-        }
-            
-        private static string GetSetting(string key)
-        {
-            // todo fix some configuration DI
-            return "";
-            //return ConfigurationManager.AppSettings[key];
-        }
+        }            
     }
 }
