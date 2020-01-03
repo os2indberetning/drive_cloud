@@ -18,6 +18,9 @@ namespace Core.ApplicationServices.SdKoersel
         
         [System.ServiceModel.OperationContractAttribute(Action="https://service.sd.dk/sdws-indberetning/services/AnsaettelseKoerselOpret20170501", ReplyAction="*")]
         [System.ServiceModel.XmlSerializerFormatAttribute(SupportFaults=true)]
+        Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpret20170501OperationResponse AnsaettelseKoerselOpret20170501Operation(Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpret20170501OperationRequest request);
+        
+        [System.ServiceModel.OperationContractAttribute(Action="https://service.sd.dk/sdws-indberetning/services/AnsaettelseKoerselOpret20170501", ReplyAction="*")]
         System.Threading.Tasks.Task<Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpret20170501OperationResponse> AnsaettelseKoerselOpret20170501OperationAsync(Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpret20170501OperationRequest request);
     }
     
@@ -487,7 +490,6 @@ namespace Core.ApplicationServices.SdKoersel
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1")]
-    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
     public partial class AnsaettelseKoerselOpret20170501OperationRequest
     {
@@ -507,7 +509,6 @@ namespace Core.ApplicationServices.SdKoersel
     
     [System.Diagnostics.DebuggerStepThroughAttribute()]
     [System.CodeDom.Compiler.GeneratedCodeAttribute("Microsoft.Tools.ServiceModel.Svcutil", "2.0.1")]
-    [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
     [System.ServiceModel.MessageContractAttribute(IsWrapped=false)]
     public partial class AnsaettelseKoerselOpret20170501OperationResponse
     {
@@ -575,17 +576,14 @@ namespace Core.ApplicationServices.SdKoersel
         {
         }
         
-        [System.ComponentModel.EditorBrowsableAttribute(System.ComponentModel.EditorBrowsableState.Advanced)]
-        System.Threading.Tasks.Task<Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpret20170501OperationResponse> Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpret20170501PortType.AnsaettelseKoerselOpret20170501OperationAsync(Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpret20170501OperationRequest request)
+        public Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpret20170501OperationResponse AnsaettelseKoerselOpret20170501Operation(Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpret20170501OperationRequest request)
         {
-            return base.Channel.AnsaettelseKoerselOpret20170501OperationAsync(request);
+            return base.Channel.AnsaettelseKoerselOpret20170501Operation(request);
         }
         
-        public System.Threading.Tasks.Task<Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpret20170501OperationResponse> AnsaettelseKoerselOpret20170501OperationAsync(Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpretInputType AnsaettelseKoerselOpret)
+        public System.Threading.Tasks.Task<Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpret20170501OperationResponse> AnsaettelseKoerselOpret20170501OperationAsync(Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpret20170501OperationRequest request)
         {
-            Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpret20170501OperationRequest inValue = new Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpret20170501OperationRequest();
-            inValue.AnsaettelseKoerselOpret = AnsaettelseKoerselOpret;
-            return ((Core.ApplicationServices.SdKoersel.AnsaettelseKoerselOpret20170501PortType)(this)).AnsaettelseKoerselOpret20170501OperationAsync(inValue);
+            return base.Channel.AnsaettelseKoerselOpret20170501OperationAsync(request);
         }
         
         public virtual System.Threading.Tasks.Task OpenAsync()

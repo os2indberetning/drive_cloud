@@ -40,7 +40,9 @@ namespace Core.ApplicationServices
                 {
                     return null;
                 }
-                return _portTypeClient.AnsaettelseKoerselOpret20170501Operation(requestData);
+                var request = new AnsaettelseKoerselOpret20170501OperationRequest();
+                request.AnsaettelseKoerselOpret = requestData;
+                return _portTypeClient.AnsaettelseKoerselOpret20170501Operation(request).AnsaettelseKoerselOpret20170501;
             }
             catch (Exception e)
             {
