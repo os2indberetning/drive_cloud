@@ -207,3 +207,4 @@ Presentation.Web/App/**/*.map
 OS2indberetning/OS2indberetning/Presentation.Web/wwwroot/Bundles/
 OS2indberetning/OS2indberetning/Presentation.Web/appsettings.Development.json
 OS2indberetning/OS2indberetning/Presentation.Web/wwwroot/custom/
+appsettings.development.json

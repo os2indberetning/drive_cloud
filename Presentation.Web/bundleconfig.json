@@ -1,0 +1,73 @@
+[
+  {
+    "outputFileName": "wwwroot/Bundles/styles.css",
+    "inputFiles": [
+      "wwwroot/Content/leaflet_0.7.3.css",
+      "wwwroot/Content/os2routemap.leaflet-routing-machine_1.1.0.css",
+      "wwwroot/Content/loading-bar.min.css",
+      "wwwroot/Content/bootstrap.min.css",
+      "wwwroot/Content/Themes/SbAdmin/css/bootstrap.min.css",
+      "wwwroot/Content/Themes/SbAdmin/css/sb-admin.css",
+      "wwwroot/Content/Themes/SbAdmin/font-awesome/css/font-awesome.css",
+      "wwwroot/Content/site.css",
+      "wwwroot/Content/timeline.css",
+      "wwwroot/Content/kendo/kendo.common.min.css",
+      "wwwroot/Content/kendo/kendo.common-bootstrap.min.css",
+      "wwwroot/Content/kendo/kendo.rtl.css",
+      "wwwroot/Content/kendo/kendo.bootstrap.min.css",
+      "wwwroot/Content/kendo/kendo.dataviz.min.css",
+      "wwwroot/Content/kendo/kendo.dataviz.bootstrap.min.css",
+      "wwwroot/Content/pnotify.custom.min.css",
+      "wwwroot/Content/custom.css",
+      "wwwroot/Content/angular-busy.min.css",
+      "wwwroot/Content/jquery/jquery-ui_1.10.4.css"
+    ]
+  },
+  {
+    "outputFileName": "wwwroot/Bundles/libraries.js",
+    "inputFiles": [
+      "wwwroot/Scripts/leaflet_0.7.7.js",
+      "wwwroot/Scripts/os2routemap.map_1.1.2.js",
+      "wwwroot/Scripts/jquery_1.11.2.min.js",
+      "wwwroot/Scripts/jquery-ui_1.10.3.min.js",
+      "wwwroot/Scripts/modernizr-*",
+      "wwwroot/Scripts/angular.js",
+      "wwwroot/Scripts/angular-ui-router.js",
+      "wwwroot/Scripts/angular-ui/ui-bootstrap-tpls.js",
+      "wwwroot/Scripts/moment.js",
+      "wwwroot/Scripts/moment-locale-da.js",
+      "wwwroot/Scripts/moment-timezone-with-data.js",
+      "wwwroot/Scripts/angular-moment.js",
+      "wwwroot/Scripts/angular-resource.js",
+      "wwwroot/Scripts/kendo-ie-fix.js",
+      "wwwroot/Scripts/bootstrap.js",
+      "wwwroot/Scripts/respond.js",
+      "wwwroot/Scripts/kendo/kendo.all.min.js",
+      "wwwroot/Scripts/kendo/cultures/kendo.culture.da-DK.min.js",
+      "wwwroot/Scripts/loading-bar.min.js",
+      "wwwroot/Scripts/pnotify.custom.min.js",
+      "wwwroot/Scripts/linq.min.js",
+      "wwwroot/Scripts/angular-busy.min.js",
+      "wwwroot/Scripts/angular-ui-router-tabs.js",
+      "wwwroot/Scripts/angular-sanitize.min.js"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": false
+    },
+    "sourceMap": false
+  },
+  {
+    "outputFileName": "wwwroot/Bundles/app.js",
+    "inputFiles": [
+      "wwwroot/App/application.js",
+      "wwwroot/App/MainMenuController.js",
+      "wwwroot/App/**/*.js"
+    ],
+    "minify": {
+      "enabled": false,
+      "renameLocals": false
+    },
+    "sourceMap": false
+  }
+]

@@ -1,0 +1,51 @@
+﻿@page
+@model Presentation.Web.Pages.indexModel
+
+<!DOCTYPE html>
+<html ng-app="app">
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width" initial-scale=1 />
+    <title>OS2Indberetning</title>
+    <link href="/Bundles/styles.min.css" rel="stylesheet" />
+    <link href="/custom/private.css" rel="stylesheet" />
+    <link rel="icon" type="image/png" href="/custom/favicon.ico">
+</head>
+<body class="scrollme ng-cloak" ng-cloak="ng-cloak" ng-scrollbar rebuild-on-resize ng-init="menuCollapse = false">
+    @if (Model.loginFailed)
+    {
+        <div class="outer-navbox">
+            <div class="middle-navbox">
+                <div class="navbox-center">
+                    <h3 style="color: white;">Ingen adgang til OS2Indberetning.</h3>
+                </div>
+            </div>
+        </div>
+    }
+    else
+    {
+        <div data-checkie data-checkie-min-ie="11">
+            <div ui-view></div>
+        </div>
+        <div class="errors-container">
+        </div>
+        <div ng-hide="menuCollapse" class="version-text hidden-xs">Version @Model.Version</div>
+
+        <script src="/Bundles/libraries.js"></script>
+        <script src="/Bundles/app-core.js"></script>
+        <script src="/Bundles/app-drive.js"></script>
+        <script src="/Bundles/app-vacation.js"></script>
+
+        <script>
+            $(document).ready($('#mastertab a').click(function (e) {
+                e.preventDefault();
+                $(this).tab('show');
+            }));
+        </script>
+        <script>
+            angular.module("app").constant("EnabledApplications", "Vacation");
+            kendo.culture("da-DK");
+        </script>
+    }
+</body>
+</html>
