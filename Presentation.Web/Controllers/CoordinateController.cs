@@ -8,6 +8,9 @@ using System.Linq;
 
 namespace OS2Indberetning.Controllers
 {
+    [Route("api/[controller]/[action]")]
+    [ApiController]
+
     [AuditlogFilter]
     public class CoordinateController : Controller
     {
@@ -28,7 +31,7 @@ namespace OS2Indberetning.Controllers
         /// </summary>
         /// <param name="addresses"></param>
         /// <returns></returns>
-        public IActionResult SetCoordinatesOnAddressList(IEnumerable<Address> addresses)
+        public IActionResult SetCoordinatesOnAddressList([FromBody] IEnumerable<Address> addresses)
         {
             var result = addresses.Select(address => _coordinates.GetAddressCoordinates(address,true)).ToList();
             return Ok(result);

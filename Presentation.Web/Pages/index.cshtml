@@ -45,7 +45,7 @@
                     <!-- Top Menu Items -->
                     <div class="pull-right margin-top-15 margin-right-10">
                         <span style="color: #FFF">
-                            <a class="informationHelpLink" href="{{helpLink.text}}" target="_blank">Information og vejledning</a> - 
+                            <a class="informationHelpLink" href="{{helpLink.text}}" target="_blank">Information og vejledning</a> -
                             {{UserName}} - <a class="informationHelpLink" href="/SAML/Logout">Log ud</a>&nbsp;&nbsp;&nbsp;
                         </span>
                     </div>
@@ -127,6 +127,8 @@
 
         </div>
 
+        <!-- Do not bundle leaflet - default image path regex that attempts to match "leaflet" in the js filename -->
+        <script src="/Scripts/leaflet_0.7.7.js"></script>
         <script src="/Bundles/libraries.js"></script>
         <script src="/Bundles/app.js"></script>
 
