@@ -99,7 +99,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="Address"></param>
         /// <returns>The posted object</returns>
         [EnableQuery]
-        public new IActionResult Post(Address Address)
+        public new IActionResult Post([FromBody] Address Address)
         {
             return base.Post(Address);
         }

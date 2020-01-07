@@ -225,7 +225,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="driveReport"></param>
         /// <returns>The posted report.</returns>
         [EnableQuery]
-        public new IActionResult Post(DriveReport driveReport, string emailText)
+        public new IActionResult Post([FromBody] DriveReport driveReport, string emailText)
         {
             if (CurrentUser.IsAdmin && emailText != null && driveReport.Status == ReportStatus.Accepted)
             {

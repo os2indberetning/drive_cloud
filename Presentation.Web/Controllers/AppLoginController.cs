@@ -37,7 +37,7 @@ namespace OS2Indberetning.Controllers
         }
 
         [EnableQuery]
-        public new IActionResult Post(AppLogin AppLogin)
+        public new IActionResult Post([FromBody] AppLogin AppLogin)
         {
             var prepared = _loginService.PrepareAppLogin(AppLogin);
             Repo.Insert(prepared);

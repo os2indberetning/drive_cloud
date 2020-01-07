@@ -44,7 +44,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="BankAccount"></param>
         /// <returns></returns>
         [EnableQuery]
-        public new IActionResult Post(BankAccount BankAccount)
+        public new IActionResult Post([FromBody] BankAccount BankAccount)
         {
            return CurrentUser.IsAdmin ? base.Post(BankAccount) : Unauthorized();
         }

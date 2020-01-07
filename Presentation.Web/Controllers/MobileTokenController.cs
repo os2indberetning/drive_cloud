@@ -64,7 +64,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="mobileToken"></param>
         /// <returns></returns>
         [EnableQuery]
-        public new IActionResult Post(MobileToken mobileToken)
+        public new IActionResult Post([FromBody] MobileToken mobileToken)
         {
             if (CurrentUser.Id.Equals(mobileToken.PersonId))
             {

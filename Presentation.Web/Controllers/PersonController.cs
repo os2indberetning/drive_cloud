@@ -182,7 +182,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="person"></param>
         /// <returns></returns>
         [EnableQuery]
-        public new IActionResult Post(Person person)
+        public new IActionResult Post([FromBody] Person person)
         {
             return StatusCode(StatusCodes.Status405MethodNotAllowed);
         }

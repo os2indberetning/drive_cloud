@@ -65,7 +65,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="personalAddress">The Personal Address to be posted.</param>
         /// <returns>The posted Personal Address</returns>
         [EnableQuery]
-        public new IActionResult Post(PersonalAddress personalAddress)
+        public new IActionResult Post([FromBody] PersonalAddress personalAddress)
         {
             if (!CurrentUser.Id.Equals(personalAddress.PersonId))
             {

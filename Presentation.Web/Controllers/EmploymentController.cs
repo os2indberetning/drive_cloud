@@ -74,7 +74,7 @@ namespace OS2Indberetning.Controllers
 
         //POST: odata/Employments
         [EnableQuery]
-        public new IActionResult Post(Employment Employment)
+        public new IActionResult Post([FromBody] Employment Employment)
         {
             return StatusCode(StatusCodes.Status405MethodNotAllowed);
         }

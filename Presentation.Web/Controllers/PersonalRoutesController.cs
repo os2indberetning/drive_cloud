@@ -65,7 +65,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="personalRoute">The route to be posted</param>
         /// <returns>The posted Route</returns>
         [EnableQuery]
-        public new IActionResult Post(PersonalRoute personalRoute)
+        public new IActionResult Post([FromBody] PersonalRoute personalRoute)
         {
             return personalRoute.PersonId.Equals(CurrentUser.Id) ? (IActionResult)Ok(_routeService.Create(personalRoute)) : StatusCode(StatusCodes.Status403Forbidden);
         }

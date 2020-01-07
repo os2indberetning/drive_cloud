@@ -12936,7 +12936,7 @@ angular.module("application").controller("SettingController", [
                             beforeSend: function (req) {
                                 req.setRequestHeader('Accept', 'application/json;odata=fullmetadata');
                             },
-                            url: "odata/PersonalAddresses()?$filter=PersonId eq " + personId + " and Type ne Core.DomainModel.PersonalAddressType'OldHome'",
+                            url: "odata/PersonalAddresses()?$filter=PersonId eq " + personId + " and Type ne 'OldHome'",
                             dataType: "json",
                             cache: false
                         },

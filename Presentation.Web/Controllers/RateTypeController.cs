@@ -56,7 +56,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="RateType"></param>
         /// <returns></returns>
         [EnableQuery]
-        public new IActionResult Post(RateType RateType)
+        public new IActionResult Post([FromBody] RateType RateType)
         {
             return StatusCode(StatusCodes.Status405MethodNotAllowed);
         }

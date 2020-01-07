@@ -65,7 +65,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="LicensePlate">License plate to be posted.</param>
         /// <returns></returns>
         [EnableQuery]
-        public new IActionResult Post(LicensePlate LicensePlate)
+        public new IActionResult Post([FromBody] LicensePlate LicensePlate)
         {
             if (!CurrentUser.Id.Equals(LicensePlate.PersonId))
             {

@@ -62,7 +62,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="Rate">The Rate to be posted.</param>
         /// <returns>The posted rate.</returns>
         [EnableQuery]
-        public new IActionResult Post(Rate Rate)
+        public new IActionResult Post([FromBody] Rate Rate)
         {
             if (!CurrentUser.IsAdmin) return StatusCode(StatusCodes.Status403Forbidden);
             _ratePostService.DeactivateExistingRate(Repo.AsQueryable(), Rate);

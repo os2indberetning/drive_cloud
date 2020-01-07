@@ -90,7 +90,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="orgUnit"></param>
         /// <returns></returns>
         [EnableQuery]
-        public new IActionResult Post(OrgUnit orgUnit)
+        public new IActionResult Post([FromBody] OrgUnit orgUnit)
         {
             return StatusCode(StatusCodes.Status405MethodNotAllowed);
         }

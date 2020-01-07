@@ -66,7 +66,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="Point">The point to be posted.</param>
         /// <returns>The posted point.</returns>
         [EnableQuery]
-        public new IActionResult Post(Point Point)
+        public new IActionResult Post([FromBody] Point Point)
         {
             return base.Post(Point);
         }
