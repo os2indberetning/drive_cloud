@@ -20,6 +20,10 @@ namespace Presentation.Web.Config
         {
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
 
+            //builder.EntitySet<TestReport>("TestReports");
+            //var test = builder.EntityType<TestReport>();
+            //test.Ignore(report => report.DateTimeTest);
+
             builder.EntitySet<Address>("Addresses");
 
             builder.EntityType<Address>().Collection
@@ -29,6 +33,8 @@ namespace Presentation.Web.Config
             builder.EntityType<Address>().Collection
             .Action("SetCoordinatesOnAddressList")
             .ReturnsFromEntitySet<Address>("Addresses");
+
+
 
             builder.EntityType<Address>().Collection
             .Function("GetPersonalAndStandard")
@@ -46,6 +52,10 @@ namespace Presentation.Web.Config
            .Action("AttemptCleanCachedAddress")
            .ReturnsFromEntitySet<Address>("Addresses");
 
+
+
+
+
             builder.EntityType<Address>().Collection
                 .Function("GetMapStart")
                 .ReturnsFromEntitySet<Address>("Addresses");
@@ -56,15 +66,27 @@ namespace Presentation.Web.Config
             .Function("GetLatestReportForUser")
             .ReturnsFromEntitySet<DriveReport>("DriveReports");
 
+            builder.EntityType<DriveReport>().Collection
+            .Function("GetCalculationMethod")
+            .ReturnsFromEntitySet<DriveReport>("DriveReports");
+
             builder.EntitySet<DriveReportPoint>("DriveReportPoints");
+            builder.EntityType<DriveReport>().Collection
+             .Function("Eksport")
+             .ReturnsFromEntitySet<DriveReport>("DriveReports");
+
 
             builder.EntitySet<Employment>("Employments");
             var eType = builder.EntityType<Employment>();
             eType.HasKey(e => e.Id);
 
-            builder.EntitySet<FileGenerationSchedule>("FileGenerationSchedules");
+            builder.EntitySet<FileGenerationSchedule>("FileGenerationSchedule");
 
             builder.EntitySet<LicensePlate>("LicensePlates");
+
+            //var lType = builder.EntityType<LicensePlate>();
+            //lType.Ignore(l => l.Person);
+
 
             builder.EntitySet<MailNotificationSchedule>("MailNotifications");
 
@@ -74,14 +96,21 @@ namespace Presentation.Web.Config
 
             builder.EntitySet<OrgUnit>("OrgUnits");
 
+
             builder.EntitySet<AppLogin>("AppLogin");
 
             builder.EntitySet<Person>("Person");
             var pType = builder.EntityType<Person>();
             pType.HasKey(p => p.Id);
+            //pType.Ignore(p => p.LicensePlates);
+
 
             builder.EntityType<Person>().Collection
            .Function("GetCurrentUser")
+           .ReturnsFromEntitySet<Person>("Person");
+
+            builder.EntityType<Person>().Collection
+           .Function("GetDistanceFromHome")
            .ReturnsFromEntitySet<Person>("Person");
 
             builder.EntityType<Person>().Collection
@@ -89,14 +118,14 @@ namespace Presentation.Web.Config
             .ReturnsFromEntitySet<Person>("Person");
 
             builder.EntityType<Person>().Collection
-                .Function("LeadersPeople")
-                .ReturnsFromEntitySet<Person>("Person")
-                .Parameter<int>("Type");
+            .Function("GetEmployeesOfLeader")
+            .ReturnsFromEntitySet<Person>("Person");
 
-            builder.EntityType<Person>().Collection
-                .Function("PeopleInMyOrganisation")
-                .ReturnsFromEntitySet<Person>("Person")
-                .Parameter<int>("Id");
+            builder.EntityType<OrgUnit>().Collection
+            .Function("GetOrgUnitsForLeader")
+            .ReturnsFromEntitySet<OrgUnit>("OrgUnits");
+
+
 
             builder.EntitySet<PersonalAddress>("PersonalAddresses");
 
@@ -108,9 +137,13 @@ namespace Presentation.Web.Config
             .Function("GetRealHome")
             .ReturnsFromEntitySet<PersonalAddress>("PersonalAddresses");
 
+
+
+
             builder.EntityType<PersonalAddress>().Collection
             .Function("GetAlternativeHome")
             .ReturnsFromEntitySet<PersonalAddress>("PersonalAddresses");
+
 
             builder.EntityType<OrgUnit>().Collection
             .Function("GetLeaderOfOrg")
@@ -120,11 +153,14 @@ namespace Presentation.Web.Config
             .Function("GetWhereUserIsResponsible")
             .ReturnsFromEntitySet<OrgUnit>("OrgUnits");
 
+
             builder.EntitySet<PersonalRoute>("PersonalRoutes");
 
             builder.EntitySet<Point>("Points");
 
             builder.EntitySet<Report>("Reports");
+
+
 
             builder.EntitySet<BankAccount>("BankAccounts");
 
@@ -132,25 +168,19 @@ namespace Presentation.Web.Config
             builder.EntityType<Person>()
                 .Action("HasLicensePlate");
 
+
             builder.EntitySet<Substitute>("Substitutes");
             builder.EntityType<Substitute>().Collection
                 .Function("Personal")
-                .ReturnsFromEntitySet<Substitute>("Substitutes")
-                .Parameter<int>("Type");
+                .ReturnsFromEntitySet<Substitute>("Substitutes");
             builder.EntityType<Substitute>().Collection
                 .Function("Substitute")
-                .ReturnsFromEntitySet<Substitute>("Substitutes")
-                .Parameter<int>("Type");
+                .ReturnsFromEntitySet<Substitute>("Substitutes");
 
             builder.EntitySet<Rate>("Rates");
             builder.EntityType<Rate>().Collection
                 .Function("ThisYearsRates")
                 .ReturnsFromEntitySet<Rate>("Rates");
-
-            builder.EntityType<OrgUnit>().Collection
-                .Function("SetVacationAccess")
-                .ReturnsFromEntitySet<OrgUnit>("OrgUnits")
-                .Parameter<int>("Key");
 
             builder.Namespace = "Service";
 
