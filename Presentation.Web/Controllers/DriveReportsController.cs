@@ -9,6 +9,7 @@ using System;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Microsoft.EntityFrameworkCore;
 
 namespace OS2Indberetning.Controllers
 {
@@ -50,7 +51,7 @@ namespace OS2Indberetning.Controllers
             IQueryable<DriveReport> queryable = null;
             try
             {
-                queryable = GetQueryable(queryOptions);
+                queryable = GetQueryable(queryOptions).Include(r => r.Employment).ThenInclude(e => e.OrgUnit);
 
                 ReportStatus reportStatus;
                 if (ReportStatus.TryParse(status, true, out reportStatus))

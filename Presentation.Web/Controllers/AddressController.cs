@@ -217,7 +217,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="input"></param>
         /// <returns>IActionResult</returns>
         [EnableQuery]
-        public IActionResult AttemptCleanCachedAddress(Address input)
+        public IActionResult AttemptCleanCachedAddress([FromBody] Address input)
         {
             try
             {
