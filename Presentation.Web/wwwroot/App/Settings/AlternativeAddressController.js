@@ -163,7 +163,6 @@
         /// <param name="index"></param>
         PersonEmployments.patchEmployment({ id: $scope.employments[index].Id }, {
             WorkDistanceOverride: 0,
-            AlternativeWorkAddress: null,
             AlternativeWorkAddressId: null,
         }).$promise.then(function () {
             workAddressDirty[index] = false;

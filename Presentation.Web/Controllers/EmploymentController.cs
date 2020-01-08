@@ -87,11 +87,15 @@ namespace OS2Indberetning.Controllers
         /// <param name="delta"></param>
         /// <returns></returns>
         [EnableQuery]
-        [AcceptVerbs("PATCH", "MERGE")]
+        //[AcceptVerbs("PATCH", "MERGE")]
         public new IActionResult Patch([FromODataUri] int key, Delta<Employment> delta)
         {
-            var firstOrDefault = Repo.AsQueryable().FirstOrDefault(x => x.Id == key);
-            return firstOrDefault != null && firstOrDefault.PersonId.Equals(CurrentUser.Id) ? base.Patch(key, delta) : StatusCode(StatusCodes.Status403Forbidden);
+            var employment = Repo.AsQueryable().FirstOrDefault(x => x.Id == key);
+            if (employment == null || !employment.PersonId.Equals(CurrentUser.Id))
+            {
+                return StatusCode(StatusCodes.Status403Forbidden);
+            }
+            return base.Patch(key, delta); 
         }
 
         //DELETE: odata/Employments(5)

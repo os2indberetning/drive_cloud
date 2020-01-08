@@ -77,8 +77,7 @@ namespace Presentation.Web.Config
 
 
             builder.EntitySet<Employment>("Employments");
-            var eType = builder.EntityType<Employment>();
-            eType.HasKey(e => e.Id);
+            builder.EntityType<Employment>().HasKey(e => e.Id);
 
             builder.EntitySet<FileGenerationSchedule>("FileGenerationSchedule");
 
