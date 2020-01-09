@@ -8,6 +8,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.ApplicationServices
 {
@@ -27,29 +28,18 @@ namespace Core.ApplicationServices
         private readonly CachedAddressLaunderer _launderer;
 
 
-        public APIService(
-            IGenericRepository<OrgUnit> orgUnitRepo,
-            IGenericRepository<CachedAddress> cachedRepo,
-            IAddressLaunderer actualLaunderer,
-            IAddressCoordinates coordinates,
-            IGenericRepository<Person> personRepo,
-            ISubstituteService subService,
-            IGenericRepository<Substitute> subRepo,
-            IGenericRepository<DriveReport> reportRepo,
-            IDriveReportService driveService,
-            ILogger<APIService> logger
-            )
+        public APIService(IServiceProvider provider)
         {
-            _orgUnitRepo = orgUnitRepo;
-            _cachedRepo = cachedRepo;
-            _actualLaunderer = actualLaunderer;
-            _coordinates = coordinates;
-            _personRepo = personRepo;
-            _subService = subService;
-            _subRepo = subRepo;
-            _reportRepo = reportRepo;
-            _driveService = driveService;
-            _logger = logger;
+            _orgUnitRepo = provider.GetService<IGenericRepository<OrgUnit>>();
+            _cachedRepo = provider.GetService<IGenericRepository<CachedAddress>>();
+            _actualLaunderer = provider.GetService<IAddressLaunderer>();
+            _coordinates = provider.GetService<IAddressCoordinates>(); ;
+            _personRepo = provider.GetService<IGenericRepository<Person>>(); ;
+            _subService = provider.GetService<ISubstituteService>(); ;
+            _subRepo = provider.GetService<IGenericRepository<Substitute>>(); ;
+            _reportRepo = provider.GetService<IGenericRepository<DriveReport>>(); ;
+            _driveService = provider.GetService<IDriveReportService>(); ;
+            _logger = provider.GetService<ILogger<APIService>>(); ;
 
             _launderer = new CachedAddressLaunderer(_cachedRepo, _actualLaunderer, _coordinates);
 
@@ -79,12 +69,8 @@ namespace Core.ApplicationServices
                     UpdatePersons(apiOrganizationDTO.Persons);
                     _logger.LogInformation("Updating leaders on expired or activated substitutes");
                     UpdateLeadersOnExpiredOrActivatedSubstitutes();
-                    // Todo block to look at when we include drive solution in this solution
-                    // TODO: Send mail about dirty addresses (once we include drive solution in this solution)
-                    //_addressHistoryService.UpdateAddressHistories();
-                    //_addressHistoryService.CreateNonExistingHistories();
-                    //_logger.LogInformation("Adding leaders to reports that have none");
-                    //AddLeadersToReportsThatHaveNone();
+                    _logger.LogInformation("Adding leaders to reports that have none");
+                    AddLeadersToReportsThatHaveNone();
                     _logger.LogInformation("Update completed in {0} seconds", stopwatch.Elapsed.TotalSeconds);
                 }
             }
