@@ -51,7 +51,9 @@ namespace OS2Indberetning.Controllers
             IQueryable<DriveReport> queryable = null;
             try
             {
-                queryable = GetQueryable(queryOptions).Include(r => r.Employment).ThenInclude(e => e.OrgUnit);
+                queryable = GetQueryable(queryOptions)
+                    .Include(r => r.Employment).ThenInclude(e => e.OrgUnit)
+                    .Include(r => r.Person).ThenInclude(p => p.PersonalAddresses);
 
                 ReportStatus reportStatus;
                 if (ReportStatus.TryParse(status, true, out reportStatus))

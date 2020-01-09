@@ -90,7 +90,7 @@
 
         $scope.updateData = function (data) {
             $scope.Name = $scope.container.employeeFilter;
-            $scope.Municipality = $rootScope.HelpTexts.muniplicity.text; 
+            $scope.Municipality = $rootScope.HelpTexts.Municipality.text; 
             $scope.DateInterval = $scope.container.reportFromDateString + " - " + $scope.container.reportToDateString;
             $scope.LicensePlates = $rootScope.CurrentUser.LicensePlates[0].Plate;
 

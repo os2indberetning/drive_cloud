@@ -57,7 +57,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="MailNotificationSchedule">The MailNotification to be posted.</param>
         /// <returns></returns>
         [EnableQuery]
-        public new IActionResult Post(MailNotificationSchedule MailNotificationSchedule)
+        public new IActionResult Post([FromBody] MailNotificationSchedule MailNotificationSchedule)
         {
             return CurrentUser.IsAdmin ? base.Post(MailNotificationSchedule) : StatusCode(StatusCodes.Status403Forbidden);
         }

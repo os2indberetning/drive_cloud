@@ -118,7 +118,7 @@
             $scope.LicensePlates = "N/A";
             $scope.HomeAddressStreet = "N/A";
             $scope.HomeAddressTown = "N/A";
-            $scope.Municipality = $rootScope.HelpTexts.muniplicity.text; 
+            $scope.Municipality = $rootScope.HelpTexts.Municipality.text; 
             $scope.DateInterval = $scope.container.reportFromDateString + " - " + $scope.container.reportToDateString;   
 
             if(data.value[0] != undefined && data.value[0] != null)

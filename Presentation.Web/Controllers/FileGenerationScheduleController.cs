@@ -58,7 +58,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="FileGenerationSchedule">FileGenerationSchedule to be posted</param>
         /// <returns></returns>
         [EnableQuery]
-        public new IActionResult Post(FileGenerationSchedule FileGenerationSchedule)
+        public new IActionResult Post([FromBody] FileGenerationSchedule FileGenerationSchedule)
         {
             return CurrentUser.IsAdmin ? base.Post(FileGenerationSchedule) : StatusCode(StatusCodes.Status403Forbidden);
         }

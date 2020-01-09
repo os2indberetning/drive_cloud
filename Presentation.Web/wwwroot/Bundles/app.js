@@ -2169,7 +2169,7 @@ angular.module('application').controller('ReportController', [
             $scope.LicensePlates = "N/A";
             $scope.HomeAddressStreet = "N/A";
             $scope.HomeAddressTown = "N/A";
-            $scope.Municipality = $rootScope.HelpTexts.muniplicity.text; 
+            $scope.Municipality = $rootScope.HelpTexts.Municipality.text;
             $scope.DateInterval = $scope.container.reportFromDateString + " - " + $scope.container.reportToDateString;   
 
             if(data.value[0] != undefined && data.value[0] != null)
@@ -2781,7 +2781,7 @@ angular.module('application').controller('ReportSkatController', [
                 else 
                     $scope.OrgUnit = "Ikke angivet";
                 
-                $scope.Municipality = $rootScope.HelpTexts.muniplicity.text; 
+                $scope.Municipality = $rootScope.HelpTexts.Municipality.text; 
                 $scope.DateInterval = $scope.container.reportFromDateString + " - " + $scope.container.reportToDateString;
                 var homeAddress = $scope.findHomeAddress(result.Person.PersonalAddresses);
                 //$scope.AdminName = result.AdminName;
@@ -5049,7 +5049,7 @@ angular.module('application').controller('ApproveReportsReportController', [
             $scope.LicensePlates = "N/A";
             $scope.HomeAddressStreet = "N/A";
             $scope.HomeAddressTown = "N/A";
-            $scope.Municipality = $rootScope.HelpTexts.muniplicity.text; 
+            $scope.Municipality = $rootScope.HelpTexts.Municipality.text; 
             $scope.DateInterval = $scope.container.reportFromDateString + " - " + $scope.container.reportToDateString;   
 
             if(data.value[0] != undefined && data.value[0] != null)
@@ -9918,7 +9918,7 @@ angular.module('application').controller('MyReportsReportController', [
 
         $scope.updateData = function (data) {
             $scope.Name = $scope.container.employeeFilter;
-            $scope.Municipality = $rootScope.HelpTexts.muniplicity.text; 
+            $scope.Municipality = $rootScope.HelpTexts.Municipality.text; 
             $scope.DateInterval = $scope.container.reportFromDateString + " - " + $scope.container.reportToDateString;
             $scope.LicensePlates = $rootScope.CurrentUser.LicensePlates[0].Plate;
 

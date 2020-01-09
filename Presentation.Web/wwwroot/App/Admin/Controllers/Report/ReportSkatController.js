@@ -85,7 +85,7 @@
                 else 
                     $scope.OrgUnit = "Ikke angivet";
                 
-                $scope.Municipality = $rootScope.HelpTexts.muniplicity.text; 
+                $scope.Municipality = $rootScope.HelpTexts.Municipality.text; 
                 $scope.DateInterval = $scope.container.reportFromDateString + " - " + $scope.container.reportToDateString;
                 var homeAddress = $scope.findHomeAddress(result.Person.PersonalAddresses);
                 //$scope.AdminName = result.AdminName;
