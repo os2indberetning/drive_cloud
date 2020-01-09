@@ -282,8 +282,6 @@ namespace Infrastructure.DataAccess.Migrations
 
                     b.Property<bool>("HasAccessToFourKmRule");
 
-                    b.Property<int>("Level");
-
                     b.Property<string>("LongDescription");
 
                     b.Property<int>("OrgId");

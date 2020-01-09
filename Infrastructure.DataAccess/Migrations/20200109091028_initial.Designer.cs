@@ -9,8 +9,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.DataAccess.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200103124132_Initial")]
-    partial class Initial
+    [Migration("20200109091028_initial")]
+    partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
@@ -283,8 +283,6 @@ namespace Infrastructure.DataAccess.Migrations
                     b.Property<int>("DefaultKilometerAllowance");
 
                     b.Property<bool>("HasAccessToFourKmRule");
-
-                    b.Property<int>("Level");
 
                     b.Property<string>("LongDescription");
 

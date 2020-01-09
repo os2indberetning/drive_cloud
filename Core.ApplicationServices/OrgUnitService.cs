@@ -66,7 +66,7 @@ namespace Core.ApplicationServices
                 && x.Person.IsActive // only include employments with an active Person record);
             );
             
-            if (empl == null && (orgUnit.Level > 0 || orgUnit.Parent != null))
+            if (empl == null && orgUnit.Parent != null)
             {
                 var parent = orgUnit.Parent;
                 empl = _emplRepo.AsQueryable().FirstOrDefault(
@@ -77,7 +77,7 @@ namespace Core.ApplicationServices
                     && x.Person.IsActive // only include employments with an active Person record);
                 );
 
-                while (empl == null && (parent.Level > 0 || parent.Parent != null))
+                while (empl == null && parent.Parent != null)
                 {
                     parent = parent.Parent;
                     empl = _emplRepo.AsQueryable().FirstOrDefault(

@@ -219,7 +219,6 @@ namespace Infrastructure.DataAccess
         {
             modelBuilder.Entity<OrgUnit>().Property(p => p.OrgId).IsRequired();
             modelBuilder.Entity<OrgUnit>().Property(p => p.ShortDescription).IsRequired();
-            modelBuilder.Entity<OrgUnit>().Property(p => p.Level).IsRequired();
         }
 
         private void ConfigurePropertiesForAppLogin(ModelBuilder modelBuilder)
