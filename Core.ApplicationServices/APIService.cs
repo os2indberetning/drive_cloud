@@ -26,6 +26,7 @@ namespace Core.ApplicationServices
         private readonly IDriveReportService _driveService;
         private readonly ILogger<APIService> _logger;
         private readonly CachedAddressLaunderer _launderer;
+        private readonly AddressHistoryService _addressHistoryService;
 
 
         public APIService(IServiceProvider provider)
@@ -40,8 +41,8 @@ namespace Core.ApplicationServices
             _reportRepo = provider.GetService<IGenericRepository<DriveReport>>(); ;
             _driveService = provider.GetService<IDriveReportService>(); ;
             _logger = provider.GetService<ILogger<APIService>>(); ;
-
             _launderer = new CachedAddressLaunderer(_cachedRepo, _actualLaunderer, _coordinates);
+            _addressHistoryService = provider.GetService<AddressHistoryService>();
 
             // manually handle changes on these large datasets to improve performance
             _orgUnitRepo.SetChangeTrackingEnabled(false);
@@ -67,6 +68,10 @@ namespace Core.ApplicationServices
                     UpdateOrgUnits(apiOrganizationDTO.OrgUnits);
                     _logger.LogInformation("Updating Persons");
                     UpdatePersons(apiOrganizationDTO.Persons);
+                    _logger.LogInformation("Updating address histories");
+                    _addressHistoryService.UpdateAddressHistories();
+                    _logger.LogInformation("Creating non existing address histories");
+                    _addressHistoryService.CreateNonExistingHistories();
                     _logger.LogInformation("Updating leaders on expired or activated substitutes");
                     UpdateLeadersOnExpiredOrActivatedSubstitutes();
                     _logger.LogInformation("Adding leaders to reports that have none");

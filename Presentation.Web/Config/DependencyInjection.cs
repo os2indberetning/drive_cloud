@@ -45,6 +45,7 @@ namespace Presentation.Web.Config
             services.AddScoped<APIService>();
             services.AddScoped<IUrlDefinitions,UrlDefinitions>();
             services.AddScoped<IRouter, SeptimaRouter>();
+            services.AddScoped<AddressHistoryService>();
             return services;
         }
     }
