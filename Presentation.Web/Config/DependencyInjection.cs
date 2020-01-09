@@ -12,6 +12,7 @@ using Infrastructure.DataAccess;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using OS2Indberetning.Filters;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 
 namespace Presentation.Web.Config
@@ -46,6 +47,7 @@ namespace Presentation.Web.Config
             services.AddScoped<IUrlDefinitions,UrlDefinitions>();
             services.AddScoped<IRouter, SeptimaRouter>();
             services.AddScoped<AddressHistoryService>();
+            services.AddScoped<AuditlogFilter>();
             return services;
         }
     }

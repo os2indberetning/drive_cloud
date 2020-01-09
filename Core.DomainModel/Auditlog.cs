@@ -9,12 +9,12 @@ namespace Core.DomainModel
     public class Auditlog
     {
         public int Id { get; set; }
-        public string Date { get; set; }
+        public DateTime Timestamp { get; set; }
+        public int UserId { get; set; }
         public string User { get; set; }
         public string Location { get; set; }
         public string Controller { get; set; }
         public string Action { get; set; }
         public string Parameters { get; set; }
-        public bool WrittenToLogFile { get; set; }
     }
 }

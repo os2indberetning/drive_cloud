@@ -9,7 +9,7 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace Infrastructure.DataAccess.Migrations
 {
     [DbContext(typeof(DataContext))]
-    [Migration("20200109091028_initial")]
+    [Migration("20200109143937_initial")]
     partial class initial
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -115,15 +115,15 @@ namespace Infrastructure.DataAccess.Migrations
 
                     b.Property<string>("Controller");
 
-                    b.Property<string>("Date");
-
                     b.Property<string>("Location");
 
                     b.Property<string>("Parameters");
 
+                    b.Property<DateTime>("Timestamp");
+
                     b.Property<string>("User");
 
-                    b.Property<bool>("WrittenToLogFile");
+                    b.Property<int>("UserId");
 
                     b.HasKey("Id");
 

@@ -113,15 +113,15 @@ namespace Infrastructure.DataAccess.Migrations
 
                     b.Property<string>("Controller");
 
-                    b.Property<string>("Date");
-
                     b.Property<string>("Location");
 
                     b.Property<string>("Parameters");
 
+                    b.Property<DateTime>("Timestamp");
+
                     b.Property<string>("User");
 
-                    b.Property<bool>("WrittenToLogFile");
+                    b.Property<int>("UserId");
 
                     b.HasKey("Id");
 

@@ -14,13 +14,13 @@ namespace Infrastructure.DataAccess.Migrations
                 {
                     Id = table.Column<int>(nullable: false)
                         .Annotation("MySql:ValueGenerationStrategy", MySqlValueGenerationStrategy.IdentityColumn),
-                    Date = table.Column<string>(nullable: true),
+                    Timestamp = table.Column<DateTime>(nullable: false),
+                    UserId = table.Column<int>(nullable: false),
                     User = table.Column<string>(nullable: true),
                     Location = table.Column<string>(nullable: true),
                     Controller = table.Column<string>(nullable: true),
                     Action = table.Column<string>(nullable: true),
-                    Parameters = table.Column<string>(nullable: true),
-                    WrittenToLogFile = table.Column<bool>(nullable: false)
+                    Parameters = table.Column<string>(nullable: true)
                 },
                 constraints: table =>
                 {

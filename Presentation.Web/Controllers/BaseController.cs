@@ -15,9 +15,11 @@ using System.Reflection;
 using Expression = System.Linq.Expressions.Expression;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Configuration;
+using OS2Indberetning.Filters;
 
 namespace OS2Indberetning.Controllers
 {
+    [ServiceFilter(typeof(AuditlogFilter))]
     public class BaseController<T> : ODataController where T : class
     {
         protected ODataValidationSettings ValidationSettings = new ODataValidationSettings();

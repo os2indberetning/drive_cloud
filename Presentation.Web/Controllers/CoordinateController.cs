@@ -11,7 +11,7 @@ namespace OS2Indberetning.Controllers
     [Route("api/[controller]/[action]")]
     [ApiController]
 
-    [AuditlogFilter]
+    [ServiceFilter(typeof(AuditlogFilter))]
     public class CoordinateController : Controller
     {
         private readonly IAddressCoordinates _coordinates;
