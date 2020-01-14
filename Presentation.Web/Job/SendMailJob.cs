@@ -20,10 +20,10 @@ namespace Presentation.Web.Job
         {
             using (var scope = provider.CreateScope())
             {
-                //var logger = scope.ServiceProvider.GetService<ILogger<SendMailJob>>();
-                //var mailService = scope.ServiceProvider.GetService<IMailService>();
-                //logger.LogInformation("Executing SendMailJob");
-                //mailService.SendMails();
+                var logger = scope.ServiceProvider.GetService<ILogger<SendMailJob>>();
+                var mailService = scope.ServiceProvider.GetService<IMailService>();
+                logger.LogInformation("Executing SendMailJob");
+                mailService.SendMails();
                 return Task.CompletedTask;
             }
         }

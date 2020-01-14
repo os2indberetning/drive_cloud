@@ -7,6 +7,7 @@ using Microsoft.Extensions.Logging;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace Core.ApplicationServices.MailerService.Impl
 {
@@ -15,51 +16,70 @@ namespace Core.ApplicationServices.MailerService.Impl
         private readonly IGenericRepository<DriveReport> _driveRepo;
         private readonly IGenericRepository<Substitute> _subRepo;
         private readonly IGenericRepository<Person> _personRepo;
+        private readonly IGenericRepository<MailNotificationSchedule> _mailScheduleRepo;
+        private readonly IGenericRepository<CachedAddress> _cachedAddressRepo;
         private readonly IMailSender _mailSender;
         private readonly ILogger _logger;
         private readonly IConfiguration _configuration;
 
-        public MailService(IGenericRepository<DriveReport> driveRepo, IGenericRepository<Substitute> subRepo, IGenericRepository<Person> personRepo, IMailSender mailSender, ILogger<MailService> logger, IConfiguration configuration)
+
+        public MailService(IServiceProvider provider)
         {
-            _driveRepo = driveRepo;
-            _subRepo = subRepo;
-            _personRepo = personRepo;
-            _mailSender = mailSender;
-            _logger = logger;
-            _configuration = configuration;
+            _driveRepo = provider.GetService<IGenericRepository<DriveReport>>();
+            _subRepo = provider.GetService<IGenericRepository<Substitute>>();
+            _personRepo = provider.GetService<IGenericRepository<Person>>();
+            _mailScheduleRepo = provider.GetService<IGenericRepository<MailNotificationSchedule>>();
+            _cachedAddressRepo = provider.GetService<IGenericRepository<CachedAddress>>();
+            _mailSender = provider.GetService<IMailSender>();
+            _logger = provider.GetService<ILogger<MailService>>();
+            _configuration = provider.GetService<IConfiguration>();
+        }
+
+
+        public void SendMails()
+        {
+            SendDirtyAddressesMails();
+            SendMailsToLeadersWithPendingReports();
+        }
+
+        private void SendDirtyAddressesMails()
+        {
+            var dirtyAddressCount = _cachedAddressRepo.AsQueryable().Count(x => x.IsDirty);
+            if (dirtyAddressCount > 0)
+            {
+                SendMailToAdmins("Der er adresser der mangler at blive vasket", "Der mangler at blive vasket " + dirtyAddressCount + " adresser");
+            }
         }
 
         /// <summary>
         /// Sends an email to all leaders with pending reports to be approved.
         /// </summary>
-        public void SendMails(DateTime payRoleDateTime, string customText)
+        private void SendMailsToLeadersWithPendingReports()
         {
-            var mailAddresses = GetLeadersWithPendingReportsMails();
-            var mailBody = "";
-            if (string.IsNullOrEmpty(customText))
+            var startOfDay = Utilities.ToUnixTime(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 00, 00, 00));
+            var endOfDay = Utilities.ToUnixTime(new DateTime(DateTime.Now.Year, DateTime.Now.Month, DateTime.Now.Day, 23, 59, 59));
+
+            var notifications = _mailScheduleRepo.AsQueryable().Where(r => r.DateTimestamp >= startOfDay && r.DateTimestamp <= endOfDay);
+
+            if (!notifications.Any())
             {
-                mailBody = _configuration["Mail:DriveMail:Body"];
-                if (string.IsNullOrEmpty(mailBody))
+                _logger.LogDebug("No notifications for leaders found for today");
+                return;
+            }
+
+
+            foreach (var notification in notifications.ToList())
+            {
+
+                var mailAddresses = GetLeadersWithPendingReportsMails();
+                var mailBody = String.IsNullOrEmpty(notification.CustomText) ? _configuration["Mail:DriveMail:Body"] : notification.CustomText;
+                mailBody = mailBody.Replace("####", Utilities.FromUnixTime(notification.FileGenerationSchedule.DateTimestamp).ToString("dd-MM-yyyy"));
+                var mailSubject = _configuration["Mail:DriveMail:Subject"];
+
+                foreach (var mailAddress in mailAddresses)
                 {
-                    _logger.LogDebug($"{this.GetType().Name}, SendMails(): Mail body is null or empty, check value in CustomSettings.config");
+                    _mailSender.SendMail(mailAddress, mailSubject, mailBody);
                 }
-            }
-            else
-            {
-                mailBody = customText;
-            }
-            mailBody = mailBody.Replace("####", payRoleDateTime.ToString("dd-MM-yyyy"));
-
-
-            var mailSubject = _configuration["Mail:DriveMail:Subject"];
-            if (string.IsNullOrEmpty(mailSubject))
-            {
-                _logger.LogDebug($"{this.GetType().Name}, SendMails(): Mail subject is null or empty, check value in CustomSettings.config");
-            }
-
-            foreach (var mailAddress in mailAddresses)
-            {
-                _mailSender.SendMail(mailAddress, mailSubject, mailBody);
             }
         }
 
