@@ -16,13 +16,17 @@ namespace Presentation.Web.Config
             services.AddSingleton<IJobFactory, SingletonJobFactory>();
             services.AddSingleton<ISchedulerFactory, StdSchedulerFactory>();
 
-            // Add our job
+            // Add Send Mail Job
             services.AddSingleton<SendMailJob>();
             services.AddSingleton(
                 new JobSchedule(
                     typeof(SendMailJob),
                     configuration["SendMailJob:Schedule"],
                     Boolean.Parse(configuration["SendMailJob:Enabled"])));
+
+            // Add Clean Audit Log job
+            services.AddSingleton<CleanAuditLogJob>();
+            services.AddSingleton(new JobSchedule(typeof(CleanAuditLogJob), "0 0 5 * * ? *", true));
 
             services.AddHostedService<QuartzHostedService>();
             return services;
