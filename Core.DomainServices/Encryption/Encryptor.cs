@@ -1,11 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Core.DmzModel;
+﻿using Core.DomainModel;
+using System;
 using System.Security.Cryptography;
-using Core.DomainModel;
 
 
 namespace Core.DomainServices.Encryption
@@ -95,7 +90,7 @@ namespace Core.DomainServices.Encryption
         public static AppLogin EncryptAppLogin(AppLogin appLogin)
         {
             appLogin.GuId = StringCipher.Encrypt(appLogin.GuId, EncryptKey);
-            appLogin.UserName = StringCipher.Encrypt(appLogin.Person.Initials, EncryptKey);
+            appLogin.UserName = StringCipher.Encrypt(appLogin.UserName, EncryptKey);
             return appLogin;
         }
 

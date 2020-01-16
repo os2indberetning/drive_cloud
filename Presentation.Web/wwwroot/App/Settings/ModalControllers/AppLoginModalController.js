@@ -17,6 +17,6 @@ angular.module('application').controller('AppLoginModalController', ["$scope","$
     };
 
     $scope.createAppPassword = function () {
-        $modalInstance.close($scope.password);
+        $modalInstance.close($scope);
     }
 }]);

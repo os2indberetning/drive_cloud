@@ -11624,7 +11624,7 @@ angular.module("application").service('Person', ["$resource", "$modal", function
             }
         },
         "GetCurrentUser" : {
-            url: "/odata/Person/Service.GetCurrentUser?$select=Id,IsSubstitute,RecieveMail,IsAdmin,FullName,Initials,Mail,HasAppPassword,DistanceFromHomeToBorder &$expand=PersonalRoutes($expand=Points),LicensePlates,Employments($expand=AlternativeWorkAddress,OrgUnit($select=Id,LongDescription,HasAccessToFourKmRule,DefaultKilometerAllowance; $expand=Address); $select=Id,Position,IsLeader,HomeWorkDistance,WorkDistanceOverride, AlternativeWorkAddressId, EmploymentId)",
+            url: "/odata/Person/Service.GetCurrentUser?$select=Id,IsSubstitute,RecieveMail,IsAdmin,FullName,Initials,Mail,HasAppPassword,DistanceFromHomeToBorder &$expand=AppLogin,PersonalRoutes($expand=Points),LicensePlates,Employments($expand=AlternativeWorkAddress,OrgUnit($select=Id,LongDescription,HasAccessToFourKmRule,DefaultKilometerAllowance; $expand=Address); $select=Id,Position,IsLeader,HomeWorkDistance,WorkDistanceOverride, AlternativeWorkAddressId, EmploymentId)",
             method: "GET",
             transformResponse: function (data) {
                 var res = angular.fromJson(data);
@@ -12517,7 +12517,7 @@ angular.module('application').controller('AppLoginModalController', ["$scope","$
     };
 
     $scope.createAppPassword = function () {
-        $modalInstance.close($scope.password);
+        $modalInstance.close($scope);
     }
 }]);
 angular.module("application").controller('RouteDeleteModalInstanceController', [
@@ -13201,8 +13201,11 @@ angular.module("application").controller("SettingController", [
 
             modalInstance.result.then(function () {
                 AppLogin.delete({ id: $scope.currentPerson.Id }).$promise.then(function () {
-                    $scope.currentPerson.HasAppPassword = false;
-                    $rootScope.CurrentUser.HasAppPassword = false;
+                    // Reload CurrentUser to update AppLogin
+                    Person.GetCurrentUser().$promise.then(function (data) {
+                        $rootScope.CurrentUser = data;
+                        $scope.currentPerson = $rootScope.CurrentUser;
+                    });
                     NotificationService.AutoFadeNotification("success", "", "App login blev nulstillet.");
                 });
             }, function () {
@@ -13220,15 +13223,19 @@ angular.module("application").controller("SettingController", [
                 backdrop: 'static',
             });
 
-            modalInstance.result.then(function (res) {
-                var appLogin = {Password: res, UserName: $scope.currentPerson.Initials, PersonId: $scope.currentPerson.Id};
+            modalInstance.result.then(function (scope) {
+                var appLogin = {Password: scope.password, UserName: scope.username, PersonId: $scope.currentPerson.Id};
                 AppLogin.post(appLogin).$promise.then(function () {
-                    $scope.currentPerson.HasAppPassword = true;
-                    $rootScope.CurrentUser.HasAppPassword = true;
+                    // Reload CurrentUser to update AppLogin
+                    Person.GetCurrentUser().$promise.then(function (data) {
+                        $rootScope.CurrentUser = data;
+                        $scope.currentPerson = $rootScope.CurrentUser;
+                    });
                     NotificationService.AutoFadeNotification("success", "", "App login blev oprettet.");
+                }, function (res) {
+                    NotificationService.AutoFadeNotification("danger", "", "App login ikke oprettet.\n" + res.data.value);
                 });
             }, function () {
-
             });
         };
 

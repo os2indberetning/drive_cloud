@@ -130,7 +130,7 @@
         <!-- Do not bundle leaflet - default image path regex that attempts to match "leaflet" in the js filename -->
         <script src="/Scripts/leaflet_0.7.7.js"></script>
         <script src="/Bundles/libraries.js"></script>
-        <script src="/Bundles/app.js"></script>
+        <script src="/Bundles/app.js?ticks=@DateTime.Now.Ticks"></script>
 
         <script>
             $(document).ready($('#mastertab a').click(function (e) {

@@ -20,8 +20,6 @@ namespace OS2Indberetning.Controllers
         private readonly IGenericRepository<Employment> _employmentRepo;
         private readonly IGenericRepository<LicensePlate> _licensePlateRepo;
         private readonly IGenericRepository<Substitute> _substituteRepo;
-        private readonly IGenericRepository<AppLogin> _appLoginRepo;
-        private readonly IGenericRepository<OrgUnit> _orgUnitsRepo;
 
         public PersonController(IServiceProvider provider) : base(provider)
         {
@@ -29,8 +27,6 @@ namespace OS2Indberetning.Controllers
             _employmentRepo = provider.GetService<IGenericRepository<Employment>>();
             _licensePlateRepo = provider.GetService<IGenericRepository<LicensePlate>>();
             _substituteRepo = provider.GetService<IGenericRepository<Substitute>>();
-            _appLoginRepo = provider.GetService<IGenericRepository<AppLogin>>();
-            _orgUnitsRepo = provider.GetService<IGenericRepository<OrgUnit>>();
         }
 
         // GET: odata/Person
@@ -61,8 +57,6 @@ namespace OS2Indberetning.Controllers
         /// </summary>
         /// <returns>The user currently logged in.</returns>
         [EnableQuery(MaxExpansionDepth = 4)]
-        // Disable caching.
-        [ResponseCache(Duration = 300, VaryByHeader = "Cookie")]
         public Person GetCurrentUser()
         {
             try
@@ -79,7 +73,7 @@ namespace OS2Indberetning.Controllers
                 }
 
                 CurrentUser.CprNumber = "";
-                CurrentUser.HasAppPassword = _appLoginRepo.AsQueryable().Any(x => x.PersonId == CurrentUser.Id);
+                CurrentUser.HasAppPassword = CurrentUser.AppLogin != null;
                 CurrentUser.IsSubstitute = _substituteRepo.AsQueryable().Any(x => x.SubId.Equals(CurrentUser.Id) && x.StartDateTimestamp < currentDateTimestamp && x.EndDateTimestamp > currentDateTimestamp);
             }
             catch (Exception ex)
@@ -127,7 +121,7 @@ namespace OS2Indberetning.Controllers
             }
 
             result.CprNumber = "";
-            result.HasAppPassword = _appLoginRepo.AsQueryable().Any(x => x.PersonId == result.Id);
+            result.HasAppPassword = CurrentUser.AppLogin != null;
             result.IsSubstitute = _substituteRepo.AsQueryable().Any(x => x.SubId.Equals(result.Id) && x.StartDateTimestamp < currentDateTimestamp && x.EndDateTimestamp > currentDateTimestamp);
 
             return result;

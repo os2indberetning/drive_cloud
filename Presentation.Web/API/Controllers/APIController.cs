@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Web.Auth;
 
-namespace Presentation.Web.Controllers.API
+namespace Presentation.Web.API.Controllers
 {
     [Route("api/[action]")]
     [Authorize(AuthenticationSchemes = APIAuthenticationHandler.AuthenticationScheme)]

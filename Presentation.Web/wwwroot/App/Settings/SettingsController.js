@@ -533,8 +533,11 @@
 
             modalInstance.result.then(function () {
                 AppLogin.delete({ id: $scope.currentPerson.Id }).$promise.then(function () {
-                    $scope.currentPerson.HasAppPassword = false;
-                    $rootScope.CurrentUser.HasAppPassword = false;
+                    // Reload CurrentUser to update AppLogin
+                    Person.GetCurrentUser().$promise.then(function (data) {
+                        $rootScope.CurrentUser = data;
+                        $scope.currentPerson = $rootScope.CurrentUser;
+                    });
                     NotificationService.AutoFadeNotification("success", "", "App login blev nulstillet.");
                 });
             }, function () {
@@ -552,15 +555,19 @@
                 backdrop: 'static',
             });
 
-            modalInstance.result.then(function (res) {
-                var appLogin = {Password: res, UserName: $scope.currentPerson.Initials, PersonId: $scope.currentPerson.Id};
+            modalInstance.result.then(function (scope) {
+                var appLogin = {Password: scope.password, UserName: scope.username, PersonId: $scope.currentPerson.Id};
                 AppLogin.post(appLogin).$promise.then(function () {
-                    $scope.currentPerson.HasAppPassword = true;
-                    $rootScope.CurrentUser.HasAppPassword = true;
+                    // Reload CurrentUser to update AppLogin
+                    Person.GetCurrentUser().$promise.then(function (data) {
+                        $rootScope.CurrentUser = data;
+                        $scope.currentPerson = $rootScope.CurrentUser;
+                    });
                     NotificationService.AutoFadeNotification("success", "", "App login blev oprettet.");
+                }, function (res) {
+                    NotificationService.AutoFadeNotification("danger", "", "App login ikke oprettet.\n" + res.data.value);
                 });
             }, function () {
-
             });
         };
 

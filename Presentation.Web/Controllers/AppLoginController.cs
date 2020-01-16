@@ -39,6 +39,10 @@ namespace OS2Indberetning.Controllers
         [EnableQuery]
         public new IActionResult Post([FromBody] AppLogin AppLogin)
         {
+            if (Repo.AsQueryable().Where(a => a.UserName == AppLogin.UserName).Any())
+            {
+                return BadRequest("Der findes allerede et app login med brugernavn " + AppLogin.UserName);
+            }
             var prepared = _loginService.PrepareAppLogin(AppLogin);
             Repo.Insert(prepared);
             Repo.Save();

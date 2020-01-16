@@ -112,11 +112,10 @@
                         <div class="col-sm-8">
                             <p class="margin-5"><strong>Har adgangskode</strong></p>
                         </div>
-
                     </div>
                     <div class="row margin-5">
                         <div class="col-sm-4">
-                            <p class="margin-5">{{currentPerson.Initials}}</p>
+                            <p class="margin-5">{{currentPerson.AppLogin.UserName}}</p>
                         </div>
                         <div class="col-sm-4">
                             <p class="margin-5">{{currentPerson.HasAppPassword === true ? "Ja" : "Nej"}}</p>
@@ -128,10 +127,6 @@
                             <button class="btn btn-danger pull-right margin-left-5" ng-click="openConfirmDeleteAppPasswordModal()">Nulstil</button>
                         </div>
                     </div>
-
-
-
-
                 </div>
             </div>
         </div>
