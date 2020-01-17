@@ -7,8 +7,10 @@ using Presentation.Web.AppAPI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Security.Cryptography;
 using System.Text;
+using static Presentation.Web.AppAPI.Controllers.ErrorHandler;
 
 namespace Presentation.Web.AppAPI.Controllers
 {
@@ -51,7 +53,8 @@ namespace Presentation.Web.AppAPI.Controllers
                 {
                     var message = $"Invalid password for username {authRequest.UserName}";
                     logger.LogWarning(message);
-                    return Unauthorized(message);
+                    return ErrorResult(message, ErrorCodes.InvalidAuthorization, HttpStatusCode.Unauthorized);
+
                 }
                 var userInfo = GenerateUserInfo(appLogin);
 
@@ -75,7 +78,7 @@ namespace Presentation.Web.AppAPI.Controllers
                 {
                     var message = $"No app login found for guid";
                     logger.LogWarning(message);
-                    return Unauthorized(message);
+                    return ErrorResult(message, ErrorCodes.InvalidAuthorization, HttpStatusCode.Unauthorized);
                 }
                 var userInfo = GenerateUserInfo(appLogin);
                 return Ok(userInfo);

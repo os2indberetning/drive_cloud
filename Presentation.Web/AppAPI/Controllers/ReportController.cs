@@ -4,6 +4,10 @@ using Presentation.Web.AppAPI.ViewModels;
 using System;
 using System.Net;
 using Microsoft.Extensions.DependencyInjection;
+using Core.DomainServices;
+using Core.DomainModel;
+using System.Linq;
+using static Presentation.Web.AppAPI.Controllers.ErrorHandler;
 
 namespace Presentation.Web.AppAPI.Controllers
 {
@@ -12,50 +16,56 @@ namespace Presentation.Web.AppAPI.Controllers
     public class ReportController : ControllerBase
     {
 
-        //private IUnitOfWork Uow { get; set; }
-        //private IGenericRepository<DriveReport> DriveReportRepo { get; set; }
-        //private IGenericRepository<UserAuth> AuthRepo { get; set; }
+        private readonly IGenericRepository<Rate> rateRepo;
+        private readonly IGenericRepository<UserAuth> authRepo;
+        private readonly IGenericRepository<Person> personRepo;
+        private readonly IGenericRepository<DriveReport> driveReportRepo;
+        private readonly IGenericRepository<AppLogin> loginRepo;
         private readonly ILogger logger;
 
 
-        //public ReportController(IUnitOfWork uow, IGenericRepository<DriveReport> driveReportRepo, IGenericRepository<UserAuth> authRepo, ILogger logger) : base(logger)
-        //{
-        //    Uow = uow;
-        //    DriveReportRepo = driveReportRepo;
-        //    AuthRepo = authRepo;
-        //}
-
         public ReportController(IServiceProvider provider)
         {
-            logger = provider.GetService<ILogger<ReportController>>();
+            personRepo = provider.GetService<IGenericRepository<Person>>();
+            driveReportRepo = provider.GetService<IGenericRepository<DriveReport>>();
+            rateRepo = provider.GetService<IGenericRepository<Rate>>();
+            authRepo = provider.GetService<IGenericRepository<UserAuth>>();
+            logger = provider.GetService<ILogger<AuthUserInfoController>>();
+            loginRepo = provider.GetService<IGenericRepository<AppLogin>>();
         }
 
         [Route("appapi/report")]
         public IActionResult Report([FromBody] DriveViewModel driveViewModel)
         {
-            //var encryptedGuId = Encryptor.EncryptAuthorization(driveViewModel.Authorization).GuId;
-            //var auth = AuthRepo.Get(t => t.GuId == encryptedGuId).FirstOrDefault();
-            //var duplicateReportCheck = DriveReportRepo.Get(t => t.Uuid == driveViewModel.DriveReport.Uuid).Any();
-
-            //if (auth == null)
-            //{
-            //    logger.LogDebug($"{GetType().Name}, Post(), Invalid authorization for guid: {encryptedGuId}");
-            //    return new CustomErrorActionResult(Request, "Invalid authorization", ErrorCodes.InvalidAuthorization,HttpStatusCode.Unauthorized);
-            //}
-            //if (auth.ProfileId != driveViewModel.DriveReport.ProfileId)
-            //{
-            //    logger.LogDebug($"{GetType().Name}, Post(), User and drive report user do not match for profileId: {auth.ProfileId}");
-            //    return new CustomErrorActionResult(Request, "User and drive report user do not match", ErrorCodes.ReportAndUserDoNotMatch,
-            //         HttpStatusCode.Unauthorized);
-            //}
-            //if (duplicateReportCheck)
-            //{
-            //    logger.LogDebug($"{GetType().Name}, Post(), Report rejected, duplicate found. Drivereport uuid: {driveViewModel.DriveReport.Uuid}, profileId: {auth.ProfileId}");
-            //    return new CustomErrorActionResult(Request, "Report rejected, duplicate found", ErrorCodes.DuplicateReportFound, HttpStatusCode.OK);
-            //}
-
             try
             {
+                var appLogin = loginRepo.AsQueryable().Where(l => l.GuId == driveViewModel.Authorization.GuId).SingleOrDefault();
+                if (appLogin == null)
+                {
+                    var message = $"No app login found for guid";
+                    logger.LogWarning(message);
+                    return ErrorResult(message, ErrorCodes.InvalidAuthorization, HttpStatusCode.Unauthorized);
+                }
+                
+                var duplicateReportCheck = driveReportRepo.AsQueryable().Where(t => t.AppUuid == driveViewModel.DriveReport.Uuid).Any();
+
+                //if (auth == null)
+                //{
+                //    logger.LogDebug($"{GetType().Name}, Post(), Invalid authorization for guid: {encryptedGuId}");
+                //    return new CustomErrorActionResult(Request, "Invalid authorization", ErrorCodes.InvalidAuthorization,HttpStatusCode.Unauthorized);
+                //}
+                //if (auth.ProfileId != driveViewModel.DriveReport.ProfileId)
+                //{
+                //    logger.LogDebug($"{GetType().Name}, Post(), User and drive report user do not match for profileId: {auth.ProfileId}");
+                //    return new CustomErrorActionResult(Request, "User and drive report user do not match", ErrorCodes.ReportAndUserDoNotMatch,
+                //         HttpStatusCode.Unauthorized);
+                //}
+                //if (duplicateReportCheck)
+                //{
+                //    logger.LogDebug($"{GetType().Name}, Post(), Report rejected, duplicate found. Drivereport uuid: {driveViewModel.DriveReport.Uuid}, profileId: {auth.ProfileId}");
+                //    return new CustomErrorActionResult(Request, "Report rejected, duplicate found", ErrorCodes.DuplicateReportFound, HttpStatusCode.OK);
+                //}
+
                 //driveViewModel.DriveReport = Encryptor.EncryptDriveReport(driveViewModel.DriveReport);
 
                 //var model = AutoMapper.Mapper.Map<DriveReport>(driveViewModel.DriveReport);
@@ -105,8 +115,8 @@ namespace Presentation.Web.AppAPI.Controllers
             }
             catch (Exception ex)
             {
-                //logger.LogError(ex,$"{GetType().Name}, Post(), Could not save drivereport, uuid: {driveViewModel.DriveReport.Uuid}, profileId: {auth.ProfileId}");
-                return new CustomErrorActionResult(Request, "Could not save drivereport", ErrorCodes.SaveError, HttpStatusCode.BadRequest);
+                logger.LogError(ex,$"Could not save drivereport, uuid: {driveViewModel.DriveReport.Uuid}");
+                return ErrorResult("Could not save drivereport", ErrorCodes.SaveError, HttpStatusCode.BadRequest);
             }
         }
     }

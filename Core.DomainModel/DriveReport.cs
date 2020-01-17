@@ -45,6 +45,7 @@ namespace Core.DomainModel
         public string TFCodeOptional { get; set; }
         public KilometerAllowance KilometerAllowance { get; set; }
         public bool IsFromApp { get; set; }
+        public string AppUuid { get; set; }
         public string UserComment { get; set; }
         public string RouteGeometry { get; set; }
         public bool? IsExtraDistance { get; set; }
