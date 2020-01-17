@@ -13,6 +13,7 @@ using System.Text;
 namespace Presentation.Web.AppAPI.Controllers
 {
     [ApiController]
+    [AppAPIFilter]
     public class AuthUserInfoController : ControllerBase
     {
         private readonly IGenericRepository<Rate> rateRepo;

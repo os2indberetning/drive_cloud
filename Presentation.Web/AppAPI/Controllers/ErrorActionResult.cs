@@ -43,7 +43,7 @@ namespace Presentation.Web.AppAPI.Controllers
 
         public HttpResponseMessage ExecuteResult()
         {
-            ErrorObject obj = new ErrorObject() {ErrorCode = this.ErrorCode, ErrorMessage = this.Message};
+            ErrorObject errorObject = new ErrorObject() {ErrorCode = this.ErrorCode, ErrorMessage = this.Message};
             // todo how to return error ojbect?
             return new HttpResponseMessage(this.Status);
         }

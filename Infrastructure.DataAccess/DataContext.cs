@@ -74,6 +74,7 @@ namespace Infrastructure.DataAccess
             modelBuilder.Entity<Person>().Property(t => t.FullName).IsRequired();
             modelBuilder.Entity<Person>().Ignore(t => t.IsSubstitute);
             modelBuilder.Entity<Person>().Ignore(t => t.HasAppPassword);
+            modelBuilder.Entity<Person>().Ignore(t => t.AppUserName);
         }
 
         private void ConfigurePropertiesForCachedAddress(ModelBuilder modelBuilder)

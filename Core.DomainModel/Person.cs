@@ -31,7 +31,7 @@ namespace Core.DomainModel
         public bool IsSubstitute { get; set; }
         public bool IsActive { get; set; }
         public bool HasAppPassword { get; set; }
-        public virtual AppLogin AppLogin { get; set; }
+        public string AppUserName { get; set; }
         public virtual ICollection<PersonalAddress> PersonalAddresses { get; set; }
         public virtual ICollection<PersonalRoute> PersonalRoutes { get; set; }
         public virtual ICollection<LicensePlate> LicensePlates { get; set; }
