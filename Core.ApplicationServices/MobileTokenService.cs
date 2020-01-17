@@ -1,7 +1,5 @@
-﻿using Core.DmzModel;
-using Core.DomainModel;
+﻿using Core.DomainModel;
 using Core.DomainServices;
-using Core.DomainServices.Encryption;
 using System;
 using System.Linq;
 using IMobileTokenService = Core.ApplicationServices.Interfaces.IMobileTokenService;

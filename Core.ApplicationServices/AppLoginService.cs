@@ -1,8 +1,5 @@
-﻿using Core.DmzModel;
-using Core.DomainModel;
-using Core.DomainServices.Encryption;
+﻿using Core.DomainModel;
 using System;
-using System.Linq;
 using System.Security.Cryptography;
 using System.Text;
 
