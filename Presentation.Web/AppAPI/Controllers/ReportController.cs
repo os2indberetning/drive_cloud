@@ -42,43 +42,29 @@ namespace Presentation.Web.AppAPI.Controllers
                 var appLogin = loginRepo.AsQueryable().Where(l => l.GuId == driveViewModel.Authorization.GuId).SingleOrDefault();
                 if (appLogin == null)
                 {
-                    var message = $"No app login found for guid";
+                    var message = $"Ugyldigt login token";
                     logger.LogWarning(message);
                     return ErrorResult(message, ErrorCodes.InvalidAuthorization, HttpStatusCode.Unauthorized);
                 }
                 
-                var duplicateReportCheck = driveReportRepo.AsQueryable().Where(t => t.AppUuid == driveViewModel.DriveReport.Uuid).Any();
+                if (appLogin.Person.Id != driveViewModel.DriveReport.ProfileId)
+                {
+                    var message = $"Forsøg på at indberette kørsel på forkert person";
+                    logger.LogWarning(message);
+                    return ErrorResult(message, ErrorCodes.ReportAndUserDoNotMatch, HttpStatusCode.Unauthorized);
+                }
 
-                //if (auth == null)
-                //{
-                //    logger.LogDebug($"{GetType().Name}, Post(), Invalid authorization for guid: {encryptedGuId}");
-                //    return new CustomErrorActionResult(Request, "Invalid authorization", ErrorCodes.InvalidAuthorization,HttpStatusCode.Unauthorized);
-                //}
-                //if (auth.ProfileId != driveViewModel.DriveReport.ProfileId)
-                //{
-                //    logger.LogDebug($"{GetType().Name}, Post(), User and drive report user do not match for profileId: {auth.ProfileId}");
-                //    return new CustomErrorActionResult(Request, "User and drive report user do not match", ErrorCodes.ReportAndUserDoNotMatch,
-                //         HttpStatusCode.Unauthorized);
-                //}
-                //if (duplicateReportCheck)
-                //{
-                //    logger.LogDebug($"{GetType().Name}, Post(), Report rejected, duplicate found. Drivereport uuid: {driveViewModel.DriveReport.Uuid}, profileId: {auth.ProfileId}");
-                //    return new CustomErrorActionResult(Request, "Report rejected, duplicate found", ErrorCodes.DuplicateReportFound, HttpStatusCode.OK);
-                //}
+                var duplicateReportCheck = driveReportRepo.AsQueryable().Where(t => t.AppUuid == driveViewModel.DriveReport.Uuid).Any();
+                if (duplicateReportCheck)
+                {
+                    var message = "Indberetning afvist da den allerede er indberettet";
+                    logger.LogWarning(message);
+                    return ErrorResult(message, ErrorCodes.DuplicateReportFound, HttpStatusCode.OK);
+                }
 
                 //driveViewModel.DriveReport = Encryptor.EncryptDriveReport(driveViewModel.DriveReport);
 
                 //var model = AutoMapper.Mapper.Map<DriveReport>(driveViewModel.DriveReport);
-
-                //try
-                //{
-                //    Auditlog(auth.UserName, System.Reflection.MethodBase.GetCurrentMethod().Name, driveViewModel.DriveReport);
-                //}
-                //catch (Exception e)
-                //{
-                //    _logger.Error($"{GetType().Name}, Post(), Auditlog failed", e);
-                //    return InternalServerError();
-                //}
 
                 //DriveReportRepo.Insert(model);
                 //try

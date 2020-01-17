@@ -44,14 +44,14 @@ namespace Presentation.Web.AppAPI.Controllers
                 var appLogin = loginRepo.AsQueryable().Where(l => l.UserName == authRequest.UserName).SingleOrDefault();
                 if (appLogin == null)
                 {
-                    var message = $"No app login found for username {authRequest.UserName}";
+                    var message = $"Brugernavn {authRequest.UserName} ikke fundet";
                     logger.LogWarning(message);
-                    return NotFound(message);
+                    return ErrorResult(message, ErrorCodes.InvalidAuthorization, HttpStatusCode.Unauthorized);
                 }
 
                 if (appLogin.Password != GetHash(appLogin.Salt, authRequest.Password))
                 {
-                    var message = $"Invalid password for username {authRequest.UserName}";
+                    var message = $"Ugyldigt kodeord for brugeren {authRequest.UserName}";
                     logger.LogWarning(message);
                     return ErrorResult(message, ErrorCodes.InvalidAuthorization, HttpStatusCode.Unauthorized);
 
@@ -76,7 +76,7 @@ namespace Presentation.Web.AppAPI.Controllers
                 var appLogin = loginRepo.AsQueryable().Where(l => l.GuId == authorization.GuId).SingleOrDefault();
                 if (appLogin == null)
                 {
-                    var message = $"No app login found for guid";
+                    var message = $"Ugyldigt login token";
                     logger.LogWarning(message);
                     return ErrorResult(message, ErrorCodes.InvalidAuthorization, HttpStatusCode.Unauthorized);
                 }
