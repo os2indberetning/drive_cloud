@@ -38,7 +38,6 @@ namespace Presentation.Web
             services.AddMvc(option => option.EnableEndpointRouting = false).SetCompatibilityVersion(CompatibilityVersion.Version_2_2)
                 .AddJsonOptions(options => { 
                     options.SerializerSettings.ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore;
-                    //options.SerializerSettings.ContractResolver = new DefaultContractResolver(); 
                 });
             services.AddSAMLAuthentication(Configuration);
             services.AddAuthentication(o => o.AddScheme(APIAuthenticationHandler.AuthenticationScheme, a => a.HandlerType = typeof(APIAuthenticationHandler)));
