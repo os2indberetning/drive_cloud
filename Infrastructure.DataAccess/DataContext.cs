@@ -1,4 +1,5 @@
-﻿using Core.DomainModel;
+﻿using System;
+using Core.DomainModel;
 using Microsoft.EntityFrameworkCore;
 
 namespace Infrastructure.DataAccess
@@ -61,6 +62,12 @@ namespace Infrastructure.DataAccess
             ConfigurePropertiesForCachedAddress(modelBuilder);
             ConfigurePropertiesForWorkAddress(modelBuilder);
             ConfigurePropertiesForAppLogin(modelBuilder);
+            ConfigurePropertiesForPersonReport(modelBuilder);
+        }
+
+        private void ConfigurePropertiesForPersonReport(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<PersonReport>().HasKey(pr => new { pr.PersonId, pr.ReportId });
         }
 
         private void ConfigurePropertiesForPerson(ModelBuilder modelBuilder)
@@ -194,7 +201,7 @@ namespace Infrastructure.DataAccess
             modelBuilder.Entity<Report>().HasOne(p => p.Employment);
             modelBuilder.Entity<Report>().HasOne(p => p.ApprovedBy);
             modelBuilder.Entity<Report>().HasOne(p => p.ActualLeader);
-            modelBuilder.Entity<Report>().HasMany(c => c.ResponsibleLeaders);
+            //modelBuilder.Entity<Report>().HasMany(c => c.ResponsibleLeaders);
             
 
 

@@ -30,10 +30,13 @@ namespace Core.DomainModel
         public int EmploymentId { get; set; }
         public virtual Employment Employment { get; set; }
 
+        public virtual ICollection<PersonReport> PersonReports { get; set; }
+
         public virtual ICollection<Person> ResponsibleLeaders
         {
-            get;
-            set;
+            get {
+                return PersonReports.Select(pr => pr.Person).ToList();
+            }
         }
         public int? ActualLeaderId { get; set; }
         public virtual Person ActualLeader { get; set; }
@@ -51,24 +54,28 @@ namespace Core.DomainModel
         public void UpdateResponsibleLeaders(ICollection<Person> newlist)
         {
             if (newlist == null)
-                return;
-
-            if (ResponsibleLeaders == null)
-                ResponsibleLeaders = new List<Person>();
-
-            foreach (var person in ResponsibleLeaders.ToList())
             {
-                if (!newlist.Any(p => p.Id == person.Id))
+                return;
+            } 
+            if (PersonReports == null)
+            {
+                PersonReports = new List<PersonReport>();
+            }
+                
+
+            foreach (var personReport in PersonReports)
+            {
+                if (!newlist.Any(p => p.Id == personReport.PersonId))
                 {
-                    ResponsibleLeaders.Remove(person);
+                    PersonReports.Remove(personReport);
                 }
             }
 
             foreach (var person in newlist)
             {
-                if (!ResponsibleLeaders.Any(p => p.Id == person.Id))
+                if (!PersonReports.Any(p => p.PersonId == person.Id))
                 {
-                    ResponsibleLeaders.Add(person);
+                    PersonReports.Add(new PersonReport() { PersonId = person.Id, Report = this });
                 }
             }
         }

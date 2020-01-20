@@ -42,5 +42,7 @@ namespace Core.DomainModel
         public virtual ICollection<Substitute> Substitutes { get; set; }
         public virtual ICollection<Substitute> SubstituteFor { get; set; }
         public virtual ICollection<Substitute> SubstituteLeaders { get; set; }
+
+        public virtual ICollection<PersonReport> PersonReports { get; set; }
     }
 }
