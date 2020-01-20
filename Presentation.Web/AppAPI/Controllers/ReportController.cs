@@ -8,6 +8,10 @@ using Core.DomainServices;
 using Core.DomainModel;
 using System.Linq;
 using static Presentation.Web.AppAPI.Controllers.ErrorHandler;
+using Core.ApplicationServices.Interfaces;
+using System.Collections.Generic;
+using Core.DomainServices.Interfaces;
+using Infrastructure.AddressServices;
 
 namespace Presentation.Web.AppAPI.Controllers
 {
@@ -15,21 +19,21 @@ namespace Presentation.Web.AppAPI.Controllers
     [AppAPIFilter]
     public class ReportController : ControllerBase
     {
-
+        private readonly IDriveReportService driveService;
         private readonly IGenericRepository<Rate> rateRepo;
-        private readonly IGenericRepository<UserAuth> authRepo;
-        private readonly IGenericRepository<Person> personRepo;
         private readonly IGenericRepository<DriveReport> driveReportRepo;
         private readonly IGenericRepository<AppLogin> loginRepo;
         private readonly ILogger logger;
+        private readonly IAddressCoordinates addressCoordinates;
+
 
 
         public ReportController(IServiceProvider provider)
         {
-            personRepo = provider.GetService<IGenericRepository<Person>>();
-            driveReportRepo = provider.GetService<IGenericRepository<DriveReport>>();
+            driveService = provider.GetService<IDriveReportService>();
             rateRepo = provider.GetService<IGenericRepository<Rate>>();
-            authRepo = provider.GetService<IGenericRepository<UserAuth>>();
+            addressCoordinates = provider.GetService<IAddressCoordinates>();
+            driveReportRepo = provider.GetService<IGenericRepository<DriveReport>>();
             logger = provider.GetService<ILogger<AuthUserInfoController>>();
             loginRepo = provider.GetService<IGenericRepository<AppLogin>>();
         }
@@ -61,48 +65,75 @@ namespace Presentation.Web.AppAPI.Controllers
                     logger.LogWarning(message);
                     return ErrorResult(message, ErrorCodes.DuplicateReportFound, HttpStatusCode.OK);
                 }
+                var appReport = driveViewModel.DriveReport;
 
-                //driveViewModel.DriveReport = Encryptor.EncryptDriveReport(driveViewModel.DriveReport);
+                var points = new List<DriveReportPoint>();
+                var viaPoints = new List<DriveReportPoint>();
+                for (var i = 0; i < appReport.route.GPSCoordinates.Count; i++)
+                {
+                    var coordinate = appReport.route.GPSCoordinates.ToArray()[i];
+                    points.Add(new DriveReportPoint
+                    {
+                        Latitude = coordinate.Latitude,
+                        Longitude = coordinate.Longitude,
+                    });
 
-                //var model = AutoMapper.Mapper.Map<DriveReport>(driveViewModel.DriveReport);
+                    if (coordinate.IsViaPoint || i == 0 || i == appReport.route.GPSCoordinates.Count - 1)
+                    {
+                        var address = addressCoordinates.GetAddressFromCoordinates(new Address
+                        {
+                            Latitude = coordinate.Latitude,
+                            Longitude = coordinate.Longitude
+                        });
 
-                //DriveReportRepo.Insert(model);
-                //try
-                //{
-                //    Uow.Save();
-                //}
-                //catch (DbUpdateException dbue)
-                //{
-                //    var innertype = dbue.InnerException?.InnerException.GetType();
-                //    if (dbue.InnerException?.InnerException is MySqlException)
-                //    {
-                //        MySqlException sqle = (MySqlException)dbue.InnerException?.InnerException;
-                //        if (sqle.Number == 1062)
-                //        {
-                //            // Unique constraint on uuid has been violated, so the drivereport should not be saved. This handles an error where the app would send two duplicate reports in a row.
-                //            _logger.Error($"{GetType().Name}, Post(), Duplicate report", dbue);
-                //            return new CustomErrorActionResult(Request, "Report rejected, duplicate found", ErrorCodes.DuplicateReportFound, HttpStatusCode.OK);
-                //        }
+                        viaPoints.Add(new DriveReportPoint()
+                        {
+                            Latitude = coordinate.Latitude,
+                            Longitude = coordinate.Longitude,
+                            StreetName = address.StreetName,
+                            StreetNumber = address.StreetNumber,
+                            ZipCode = address.ZipCode,
+                            Town = address.Town,
+                        });
+                    }
+                }
 
-                //        _logger.Error($"{GetType().Name}, Post(), Save new drivereport failed", dbue);
-                //        return InternalServerError();
-                //    }
+                var rate = rateRepo.AsQueryable().Where(r => r.Id == appReport.RateId).First();
+                var licensePlate = appLogin.Person.LicensePlates.Where(p => p.IsPrimary).FirstOrDefault();
 
-                //    _logger.Error($"{GetType().Name}, Post(), Save new drivereport failed", dbue);
-                //    return InternalServerError();
-                //}
-                //catch (Exception e)
-                //{
-                //    _logger.Error($"{GetType().Name}, Post(), Save new drivereport failed", e);
-                //    return InternalServerError();
-                //}
+                DriveReport newReport = new DriveReport();
+                newReport.AppUuid = appReport.Uuid;
+                newReport.FourKmRule = appReport.FourKmRule;
+                newReport.IsFromApp = true;
+                newReport.HomeToBorderDistance = appReport.HomeToBorderDistance;
+                newReport.StartsAtHome = appReport.StartsAtHome;
+                newReport.EndsAtHome = appReport.EndsAtHome;
+                newReport.Purpose = appReport.Purpose;
+                newReport.PersonId = appReport.ProfileId;
+                newReport.EmploymentId = appReport.EmploymentId;
+                newReport.KmRate = rate.KmRate;
+                newReport.UserComment = appReport.ManualEntryRemark;
+                newReport.Status = ReportStatus.Pending;
+                newReport.LicensePlate = licensePlate != null ? licensePlate.Plate : "UKENDT";
+                newReport.Comment = "";
+                newReport.DriveReportPoints = viaPoints;
+                newReport.Distance = appReport.route.TotalDistance;
+                newReport.KilometerAllowance = appReport.route.GPSCoordinates.Count > 0 ? KilometerAllowance.Calculated : KilometerAllowance.Read;
+                newReport.DriveDateTimestamp = (Int32)(Convert.ToDateTime(appReport.Date).Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
+                newReport.CreatedDateTimestamp = (Int32)(Convert.ToDateTime(appReport.Date).Subtract(new DateTime(1970, 1, 1)).TotalSeconds);
+                newReport.TFCode = rate.Type.TFCode;
+                newReport.TFCodeOptional = rate.Type.TFCodeOptional;
+                newReport.FullName = appLogin.Person.FullName;
+                newReport.RouteGeometry = GeoService.Encode(points);
+                driveService.Create(newReport);
 
                 return Ok();
             }
             catch (Exception ex)
             {
-                logger.LogError(ex,$"Could not save drivereport, uuid: {driveViewModel.DriveReport.Uuid}");
-                return ErrorResult("Could not save drivereport", ErrorCodes.SaveError, HttpStatusCode.BadRequest);
+                var message = "Kunne ikke gemme indberetning fra app";
+                logger.LogError(ex,$"{message}, uuid: {driveViewModel.DriveReport.Uuid}");
+                return ErrorResult(message, ErrorCodes.SaveError, HttpStatusCode.BadRequest);
             }
         }
     }
