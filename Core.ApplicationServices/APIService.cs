@@ -243,7 +243,7 @@ namespace Core.ApplicationServices
                 personToInsert.Mail = apiPerson.Email ?? "";
             }            
             personToInsert.IsActive = true;
-            foreach(var existingEmployment in personToInsert.Employments.Where(e => e.EndDateTimestamp == 0 || e.EndDateTimestamp > GetUnixTime(DateTime.Now.Date)))
+            foreach(var existingEmployment in personToInsert.Employments.Where(e => e.EndDateTimestamp == 0 || e.EndDateTimestamp >= GetUnixTime(DateTime.Now.Date)))
             {
                 // if database active employment does not exist in source then set end date
                 if (!apiPerson.Employments.Select(s => s.EmployeeNumber).Contains(existingEmployment.EmploymentId.ToString())) 
@@ -253,7 +253,8 @@ namespace Core.ApplicationServices
             }
             foreach (var sourceEmployment in apiPerson.Employments)
             {
-                var employment = personToInsert.Employments.Where(d => d.EmploymentId.ToString() == sourceEmployment.EmployeeNumber).FirstOrDefault();
+                var employment = personToInsert.Employments.Where(d => d.EmploymentId.ToString() == sourceEmployment.EmployeeNumber && (d.EndDateTimestamp == 0 || d.EndDateTimestamp >= GetUnixTime(DateTime.Now.Date))).SingleOrDefault();
+
                 if (employment == null)
                 {
                     employment = new Employment();
