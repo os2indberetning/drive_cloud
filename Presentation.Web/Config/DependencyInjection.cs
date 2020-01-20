@@ -14,6 +14,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using OS2Indberetning.Filters;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
+using Presentation.Web.AppAPI.Filters;
 
 namespace Presentation.Web.Config
 {
@@ -48,6 +49,7 @@ namespace Presentation.Web.Config
             services.AddScoped<IRouter, SeptimaRouter>();
             services.AddScoped<AddressHistoryService>();
             services.AddScoped<AuditlogFilter>();
+            services.AddScoped<AppAuditlogFilter>();
             return services;
         }
     }

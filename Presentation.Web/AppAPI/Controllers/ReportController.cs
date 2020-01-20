@@ -12,11 +12,13 @@ using Core.ApplicationServices.Interfaces;
 using System.Collections.Generic;
 using Core.DomainServices.Interfaces;
 using Infrastructure.AddressServices;
+using Presentation.Web.AppAPI.Filters;
 
 namespace Presentation.Web.AppAPI.Controllers
 {
     [ApiController]
     [AppAPIFilter]
+    [ServiceFilter(typeof(AppAuditlogFilter))]
     public class ReportController : ControllerBase
     {
         private readonly IDriveReportService driveService;
@@ -25,8 +27,6 @@ namespace Presentation.Web.AppAPI.Controllers
         private readonly IGenericRepository<AppLogin> loginRepo;
         private readonly ILogger logger;
         private readonly IAddressCoordinates addressCoordinates;
-
-
 
         public ReportController(IServiceProvider provider)
         {
@@ -50,7 +50,7 @@ namespace Presentation.Web.AppAPI.Controllers
                     logger.LogWarning(message);
                     return ErrorResult(message, ErrorCodes.InvalidAuthorization, HttpStatusCode.Unauthorized);
                 }
-                
+
                 if (appLogin.Person.Id != driveViewModel.DriveReport.ProfileId)
                 {
                     var message = $"Forsøg på at indberette kørsel på forkert person";

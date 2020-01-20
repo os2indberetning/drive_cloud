@@ -3,6 +3,7 @@ using Core.DomainServices;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Logging;
+using Presentation.Web.AppAPI.Filters;
 using Presentation.Web.AppAPI.ViewModels;
 using System;
 using System.Collections.Generic;
@@ -16,6 +17,7 @@ namespace Presentation.Web.AppAPI.Controllers
 {
     [ApiController]
     [AppAPIFilter]
+    [ServiceFilter(typeof(AppAuditlogFilter))]
     public class AuthUserInfoController : ControllerBase
     {
         private readonly IGenericRepository<Rate> rateRepo;

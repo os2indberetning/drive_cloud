@@ -5,7 +5,7 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Serialization;
 using System.Buffers;
 
-namespace Presentation.Web.AppAPI.Controllers
+namespace Presentation.Web.AppAPI.Filters
 {
     public class AppAPIFilterAttribute : ActionFilterAttribute
     {
