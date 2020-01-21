@@ -190,6 +190,7 @@ namespace Infrastructure.DataAccess
             modelBuilder.Entity<DriveReport>().Property(p => p.TFCode).IsRequired();
             modelBuilder.Entity<DriveReport>().Property(p => p.IsFromApp).IsRequired();
             modelBuilder.Entity<DriveReport>().Ignore(p => p.WorkAddressId);
+            modelBuilder.Entity<DriveReport>().HasIndex(p => p.AppUuid).IsUnique();
         }
 
         private void ConfigurePropertiesForReport(ModelBuilder modelBuilder)
@@ -201,18 +202,6 @@ namespace Infrastructure.DataAccess
             modelBuilder.Entity<Report>().HasOne(p => p.Employment);
             modelBuilder.Entity<Report>().HasOne(p => p.ApprovedBy);
             modelBuilder.Entity<Report>().HasOne(p => p.ActualLeader);
-            //modelBuilder.Entity<Report>().HasMany(c => c.ResponsibleLeaders);
-            
-
-
-            // todo is many-to-many really needed here?
-            //.WithMany()
-            //.Map(x =>
-            //{
-            //    x.MapLeftKey("ReportId");
-            //    x.MapRightKey("PersonId");
-            //    x.ToTable("ReportPersonMapping");
-            //});
         }
 
         private void ConfigurePropertiesForEmployment(ModelBuilder modelBuilder)
