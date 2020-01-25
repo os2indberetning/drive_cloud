@@ -73,8 +73,8 @@ namespace OS2Indberetning.Controllers
 
                     switch (from)
                     {
-                        case "approve":
-                                queryable = queryable.Where(dr => dr.ResponsibleLeaders.Any(p => p.Id == CurrentUser.Id));
+                        case "approve":                                
+                                queryable = queryable.Where(dr => dr.PersonReports.Any(pr => pr.Person.Id == CurrentUser.Id));
                             break;
                         default:
                             break;
