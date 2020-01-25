@@ -20,10 +20,6 @@ namespace Presentation.Web.Config
         {
             ODataConventionModelBuilder builder = new ODataConventionModelBuilder();
 
-            //builder.EntitySet<TestReport>("TestReports");
-            //var test = builder.EntityType<TestReport>();
-            //test.Ignore(report => report.DateTimeTest);
-
             builder.EntitySet<Address>("Addresses");
 
             builder.EntityType<Address>().Collection
@@ -68,6 +64,10 @@ namespace Presentation.Web.Config
 
             builder.EntityType<DriveReport>().Collection
             .Function("GetCalculationMethod")
+            .ReturnsFromEntitySet<DriveReport>("DriveReports");
+
+            builder.EntityType<DriveReport>().Collection
+            .Function("TransferReportsToPayroll")
             .ReturnsFromEntitySet<DriveReport>("DriveReports");
 
             builder.EntitySet<DriveReportPoint>("DriveReportPoints");

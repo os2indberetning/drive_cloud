@@ -10,7 +10,8 @@ namespace Core.DomainModel
         Pending,
         Accepted,
         Rejected,
-        Invoiced
+        Invoiced,
+        APIReady
     }
 
     public class Report

@@ -23,10 +23,36 @@ namespace Core.ApplicationServices
         private readonly ISubstituteService _subService;
         private readonly IGenericRepository<Substitute> _subRepo;
         private readonly IGenericRepository<DriveReport> _reportRepo;
+
         private readonly IDriveReportService _driveService;
         private readonly ILogger<APIService> _logger;
         private readonly CachedAddressLaunderer _launderer;
         private readonly AddressHistoryService _addressHistoryService;
+
+        public IEnumerable<APIReportDTO> GetReportsToPayroll()
+        {
+            var result = new List<APIReportDTO>();
+            foreach (var reportToPayroll in _reportRepo.AsQueryable().Where(r => r.Status == ReportStatus.APIReady))
+            {
+                var apiReport = new APIReportDTO();
+                apiReport.Id = reportToPayroll.Id;
+                result.Add(apiReport);
+            }
+            return result;
+        }
+
+
+        public void AcknowledgeReportsProcessed(int[] reportIds)
+        {
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            foreach (var report in _reportRepo.AsQueryable().Where(r => reportIds.Contains(r.Id)))
+            {
+                report.Status = ReportStatus.Invoiced;
+                var deltaTime = DateTime.Now.ToUniversalTime() - epoch;
+                report.ProcessedDateTimestamp = (long)deltaTime.TotalSeconds;
+            }
+            _reportRepo.Save();
+        }
 
 
         public APIService(IServiceProvider provider)

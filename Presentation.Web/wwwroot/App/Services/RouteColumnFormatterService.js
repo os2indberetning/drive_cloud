@@ -34,7 +34,7 @@
 
             var edited = "";
 
-            if (data.CreatedDateTimestamp < data.EditedDateTimestamp && !(data.Status == "Accepted" || data.Status == "Invoiced")) {
+            if (data.CreatedDateTimestamp < data.EditedDateTimestamp && !(data.Status == "Accepted" || data.Status == "Invoiced") || data.Status == "APIReady") {
                 edited = "<div class='inline pull-right margin-right-5' kendo-tooltip k-content=\"'Denne indberetning er blevet redigeret'\"><i class='fa fa-pencil fa-2x'></i></div>";
             }
 

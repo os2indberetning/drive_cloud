@@ -3,6 +3,7 @@ using Core.DomainModel;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Presentation.Web.Auth;
+using System.Collections.Generic;
 
 namespace Presentation.Web.API.Controllers
 {
@@ -23,5 +24,20 @@ namespace Presentation.Web.API.Controllers
         {
             _apiService.UpdateOrganization(apiOrganizationDTO);
         }
+
+        [HttpGet]
+        public ActionResult<IEnumerable<APIReportDTO>> GetReportsToPayroll()
+        {
+            var reportsToPayroll = _apiService.GetReportsToPayroll();
+            return Ok(reportsToPayroll);
+        }
+
+        [HttpPost]
+        public void AcknowledgeReportsProcessed(int[] reportIds)
+        {
+            _apiService.AcknowledgeReportsProcessed(reportIds);
+        }
+
+
     }
 }

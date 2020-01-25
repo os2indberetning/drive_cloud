@@ -21,6 +21,7 @@ namespace OS2Indberetning.Controllers
         private readonly IGenericRepository<OrgUnit> _orgrepo;
         private readonly IGenericRepository<BankAccount> _Bankrepo;
         private readonly IGenericRepository<LicensePlate> _LicensePlateRepo;
+        private readonly ITransferToPayrollService _transferToPayrollService;
 
 
         public DriveReportsController(IServiceProvider provider) : base(provider)
@@ -30,7 +31,8 @@ namespace OS2Indberetning.Controllers
             _personRepo = provider.GetService<IGenericRepository<Person>>(); ;
             _orgrepo = provider.GetService<IGenericRepository<OrgUnit>>(); ;
             _Bankrepo = provider.GetService<IGenericRepository<BankAccount>>(); ;
-            _LicensePlateRepo = provider.GetService<IGenericRepository<LicensePlate>>(); ;
+            _LicensePlateRepo = provider.GetService<IGenericRepository<LicensePlate>>();
+            _transferToPayrollService = provider.GetService<ITransferToPayrollService>();
         }
 
         // GET: odata/DriveReports
@@ -174,7 +176,30 @@ namespace OS2Indberetning.Controllers
         {
             return Ok(Boolean.Parse(_configuration["AlternativeCalculationMethod"]));
         }
-        
+
+        [EnableQuery]
+        public IActionResult TransferReportsToPayroll()
+        {
+            _logger.LogDebug($"{GetType().Name}, Get(), Generate KMD file initialized");
+            if (!CurrentUser.IsAdmin)
+            {
+                _logger.LogError($"{GetType().Name}, Get(), {CurrentUser} is not admin, file generation aborted, Status code:403 Forbidden");
+                return StatusCode(StatusCodes.Status403Forbidden);
+            }
+            try
+            {
+                _transferToPayrollService.TransferReportsToPayroll();
+                _logger.LogDebug($"{GetType().Name}, Get(), Transfer to payroll finished");
+                return Ok();
+            }
+            catch (Exception e)
+            {
+                _logger.LogError($"{GetType().Name}, Get(), Error when transfering reports to payroll, Status Code: 500 Internal Server Error", e);
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+
         private string GetStatusString(ReportStatus status)
         {
             string toReturn = "";

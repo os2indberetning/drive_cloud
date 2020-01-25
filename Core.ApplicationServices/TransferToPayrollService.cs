@@ -29,16 +29,16 @@ namespace Core.ApplicationServices
 
         public void TransferReportsToPayroll()
         {
-            _logger.LogDebug($"{GetType().Name}, TransferReportsToPayroll(), UseSd configuration = {_configuration["SD:Enabled"]}");
-            if (Boolean.Parse(_configuration["SD:Enabled"]))
+            // todo handle 0-distance routes
+            _logger.LogInformation("Transerfering reports to payroll / api");
+            var epoch = new DateTime(1970, 1, 1, 0, 0, 0, 0, DateTimeKind.Utc);
+            foreach (var report in _driveReportRepo.AsQueryable().Where(r => r.Status == ReportStatus.Accepted))
             {
-                SendDataToSD();
+                report.Status = ReportStatus.APIReady;
+                var deltaTime = DateTime.Now.ToUniversalTime() - epoch;
+                report.ProcessedDateTimestamp = (long)deltaTime.TotalSeconds;
             }
-            else
-            {
-                GenerateFileForKMD();
-            }
-            _logger.LogDebug($"{GetType().Name}, TransferReportsToPayroll(), Transfer finished");
+            _driveReportRepo.Save();
         }
 
         private void GenerateFileForKMD()
