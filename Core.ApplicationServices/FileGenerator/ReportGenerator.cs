@@ -16,7 +16,7 @@ namespace Core.ApplicationServices.FileGenerator
         private ILogger _logger;
         private IConfiguration _configuration;
         
-        public ReportGenerator(IGenericRepository<DriveReport> reportRepo, IReportFileWriter fileWriter, ILogger logger, IConfiguration configuration)
+        public ReportGenerator(IGenericRepository<DriveReport> reportRepo, IReportFileWriter fileWriter, ILogger<ReportGenerator> logger, IConfiguration configuration)
         {
             _reportRepo = reportRepo;
             _fileWriter = fileWriter;

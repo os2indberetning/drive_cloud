@@ -37,6 +37,7 @@ namespace Core.ApplicationServices
                 report.Status = ReportStatus.APIReady;
                 var deltaTime = DateTime.Now.ToUniversalTime() - epoch;
                 report.ProcessedDateTimestamp = (long)deltaTime.TotalSeconds;
+                _driveReportRepo.Update(report);
             }
             _driveReportRepo.Save();
         }

@@ -28,9 +28,9 @@ namespace OS2Indberetning.Controllers
         {
             _driveService = provider.GetService<IDriveReportService>();
             _employmentRepo = provider.GetService<IGenericRepository<Employment>>();
-            _personRepo = provider.GetService<IGenericRepository<Person>>(); ;
-            _orgrepo = provider.GetService<IGenericRepository<OrgUnit>>(); ;
-            _Bankrepo = provider.GetService<IGenericRepository<BankAccount>>(); ;
+            _personRepo = provider.GetService<IGenericRepository<Person>>();
+            _orgrepo = provider.GetService<IGenericRepository<OrgUnit>>();
+            _Bankrepo = provider.GetService<IGenericRepository<BankAccount>>();
             _LicensePlateRepo = provider.GetService<IGenericRepository<LicensePlate>>();
             _transferToPayrollService = provider.GetService<ITransferToPayrollService>();
         }
@@ -66,7 +66,7 @@ namespace OS2Indberetning.Controllers
                         // Invoiced reports are accepted reports that have been processed for payment.
                         // So they are still accepted reports.
                         queryable =
-                            queryable.Where(dr => dr.Status == ReportStatus.Accepted || dr.Status == ReportStatus.Invoiced);
+                            queryable.Where(dr => dr.Status == ReportStatus.Accepted || dr.Status == ReportStatus.APIReady ||  dr.Status == ReportStatus.Invoiced);
                     }
                     else
                     {
@@ -171,13 +171,11 @@ namespace OS2Indberetning.Controllers
         /// Used for setting the available options in the kilometerallowance menu.
         /// </summary>
         /// <returns></returns>
-        [EnableQuery]
         public IActionResult GetCalculationMethod()
         {
             return Ok(Boolean.Parse(_configuration["AlternativeCalculationMethod"]));
         }
 
-        [EnableQuery]
         public IActionResult TransferReportsToPayroll()
         {
             _logger.LogDebug($"{GetType().Name}, Get(), Generate KMD file initialized");
@@ -190,7 +188,7 @@ namespace OS2Indberetning.Controllers
             {
                 _transferToPayrollService.TransferReportsToPayroll();
                 _logger.LogDebug($"{GetType().Name}, Get(), Transfer to payroll finished");
-                return Ok();
+                return Ok(true);
             }
             catch (Exception e)
             {
@@ -199,27 +197,6 @@ namespace OS2Indberetning.Controllers
             }
         }
 
-
-        private string GetStatusString(ReportStatus status)
-        {
-            string toReturn = "";
-            switch(status)
-            {
-                case ReportStatus.Accepted:
-                    toReturn = "Godkendt";
-                    break;
-                case ReportStatus.Invoiced:
-                    toReturn = "Overført til løn";
-                    break;
-                case ReportStatus.Pending:
-                    toReturn = "Afventer";
-                    break;
-                case ReportStatus.Rejected:
-                    toReturn = "Afvist";
-                    break;
-            }
-            return toReturn;
-        }
 
         //GET: odata/DriveReports(5)
         /// <summary>

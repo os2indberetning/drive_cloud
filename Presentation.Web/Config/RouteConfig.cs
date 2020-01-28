@@ -4,6 +4,7 @@ using Microsoft.AspNet.OData.Builder;
 using Core.DomainModel;
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.OData.Edm;
+using System;
 
 namespace Presentation.Web.Config
 {
@@ -64,11 +65,11 @@ namespace Presentation.Web.Config
 
             builder.EntityType<DriveReport>().Collection
             .Function("GetCalculationMethod")
-            .ReturnsFromEntitySet<DriveReport>("DriveReports");
+            .Returns<Boolean>();
 
             builder.EntityType<DriveReport>().Collection
             .Function("TransferReportsToPayroll")
-            .ReturnsFromEntitySet<DriveReport>("DriveReports");
+            .Returns<Boolean>();
 
             builder.EntitySet<DriveReportPoint>("DriveReportPoints");
             builder.EntityType<DriveReport>().Collection

@@ -11,7 +11,7 @@ namespace Core.ApplicationServices
         private ILogger _logger;
         private readonly IConfiguration _configuration;
 
-        public SdClient (ILogger logger, IConfiguration configuration)
+        public SdClient (ILogger<SdClient> logger, IConfiguration configuration)
         {
             _logger = logger;
             _configuration = configuration;

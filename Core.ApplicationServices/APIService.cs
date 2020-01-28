@@ -50,6 +50,7 @@ namespace Core.ApplicationServices
                 report.Status = ReportStatus.Invoiced;
                 var deltaTime = DateTime.Now.ToUniversalTime() - epoch;
                 report.ProcessedDateTimestamp = (long)deltaTime.TotalSeconds;
+                _reportRepo.Update(report);
             }
             _reportRepo.Save();
         }

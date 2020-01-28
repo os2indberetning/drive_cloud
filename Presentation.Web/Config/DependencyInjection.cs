@@ -1,4 +1,5 @@
 ﻿using Core.ApplicationServices;
+using Core.ApplicationServices.FileGenerator;
 using Core.ApplicationServices.Interfaces;
 using Core.ApplicationServices.MailerService.Impl;
 using Core.ApplicationServices.MailerService.Interface;
@@ -50,6 +51,10 @@ namespace Presentation.Web.Config
             services.AddScoped<AddressHistoryService>();
             services.AddScoped<AuditlogFilter>();
             services.AddScoped<AppAuditlogFilter>();
+            services.AddScoped<ISdClient, SdClient>();
+            services.AddScoped<IReportFileWriter, ReportFileWriter>();
+            services.AddScoped<IReportGenerator, ReportGenerator>();
+            services.AddScoped<ITransferToPayrollService, TransferToPayrollService>();
             return services;
         }
     }
