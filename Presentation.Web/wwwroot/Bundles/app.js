@@ -12662,8 +12662,8 @@ angular.module("application").controller('RouteEditModalInstanceController', [
         $scope.SmartAddress = SmartAdresseSource;
     }]);
 angular.module("application").controller("SettingController", [
-    "$scope", "$modal", "Person", "LicensePlate", "PersonalRoute", "Point", "Address", "Route", "AddressFormatter", "$http", "NotificationService", "Token", "SmartAdresseSource", "$rootScope", "$timeout", "AppLogin",
-    function ($scope, $modal, Person, LicensePlate, Personalroute, Point, Address, Route, AddressFormatter, $http, NotificationService, Token, SmartAdresseSource, $rootScope, $timeout, AppLogin) {
+    "$scope", "$modal", "Person", "LicensePlate", "PersonalRoute", "Point", "Address", "Route", "AddressFormatter", "$http", "NotificationService", "SmartAdresseSource", "$rootScope", "$timeout", "AppLogin",
+    function ($scope, $modal, Person, LicensePlate, Personalroute, Point, Address, Route, AddressFormatter, $http, NotificationService, SmartAdresseSource, $rootScope, $timeout, AppLogin) {
         $scope.gridContainer = {};
         $scope.isCollapsed = true;
         $scope.licenseplates = [];
