@@ -31,8 +31,6 @@ namespace Presentation.Web.Config
             .Action("SetCoordinatesOnAddressList")
             .ReturnsFromEntitySet<Address>("Addresses");
 
-
-
             builder.EntityType<Address>().Collection
             .Function("GetPersonalAndStandard")
             .ReturnsFromEntitySet<Address>("Addresses");
@@ -48,10 +46,6 @@ namespace Presentation.Web.Config
             builder.EntityType<Address>().Collection
            .Action("AttemptCleanCachedAddress")
            .ReturnsFromEntitySet<Address>("Addresses");
-
-
-
-
 
             builder.EntityType<Address>().Collection
                 .Function("GetMapStart")
@@ -84,26 +78,17 @@ namespace Presentation.Web.Config
 
             builder.EntitySet<LicensePlate>("LicensePlates");
 
-            //var lType = builder.EntityType<LicensePlate>();
-            //lType.Ignore(l => l.Person);
-
-
             builder.EntitySet<MailNotificationSchedule>("MailNotifications");
 
             builder.EntitySet<RateType>("RateTypes");
 
-            builder.EntitySet<MobileToken>("MobileToken");
-
             builder.EntitySet<OrgUnit>("OrgUnits");
-
 
             builder.EntitySet<AppLogin>("AppLogin");
 
             builder.EntitySet<Person>("Person");
             var pType = builder.EntityType<Person>();
             pType.HasKey(p => p.Id);
-            //pType.Ignore(p => p.LicensePlates);
-
 
             builder.EntityType<Person>().Collection
            .Function("GetCurrentUser")
@@ -125,8 +110,6 @@ namespace Presentation.Web.Config
             .Function("GetOrgUnitsForLeader")
             .ReturnsFromEntitySet<OrgUnit>("OrgUnits");
 
-
-
             builder.EntitySet<PersonalAddress>("PersonalAddresses");
 
             builder.EntityType<PersonalAddress>().Collection
@@ -137,13 +120,9 @@ namespace Presentation.Web.Config
             .Function("GetRealHome")
             .ReturnsFromEntitySet<PersonalAddress>("PersonalAddresses");
 
-
-
-
             builder.EntityType<PersonalAddress>().Collection
             .Function("GetAlternativeHome")
             .ReturnsFromEntitySet<PersonalAddress>("PersonalAddresses");
-
 
             builder.EntityType<OrgUnit>().Collection
             .Function("GetLeaderOfOrg")
@@ -153,21 +132,17 @@ namespace Presentation.Web.Config
             .Function("GetWhereUserIsResponsible")
             .ReturnsFromEntitySet<OrgUnit>("OrgUnits");
 
-
             builder.EntitySet<PersonalRoute>("PersonalRoutes");
 
             builder.EntitySet<Point>("Points");
 
             builder.EntitySet<Report>("Reports");
 
-
-
             builder.EntitySet<BankAccount>("BankAccounts");
 
             builder.EntitySet<Person>("Person");
             builder.EntityType<Person>()
                 .Action("HasLicensePlate");
-
 
             builder.EntitySet<Substitute>("Substitutes");
             builder.EntityType<Substitute>().Collection

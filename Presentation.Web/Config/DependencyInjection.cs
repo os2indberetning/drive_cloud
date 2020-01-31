@@ -1,5 +1,4 @@
 ﻿using Core.ApplicationServices;
-using Core.ApplicationServices.FileGenerator;
 using Core.ApplicationServices.Interfaces;
 using Core.ApplicationServices.MailerService.Impl;
 using Core.ApplicationServices.MailerService.Interface;
@@ -32,7 +31,6 @@ namespace Presentation.Web.Config
                     mysqlOptions => mysqlOptions.ServerVersion(new System.Version(5, 6, 30), ServerType.MySql)).UseLazyLoadingProxies());
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IPersonService, PersonService>();
-            services.AddScoped<IMobileTokenService,MobileTokenService>();
             services.AddScoped<IMailSender,MailSender>();
             services.AddScoped<IMailService,MailService>();
             services.AddScoped<ISubstituteService,SubstituteService>();
@@ -51,9 +49,6 @@ namespace Presentation.Web.Config
             services.AddScoped<AddressHistoryService>();
             services.AddScoped<AuditlogFilter>();
             services.AddScoped<AppAuditlogFilter>();
-            services.AddScoped<ISdClient, SdClient>();
-            services.AddScoped<IReportFileWriter, ReportFileWriter>();
-            services.AddScoped<IReportGenerator, ReportGenerator>();
             services.AddScoped<ITransferToPayrollService, TransferToPayrollService>();
             return services;
         }

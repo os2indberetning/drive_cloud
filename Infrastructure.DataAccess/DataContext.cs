@@ -17,7 +17,6 @@ namespace Infrastructure.DataAccess
         public DbSet<PersonalRoute> PersonalRoutes { get; set; }
         public DbSet<Point> Points { get; set; }
         public DbSet<LicensePlate> License { get; set; }
-        public DbSet<MobileToken> MobileTokens { get; set; }
         public DbSet<Rate> Rates { get; set; }
         public DbSet<MailNotificationSchedule> MailNotificationSchedules { get; set; }
         public DbSet<FileGenerationSchedule> FileGenerationSchedules { get; set; }
@@ -47,7 +46,6 @@ namespace Infrastructure.DataAccess
             ConfigurePropertiesForPersonalRoute(modelBuilder);
             ConfigurePropertiesForPoint(modelBuilder);
             ConfigurePropertiesForLicensePlate(modelBuilder);
-            ConfigurePropertiesForMobileToken(modelBuilder);
             ConfigurePropertiesForRate(modelBuilder);
             ConfigurePropertiesForMailNoficationSchedule(modelBuilder);
             ConfigurePropertiesForFileGenerationSchedule(modelBuilder);
@@ -139,15 +137,6 @@ namespace Infrastructure.DataAccess
             modelBuilder.Entity<LicensePlate>().Property(p => p.Plate).IsRequired();
             modelBuilder.Entity<LicensePlate>().Property(p => p.Description).IsRequired();
             modelBuilder.Entity<LicensePlate>().HasOne(p => p.Person);
-        }
-
-        private void ConfigurePropertiesForMobileToken(ModelBuilder modelBuilder)
-        {
-            modelBuilder.Entity<MobileToken>().Property(p => p.Guid).IsRequired();
-            modelBuilder.Entity<MobileToken>().Property(p => p.Status).IsRequired();
-            modelBuilder.Entity<MobileToken>().Property(p => p.Token).IsRequired();
-            modelBuilder.Entity<MobileToken>().HasOne(p => p.Person);
-            modelBuilder.Entity<MobileToken>().Ignore(p => p.StatusToPresent);
         }
 
         private void ConfigurePropertiesForRate(ModelBuilder modelBuilder)

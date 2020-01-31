@@ -248,29 +248,6 @@ namespace Infrastructure.DataAccess.Migrations
                     b.ToTable("MailNotificationSchedules");
                 });
 
-            modelBuilder.Entity("Core.DomainModel.MobileToken", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Description");
-
-                    b.Property<Guid>("Guid");
-
-                    b.Property<int>("PersonId");
-
-                    b.Property<int>("Status");
-
-                    b.Property<string>("Token")
-                        .IsRequired();
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("PersonId");
-
-                    b.ToTable("MobileTokens");
-                });
-
             modelBuilder.Entity("Core.DomainModel.OrgUnit", b =>
                 {
                     b.Property<int>("Id")
@@ -676,14 +653,6 @@ namespace Infrastructure.DataAccess.Migrations
                     b.HasOne("Core.DomainModel.FileGenerationSchedule", "FileGenerationSchedule")
                         .WithMany("MailNotificationSchedules")
                         .HasForeignKey("FileGenerationScheduleId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("Core.DomainModel.MobileToken", b =>
-                {
-                    b.HasOne("Core.DomainModel.Person", "Person")
-                        .WithMany("MobileTokens")
-                        .HasForeignKey("PersonId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

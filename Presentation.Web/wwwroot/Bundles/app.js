@@ -12055,11 +12055,6 @@ angular.module("application").service('Substitute', ["$resource", function ($res
         'delete': {method:'DELETE'}
     });
 }]);
-angular.module("application").service('Token', ["$resource", function ($resource) {
-    return $resource("/odata/MobileToken(:id)", { id: "@id" }, {
-        "delete": { method: "DELETE" }
-    });
-}]);
 angular.module("application").controller('AlternativeAddressController', ["$scope", "SmartAdresseSource", "$rootScope", "$timeout", "PersonEmployments", "AddressFormatter", "Address", "NotificationService", "PersonalAddress", function ($scope, SmartAdresseSource, $rootScope, $timeout, PersonEmployments, AddressFormatter, Address, NotificationService, PersonalAddress) {
 
     $scope.employments = $rootScope.CurrentUser.Employments;

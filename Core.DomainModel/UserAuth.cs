@@ -8,6 +8,5 @@
         public string Password { get; set; }
         public string Salt { get; set; }
         public int ProfileId { get; set; }
-        public virtual Profile Profile { get; set; }
     }
 }
