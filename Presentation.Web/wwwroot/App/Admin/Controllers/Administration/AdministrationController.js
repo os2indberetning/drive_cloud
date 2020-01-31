@@ -148,37 +148,6 @@
            });
        }
 
-       $scope.addAdminClicked = function () {
-           /// <summary>
-           /// Opens add admin modal
-           /// </summary>
-           if ($scope.person.chosenAdmin == undefined || $scope.person.chosenAdmin[0] == undefined) {
-               return;
-           }
-
-           var modalInstance = $modal.open({
-               templateUrl: 'App/Admin/HTML/Administration/Modal/AddAdminModalTemplate.html',
-               controller: 'AddAdminModalController',
-               backdrop: 'static',
-               size: 'lg',
-               resolve: {
-                   chosenPerson: function () {
-                       return $scope.person.chosenAdmin[0];
-                   }
-               }
-           });
-
-           modalInstance.result.then(function (person) {
-               Person.patch({ id: person.Id }, { "IsAdmin": true }, function () {
-                   NotificationService.AutoFadeNotification("success", "", person.FullName + " blev gjort til administrator.");
-                   $scope.gridContainer.grid.dataSource.read();
-                   $scope.person.chosenAdmin = "";
-               }, function () {
-                   NotificationService.AutoFadeNotification("danger", "", person.FullName + " blev ikke gjort til administrator.");
-               });
-           });
-       }
-
        $scope.generateFileReportClicked = function () {
            /// <summary>
            /// Opens confirm generate file report modal
@@ -198,30 +167,6 @@
                });
            });
        }
-
-
-       /*$scope.sendDataToSDClicked = function () {
-           /// <summary>
-           /// Opens confirm generate kmd file modal
-           /// </summary>
-           //alert(JSON.stringify(Configuration.getConfiguration({key: 'asdasda'})));
-
-           var modalInstance = $modal.open({
-               templateUrl: 'App/Admin/HTML/Administration/Modal/ConfirmDataSendSDModalTemplate.html',
-               controller: 'SendDataToSdController',
-               backdrop: 'static',
-               size: 'lg',
-           });
-
-           modalInstance.result.then(function (person) {
-               sendDataToSd.sendDataToSd(function () {
-                   NotificationService.AutoFadeNotification("success", "", "Data blev sendt til SD.");
-               }, function () {
-                   NotificationService.AutoFadeNotification("danger", "", "Data blev ikke sendt!");
-               });
-           });
-       }*/
-
 
    }
 ]);
