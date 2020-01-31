@@ -34,9 +34,19 @@ namespace Core.ApplicationServices
             var result = new List<APIReportDTO>();
             foreach (var reportToPayroll in _reportRepo.AsQueryable().Where(r => r.Status == ReportStatus.APIReady))
             {
-                var apiReport = new APIReportDTO();
-                apiReport.Id = reportToPayroll.Id;
-                result.Add(apiReport);
+                result.Add(new APIReportDTO()
+                {
+                    Id = reportToPayroll.Id,
+                    AccountNumber = reportToPayroll.AccountNumber,
+                    CprNumber = reportToPayroll.Person.CprNumber,
+                    DriveDate = new System.DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(reportToPayroll.DriveDateTimestamp).ToLocalTime(),
+                    EmploymentId = reportToPayroll.Employment.EmploymentId,
+                    EmploymentType = reportToPayroll.Employment.EmploymentType,
+                    ExtraNumber = reportToPayroll.Employment.ExtraNumber,
+                    TFCode = reportToPayroll.TFCode,
+                    TFCodeOptional = reportToPayroll.TFCodeOptional,
+                    DistanceMeters = Convert.ToInt32(reportToPayroll.Distance * 1000)
+                });
             }
             return result;
         }

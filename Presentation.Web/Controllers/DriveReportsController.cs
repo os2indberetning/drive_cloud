@@ -178,7 +178,7 @@ namespace OS2Indberetning.Controllers
 
         public IActionResult TransferReportsToPayroll()
         {
-            _logger.LogDebug($"{GetType().Name}, Get(), Generate KMD file initialized");
+            _logger.LogDebug($"{GetType().Name}, Get(), TransferReportsToPayroll initialized");
             if (!CurrentUser.IsAdmin)
             {
                 _logger.LogError($"{GetType().Name}, Get(), {CurrentUser} is not admin, file generation aborted, Status code:403 Forbidden");
