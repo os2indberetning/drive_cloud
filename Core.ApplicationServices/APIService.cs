@@ -9,6 +9,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Configuration;
 
 namespace Core.ApplicationServices
 {
@@ -28,16 +29,42 @@ namespace Core.ApplicationServices
         private readonly ILogger<APIService> _logger;
         private readonly CachedAddressLaunderer _launderer;
         private readonly AddressHistoryService _addressHistoryService;
+        private readonly IConfiguration _configuration;
+
+
+        public APIService(IServiceProvider provider)
+        {
+            _orgUnitRepo = provider.GetService<IGenericRepository<OrgUnit>>();
+            _cachedRepo = provider.GetService<IGenericRepository<CachedAddress>>();
+            _actualLaunderer = provider.GetService<IAddressLaunderer>();
+            _coordinates = provider.GetService<IAddressCoordinates>(); ;
+            _personRepo = provider.GetService<IGenericRepository<Person>>(); ;
+            _subService = provider.GetService<ISubstituteService>(); ;
+            _subRepo = provider.GetService<IGenericRepository<Substitute>>(); ;
+            _reportRepo = provider.GetService<IGenericRepository<DriveReport>>(); ;
+            _driveService = provider.GetService<IDriveReportService>(); ;
+            _logger = provider.GetService<ILogger<APIService>>(); ;
+            _launderer = new CachedAddressLaunderer(_cachedRepo, _actualLaunderer, _coordinates);
+            _addressHistoryService = provider.GetService<AddressHistoryService>();
+            _configuration = provider.GetService<IConfiguration>();
+
+            // manually handle changes on these large datasets to improve performance
+            _orgUnitRepo.SetChangeTrackingEnabled(false);
+            _personRepo.SetChangeTrackingEnabled(false);
+            _subRepo.SetChangeTrackingEnabled(false);
+            _reportRepo.SetChangeTrackingEnabled(false);
+        }
 
         public IEnumerable<APIReportDTO> GetReportsToPayroll()
         {
             var result = new List<APIReportDTO>();
             foreach (var reportToPayroll in _reportRepo.AsQueryable().Where(r => r.Status == ReportStatus.APIReady))
             {
+                var isAdministrativeCostCenter = !String.IsNullOrEmpty(_configuration["AdministrativeCostCenterPrefix"]) && reportToPayroll.Employment.CostCenter.ToString().StartsWith(_configuration["AdministrativeCostCenterPrefix"]);
                 result.Add(new APIReportDTO()
                 {
                     Id = reportToPayroll.Id,
-                    AccountNumber = reportToPayroll.AccountNumber,
+                    AccountNumber = isAdministrativeCostCenter ? _configuration["AdministrativeAccount"] : reportToPayroll.AccountNumber,
                     CprNumber = reportToPayroll.Person.CprNumber,
                     DriveDate = new System.DateTime(1970, 1, 1, 0, 0, 0, 0).AddSeconds(reportToPayroll.DriveDateTimestamp).ToLocalTime(),
                     EmploymentId = reportToPayroll.Employment.EmploymentId,
@@ -63,29 +90,6 @@ namespace Core.ApplicationServices
                 _reportRepo.Update(report);
             }
             _reportRepo.Save();
-        }
-
-
-        public APIService(IServiceProvider provider)
-        {
-            _orgUnitRepo = provider.GetService<IGenericRepository<OrgUnit>>();
-            _cachedRepo = provider.GetService<IGenericRepository<CachedAddress>>();
-            _actualLaunderer = provider.GetService<IAddressLaunderer>();
-            _coordinates = provider.GetService<IAddressCoordinates>(); ;
-            _personRepo = provider.GetService<IGenericRepository<Person>>(); ;
-            _subService = provider.GetService<ISubstituteService>(); ;
-            _subRepo = provider.GetService<IGenericRepository<Substitute>>(); ;
-            _reportRepo = provider.GetService<IGenericRepository<DriveReport>>(); ;
-            _driveService = provider.GetService<IDriveReportService>(); ;
-            _logger = provider.GetService<ILogger<APIService>>(); ;
-            _launderer = new CachedAddressLaunderer(_cachedRepo, _actualLaunderer, _coordinates);
-            _addressHistoryService = provider.GetService<AddressHistoryService>();
-
-            // manually handle changes on these large datasets to improve performance
-            _orgUnitRepo.SetChangeTrackingEnabled(false);
-            _personRepo.SetChangeTrackingEnabled(false);
-            _subRepo.SetChangeTrackingEnabled(false);
-            _reportRepo.SetChangeTrackingEnabled(false);
         }
 
         public void UpdateOrganization(APIOrganizationDTO apiOrganizationDTO)
