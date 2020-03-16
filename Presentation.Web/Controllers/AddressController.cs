@@ -146,6 +146,8 @@ namespace OS2Indberetning.Controllers
         /// <param name="personId"></param>
         /// <returns>Personal and standard addresses</returns>
         [EnableQuery]
+        // Disable caching.
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult GetPersonalAndStandard(int personId)
         {
             if (!CurrentUser.Id.Equals(personId) && !CurrentUser.IsAdmin)

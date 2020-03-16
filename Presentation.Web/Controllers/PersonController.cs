@@ -59,6 +59,8 @@ namespace OS2Indberetning.Controllers
         /// </summary>
         /// <returns>The user currently logged in.</returns>
         [EnableQuery(MaxExpansionDepth = 4)]
+        // Disable caching.
+        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public Person GetCurrentUser()
         {
             try

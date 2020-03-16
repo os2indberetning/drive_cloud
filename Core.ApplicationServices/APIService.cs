@@ -273,11 +273,6 @@ namespace Core.ApplicationServices
             personToInsert.FirstName = apiPerson.FirstName ?? "ikke opgivet";
             personToInsert.LastName = apiPerson.LastName ?? "ikke opgivet";
             personToInsert.Initials = apiPerson.Initials ?? "";
-            personToInsert.FullName = personToInsert.FirstName + " " + personToInsert.LastName;
-            if (!String.IsNullOrEmpty(personToInsert.Initials))
-            {
-                personToInsert.FullName += "[" + personToInsert.Initials + "]";
-            }
             // only update email if supplied
             if (apiPerson.Email != null || personToInsert.Mail == null)
             {
