@@ -60,7 +60,7 @@ namespace OS2Indberetning.Controllers
         /// <returns>The user currently logged in.</returns>
         [EnableQuery(MaxExpansionDepth = 4)]
         // Disable caching.
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        // [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public Person GetCurrentUser()
         {
             try
@@ -124,7 +124,7 @@ namespace OS2Indberetning.Controllers
         /// <returns>A user with with properties like CurrentUser. Is used when retrieving a user as CurrentUser when an admin tries to edit an approved report.</returns>
         [EnableQuery(MaxExpansionDepth = 4)]
         // Disable caching.
-        [ResponseCache(Duration = 300, VaryByHeader = "Cookie")]
+        // [ResponseCache(Duration = 300, VaryByHeader = "Cookie")]
         public Person GetUserAsCurrentUser(int id)
         {
             var result = Repo.AsQueryable().First(x => x.Id == id);

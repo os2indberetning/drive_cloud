@@ -116,6 +116,7 @@
                 field: "TakesOverOriginalLeaderReports",
                 title: "Overtag indberetninger for oprindelig leder",
                 template: function (data) {
+                    console.log("ApproveReportsSettingsController119.data.TakesOverOriginalLeaderReports: " + data.TakesOverOriginalLeaderReports)
                     return data.TakesOverOriginalLeaderReports == true ? "Ja" : "Nej";
                 }
             },

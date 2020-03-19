@@ -65,6 +65,9 @@ namespace Presentation.Web.Config
             .Function("TransferReportsToPayroll")
             .Returns<Boolean>();
 
+            builder.EntitySet<PersonReport>("PersonReports");
+            builder.EntityType<PersonReport>().HasKey(pr => new { pr.PersonId, pr.ReportId });
+
             builder.EntitySet<DriveReportPoint>("DriveReportPoints");
             builder.EntityType<DriveReport>().Collection
              .Function("Eksport")

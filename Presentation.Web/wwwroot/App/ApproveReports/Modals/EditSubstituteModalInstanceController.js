@@ -47,6 +47,7 @@
                 CreatedById: leader.Id,
                 TakesOverOriginalLeaderReports: $scope.takesOverOriginalLeaderReports
             });
+            console.log("EditSubstituteModalInstanceController50.sub.TakesOverOriginalLeaderReports: " + sub.TakesOverOriginalLeaderReports)
 
             if ($scope.infinitePeriod) {
                 sub.EndDateTimestamp = 9999999999;

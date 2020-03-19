@@ -273,7 +273,7 @@ namespace OS2Indberetning.Controllers
                 return NotFound();
             }
 
-            if (report.ResponsibleLeaders.Count == 0)
+            if (report.PersonReports.Count == 0)
             {
                 return StatusCode(StatusCodes.Status403Forbidden);
             }

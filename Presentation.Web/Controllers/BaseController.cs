@@ -20,6 +20,7 @@ using OS2Indberetning.Filters;
 namespace OS2Indberetning.Controllers
 {
     [ServiceFilter(typeof(AuditlogFilter))]
+    [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
     public class BaseController<T> : ODataController where T : class
     {
         protected ODataValidationSettings ValidationSettings = new ODataValidationSettings();

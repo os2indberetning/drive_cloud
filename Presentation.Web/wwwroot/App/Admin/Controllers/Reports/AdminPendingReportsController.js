@@ -39,7 +39,7 @@
        }
 
        var getDataUrl = function (from, to, fullName, longDescription) {
-           var url = "/odata/DriveReports?status=Pending &getReportsWhereSubExists=true &$expand=DriveReportPoints,ResponsibleLeaders,Employment($expand=OrgUnit)";
+           var url = "/odata/DriveReports?status=Pending &getReportsWhereSubExists=true &$expand=DriveReportPoints,PersonReports($expand=Person),Employment($expand=OrgUnit)";
            var filters = "&$filter=DriveDateTimestamp ge " + from + " and DriveDateTimestamp le " + to;
            if (fullName != undefined && fullName != "") {
                filters += " and PersonId eq " + $scope.person.chosenId;
@@ -105,7 +105,7 @@
                            req.setRequestHeader('Accept', 'application/json;odata=fullmetadata');
                        },
 
-                       url: "/odata/DriveReports?status=Pending &getReportsWhereSubExists=true &$expand=DriveReportPoints,ResponsibleLeaders,Employment($expand=OrgUnit) &$filter=DriveDateTimestamp ge " + fromDateFilter + " and DriveDateTimestamp le " + toDateFilter,
+                       url: "/odata/DriveReports?status=Pending &getReportsWhereSubExists=true &$expand=DriveReportPoints,PersonReports($expand=Person),Employment($expand=OrgUnit) &$filter=DriveDateTimestamp ge " + fromDateFilter + " and DriveDateTimestamp le " + toDateFilter,
                        dataType: "json",
                        cache: false
                    },
@@ -241,15 +241,15 @@
                    },
                }, {
                    title: "Godkendere",
-                   field: "ResponsibleLeaders",
+                   field: "PersonReports",
                    template: function(data) {
                     result = "";   
-                        angular.forEach(data.ResponsibleLeaders, function(leader, key){
+                       angular.forEach(data.PersonReports, function(leader, key){
                             if (leader != 0 && leader != null && leader != undefined) {
-                                if (key != data.ResponsibleLeaders.length - 1) {
-                                    result += leader.FullName + ", <br> ";
+                                if (key != data.PersonReports.length - 1) {
+                                    result += leader.Person.FullName + ", <br> ";
                                 } else {
-                                    result += leader.FullName;
+                                    result += leader.Person.FullName;
                                 }
                                 
                            }        

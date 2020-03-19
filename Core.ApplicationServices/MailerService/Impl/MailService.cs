@@ -93,7 +93,7 @@ namespace Core.ApplicationServices.MailerService.Impl
 
             var reports = _driveRepo.AsQueryable().Where(r => r.Status == ReportStatus.Pending).ToList();
 
-            var reportsWithNoLeader = reports.Where(driveReport => driveReport.ResponsibleLeaders.Count == 0);
+            var reportsWithNoLeader = reports.Where(driveReport => driveReport.PersonReports.Count == 0);
 
             foreach (var report in reportsWithNoLeader)
             {
@@ -103,7 +103,7 @@ namespace Core.ApplicationServices.MailerService.Impl
 
             foreach (var driveReport in reports)
             {
-                approverEmails.AddRange(driveReport.ResponsibleLeaders.Where(p => !string.IsNullOrEmpty(p.Mail) && p.RecieveMail).Select(p => p.Mail));
+                approverEmails.AddRange(driveReport.PersonReports.Where(p => !string.IsNullOrEmpty(p.Person.Mail) && p.Person.RecieveMail).Select(p => p.Person.Mail));
             }
 
             return approverEmails.Distinct();

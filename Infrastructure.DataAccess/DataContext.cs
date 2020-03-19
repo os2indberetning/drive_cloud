@@ -66,6 +66,8 @@ namespace Infrastructure.DataAccess
         private void ConfigurePropertiesForPersonReport(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<PersonReport>().HasKey(pr => new { pr.PersonId, pr.ReportId });
+            modelBuilder.Entity<PersonReport>().HasOne(p => p.Person);
+            modelBuilder.Entity<PersonReport>().HasOne(p => p.Report);
         }
 
         private void ConfigurePropertiesForPerson(ModelBuilder modelBuilder)
@@ -191,6 +193,7 @@ namespace Infrastructure.DataAccess
             modelBuilder.Entity<Report>().HasOne(p => p.Employment);
             modelBuilder.Entity<Report>().HasOne(p => p.ApprovedBy);
             modelBuilder.Entity<Report>().HasOne(p => p.ActualLeader);
+            modelBuilder.Entity<Report>().HasMany(p => p.PersonReports);
         }
 
         private void ConfigurePropertiesForEmployment(ModelBuilder modelBuilder)

@@ -33,23 +33,17 @@ namespace Core.DomainModel
 
         public virtual ICollection<PersonReport> PersonReports { get; set; }
 
-        public virtual ICollection<Person> ResponsibleLeaders
-        {
-            get {
-                return PersonReports.Select(pr => pr.Person).ToList();
-            }
-        }
         public int? ActualLeaderId { get; set; }
         public virtual Person ActualLeader { get; set; }
 
         public bool IsPersonResponsible(Person person)
         {
-            return ResponsibleLeaders.Contains(person);
+            return IsPersonResponsible(person.Id);
         }
 
         public bool IsPersonResponsible(int personId)
         {
-            return ResponsibleLeaders.Select(p => p.Id).Contains(personId);
+            return PersonReports.Select(p => p.PersonId).Contains(personId);
         }
 
         public void UpdateResponsibleLeaders(ICollection<Person> newlist)
@@ -64,7 +58,7 @@ namespace Core.DomainModel
             }
                 
 
-            foreach (var personReport in PersonReports)
+            foreach (var personReport in PersonReports.ToList())
             {
                 if (!newlist.Any(p => p.Id == personReport.PersonId))
                 {

@@ -28,7 +28,7 @@ namespace Presentation.Web.Config
                 ";Database=" + configuration["Database:Database"] + 
                 ";Uid=" + configuration["Database:Uid"] + 
                 ";Pwd=" + configuration["Database:Pwd"] + ";", 
-                    mysqlOptions => mysqlOptions.ServerVersion(new System.Version(5, 6, 30), ServerType.MySql)).UseLazyLoadingProxies());
+                    mysqlOptions => mysqlOptions.ServerVersion(new System.Version(5, 6, 30), ServerType.MySql)).UseLazyLoadingProxies(),ServiceLifetime.Transient);
             services.AddTransient(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             services.AddScoped<IPersonService, PersonService>();
             services.AddScoped<IMailSender,MailSender>();

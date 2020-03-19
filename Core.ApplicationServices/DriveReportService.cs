@@ -266,11 +266,11 @@ namespace Core.ApplicationServices
             _mailService.SendMailToAdmins($"{report.Person.FullName} har angivet brug af 60-dages reglen", $"Brugeren {report.Person.FirstName} {report.Person.LastName} med medarbejdernummer {report.Employment.EmploymentId} har angivet at være omfattet af 60-dages reglen");
 
             // Send mail to leader.
-            foreach (var leader in report.ResponsibleLeaders)
+            foreach (var leader in report.PersonReports)
             {
-                if (leader.RecieveMail && !string.IsNullOrEmpty(leader.Mail))
+                if (leader.Person.RecieveMail && !string.IsNullOrEmpty(leader.Person.Mail))
                 {
-                    _mailService.SendMail(leader.Mail, $"{report.Person.FullName} har angivet brug af 60-dages reglen", $"Brugeren {report.Person.FirstName} {report.Person.LastName} med medarbejdernummer {report.Employment.EmploymentId} har angivet at være omfattet af 60-dages reglen");
+                    _mailService.SendMail(leader.Person.Mail, $"{report.Person.FullName} har angivet brug af 60-dages reglen", $"Brugeren {report.Person.FirstName} {report.Person.LastName} med medarbejdernummer {report.Employment.EmploymentId} har angivet at være omfattet af 60-dages reglen");
                 }
             }
         }

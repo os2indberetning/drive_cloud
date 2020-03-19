@@ -3693,7 +3693,7 @@ angular.module("application").controller("AdminPendingReportsController", [
        }
 
        var getDataUrl = function (from, to, fullName, longDescription) {
-           var url = "/odata/DriveReports?status=Pending &getReportsWhereSubExists=true &$expand=DriveReportPoints,ResponsibleLeaders,Employment($expand=OrgUnit)";
+           var url = "/odata/DriveReports?status=Pending &getReportsWhereSubExists=true &$expand=DriveReportPoints,PersonReports($expand=Person),Employment($expand=OrgUnit)";
            var filters = "&$filter=DriveDateTimestamp ge " + from + " and DriveDateTimestamp le " + to;
            if (fullName != undefined && fullName != "") {
                filters += " and PersonId eq " + $scope.person.chosenId;
@@ -3759,7 +3759,7 @@ angular.module("application").controller("AdminPendingReportsController", [
                            req.setRequestHeader('Accept', 'application/json;odata=fullmetadata');
                        },
 
-                       url: "/odata/DriveReports?status=Pending &getReportsWhereSubExists=true &$expand=DriveReportPoints,ResponsibleLeaders,Employment($expand=OrgUnit) &$filter=DriveDateTimestamp ge " + fromDateFilter + " and DriveDateTimestamp le " + toDateFilter,
+                       url: "/odata/DriveReports?status=Pending &getReportsWhereSubExists=true &$expand=DriveReportPoints,PersonReports($expand=Person),Employment($expand=OrgUnit) &$filter=DriveDateTimestamp ge " + fromDateFilter + " and DriveDateTimestamp le " + toDateFilter,
                        dataType: "json",
                        cache: false
                    },
@@ -3895,15 +3895,15 @@ angular.module("application").controller("AdminPendingReportsController", [
                    },
                }, {
                    title: "Godkendere",
-                   field: "ResponsibleLeaders",
+                   field: "PersonReports",
                    template: function(data) {
                     result = "";   
-                        angular.forEach(data.ResponsibleLeaders, function(leader, key){
+                       angular.forEach(data.PersonReports, function(leader, key){
                             if (leader != 0 && leader != null && leader != undefined) {
-                                if (key != data.ResponsibleLeaders.length - 1) {
-                                    result += leader.FullName + ", <br> ";
+                                if (key != data.PersonReports.length - 1) {
+                                    result += leader.Person.FullName + ", <br> ";
                                 } else {
-                                    result += leader.FullName;
+                                    result += leader.Person.FullName;
                                 }
                                 
                            }        
@@ -4444,6 +4444,7 @@ angular.module('application').controller('AdminNewSubstituteModalInstanceControl
                     CreatedById: leader.Id,
                     TakesOverOriginalLeaderReports: $scope.takesOverOriginalLeaderReports
                 });
+                console.log("AdminNewSubstituteModalInstanceController92.sub.TakesOverOriginalLeaderReports: " + sub.TakesOverOriginalLeaderReports)
 
                 if ($scope.infinitePeriod) {
                     sub.EndDateTimestamp = infinitePeriod;
@@ -5638,6 +5639,7 @@ angular.module("application").controller("ApproveReportsSettingsController", [
                 field: "TakesOverOriginalLeaderReports",
                 title: "Overtag indberetninger for oprindelig leder",
                 template: function (data) {
+                    console.log("ApproveReportsSettingsController119.data.TakesOverOriginalLeaderReports: " + data.TakesOverOriginalLeaderReports)
                     return data.TakesOverOriginalLeaderReports == true ? "Ja" : "Nej";
                 }
             },
@@ -6344,6 +6346,7 @@ angular.module('application').controller('EditSubstituteModalInstanceController'
                 CreatedById: leader.Id,
                 TakesOverOriginalLeaderReports: $scope.takesOverOriginalLeaderReports
             });
+            console.log("EditSubstituteModalInstanceController50.sub.TakesOverOriginalLeaderReports: " + sub.TakesOverOriginalLeaderReports)
 
             if ($scope.infinitePeriod) {
                 sub.EndDateTimestamp = 9999999999;
@@ -6603,7 +6606,7 @@ angular.module("application").controller("PendingReportsController", [
        }
 
        var getDataUrl = function (from, to, fullName, longDescription) {
-           var url = "/odata/DriveReports?from=approve&status=Pending&$expand=Employment($expand=OrgUnit),DriveReportPoints,ResponsibleLeaders";
+           var url = "/odata/DriveReports?from=approve&status=Pending&$expand=Employment($expand=OrgUnit),DriveReportPoints,PersonReports($expand=Person)";
 
            var removeOwn = "";
 
@@ -6635,7 +6638,7 @@ angular.module("application").controller("PendingReportsController", [
                 type: "odata-v4",
                 transport: {
                     read: {
-                        url: "/odata/DriveReports?from=approve&status=Pending&$expand=Employment($expand=OrgUnit),DriveReportPoints,ResponsibleLeaders &$filter=DriveDateTimestamp ge " + fromDateFilter + " and DriveDateTimestamp le " + toDateFilter + " and PersonId ne " + $scope.CurrentUser.Id,
+                        url: "/odata/DriveReports?from=approve&status=Pending&$expand=Employment($expand=OrgUnit),DriveReportPoints,PersonReports($expand=Person)&$filter=DriveDateTimestamp ge " + fromDateFilter + " and DriveDateTimestamp le " + toDateFilter + " and PersonId ne " + $scope.CurrentUser.Id,
                         dataType: "json",
                         cache: false
                     },
@@ -9153,7 +9156,7 @@ angular.module("application").controller("MyPendingReportsController", [
                        beforeSend: function (req) {
                            req.setRequestHeader('Accept', 'application/json;odata=fullmetadata');
                        },
-                       url: "/odata/DriveReports?status=Pending &$expand=DriveReportPoints,ResponsibleLeaders,Employment($expand=OrgUnit) &$filter=PersonId eq " + personId,
+                       url: "/odata/DriveReports?status=Pending &$expand=DriveReportPoints,PersonReports($expand=Person),Employment($expand=OrgUnit) &$filter=PersonId eq " + personId,
                        dataType: "json",
                        cache: false
                    },
@@ -9297,15 +9300,15 @@ angular.module("application").controller("MyPendingReportsController", [
                    title: "Indberettet"
                }, {
                    title: "Godkender",
-                   field: "ResponsibleLeaders",
+                   field: "PersonReports",
                    template: function(data) {
                     result = "";   
-                        angular.forEach(data.ResponsibleLeaders, function(leader, key){
+                       angular.forEach(data.PersonReports, function(leader, key){
                             if (leader != 0 && leader != null && leader != undefined) {
-                                if (key != data.ResponsibleLeaders.length - 1) {
-                                    result += leader.FullName + ", <br> ";
+                                if (key != data.PersonReports.length - 1) {
+                                    result += leader.Person.FullName + ", <br> ";
                                 } else {
-                                    result += leader.FullName;
+                                    result += leader.Person.FullName;
                                 }
                                 
                            }        
@@ -9402,7 +9405,7 @@ angular.module("application").controller("MyPendingReportsController", [
        }
 
        var getDataUrl = function (from, to) {
-           var url = "/odata/DriveReports?status=Pending &$expand=DriveReportPoints,ResponsibleLeaders,Employment($expand=OrgUnit)";
+           var url = "/odata/DriveReports?status=Pending &$expand=DriveReportPoints,PersonReports($expand=Person),Employment($expand=OrgUnit)";
            var filters = "&$filter=PersonId eq " + personId + " and DriveDateTimestamp ge " + from + " and DriveDateTimestamp le " + to;
            var result = url + filters;
            return result;
@@ -13380,6 +13383,7 @@ angular.module("application").controller("SubstituteController", [
                 field: "TakesOverOriginalLeaderReports",
                 title: "Overtag indberetninger for oprindelig leder",
                 template: function (data) {
+                    console.log("SubstituteController138.data.TakesOverOriginalLeaderReports: " + data.TakesOverOriginalLeaderReports)
                     return data.TakesOverOriginalLeaderReports == true ? "Ja" : "Nej";
                 }
             },

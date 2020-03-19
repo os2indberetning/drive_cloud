@@ -436,7 +436,7 @@ namespace Core.ApplicationServices
         {
             // Fail-safe as some reports for unknown reasons have not had a leader attached
             Console.WriteLine("Adding leaders to drive reports that have none");
-            var reports = _reportRepo.AsQueryableLazy().Where(r => (r.ResponsibleLeaders.Count == 0 || r.ActualLeader == null) && r.Status == ReportStatus.Pending ).ToList();
+            var reports = _reportRepo.AsQueryableLazy().Where(r => (r.PersonReports.Count == 0 || r.ActualLeader == null) && r.Status == ReportStatus.Pending ).ToList();
             foreach (var report in reports)
             {
                 report.UpdateResponsibleLeaders(_driveService.GetResponsibleLeadersForReport(report));                

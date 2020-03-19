@@ -39,7 +39,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="queryOptions"></param>
         /// <returns>A single Personal Address</returns>
         // Disable caching.
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        // [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Get([FromODataUri] int key, ODataQueryOptions<PersonalAddress> queryOptions)
         {
             return Ok(GetQueryable(key, queryOptions));
@@ -120,7 +120,7 @@ namespace OS2Indberetning.Controllers
         /// <returns>Alternative Home Address for user identified by personId</returns>
         /// 
         // Disable caching.
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        // [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult GetAlternativeHome(int personId)
         {
             if (!CurrentUser.Id.Equals(personId) && !CurrentUser.IsAdmin)
@@ -138,7 +138,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="personId"></param>
         /// <returns></returns>
         // Disable caching.
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        // [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult GetRealHome(int personId)
         {
             if (!CurrentUser.Id.Equals(personId) && !CurrentUser.IsAdmin)
@@ -156,7 +156,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="personId"></param>
         /// <returns></returns>
         // Disable caching.
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+        // [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult GetHome(int personId)
         {
             if (!CurrentUser.Id.Equals(personId) && !CurrentUser.IsAdmin)
@@ -191,7 +191,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="queryOptions"></param>
         /// <returns></returns>
         // Disable caching.
-        [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
+       // [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult GetAlternativeWork([FromODataUri] int key, ODataQueryOptions<PersonalAddress> queryOptions)
         {
             if (!CurrentUser.Id.Equals(key) && !CurrentUser.IsAdmin)

@@ -120,7 +120,7 @@ namespace Core.ApplicationServices
                     var reports = _driveRepo.AsQueryable().Where(rep => orgIds.Contains(rep.Employment.OrgUnitId)).ToList();
                     var idsOfLeadersOfImmediateChildOrgs = _orgService.GetIdsOfLeadersInImmediateChildOrgs(parentOrgId: sub.OrgUnitId);
                     var reportsForLeadersOfImmediateChildOrgs = _driveRepo.AsQueryable().Where(rep => idsOfLeadersOfImmediateChildOrgs.Contains(rep.PersonId)).ToList();
-                    reports.AddRange(reportsForLeadersOfImmediateChildOrgs);
+                    reports.AddRange(reportsForLeadersOfImmediateChildOrgs);                    
                     foreach (var report in reports)
                     {
                         report.UpdateResponsibleLeaders(_driveService.GetResponsibleLeadersForReport(report));

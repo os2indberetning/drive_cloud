@@ -99,7 +99,7 @@
        }
 
        var getDataUrl = function (from, to, fullName, longDescription) {
-           var url = "/odata/DriveReports?from=approve&status=Pending&$expand=Employment($expand=OrgUnit),DriveReportPoints,ResponsibleLeaders";
+           var url = "/odata/DriveReports?from=approve&status=Pending&$expand=Employment($expand=OrgUnit),DriveReportPoints,PersonReports($expand=Person)";
 
            var removeOwn = "";
 
@@ -131,7 +131,7 @@
                 type: "odata-v4",
                 transport: {
                     read: {
-                        url: "/odata/DriveReports?from=approve&status=Pending&$expand=Employment($expand=OrgUnit),DriveReportPoints,ResponsibleLeaders &$filter=DriveDateTimestamp ge " + fromDateFilter + " and DriveDateTimestamp le " + toDateFilter + " and PersonId ne " + $scope.CurrentUser.Id,
+                        url: "/odata/DriveReports?from=approve&status=Pending&$expand=Employment($expand=OrgUnit),DriveReportPoints,PersonReports($expand=Person)&$filter=DriveDateTimestamp ge " + fromDateFilter + " and DriveDateTimestamp le " + toDateFilter + " and PersonId ne " + $scope.CurrentUser.Id,
                         dataType: "json",
                         cache: false
                     },
