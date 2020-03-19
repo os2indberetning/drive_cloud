@@ -28,6 +28,14 @@ namespace Presentation.Web.Config
             services.AddSingleton<CleanAuditLogJob>();
             services.AddSingleton(new JobSchedule(typeof(CleanAuditLogJob), "0 0 5 * * ? *", true));
 
+            // Add Transfer payroll job
+            services.AddSingleton<TransferPayrollJob>();
+            services.AddSingleton(
+                new JobSchedule(
+                    typeof(TransferPayrollJob),
+                    configuration["TransferPayrollJob:Schedule"],
+                    Boolean.Parse(configuration["TransferPayrollJob:Enabled"])));
+
             services.AddHostedService<QuartzHostedService>();
             return services;
         }
