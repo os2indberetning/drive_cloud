@@ -81,7 +81,7 @@ namespace Presentation.Web.Job
                             }
                             catch (Exception e)
                             {                                                                
-                                logger.LogError($"File generation was not rescheduled");
+                                logger.LogCritical($"File generation was not rescheduled");
                             }
                         }
                     }
