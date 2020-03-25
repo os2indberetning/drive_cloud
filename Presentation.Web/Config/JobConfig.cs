@@ -28,7 +28,7 @@ namespace Presentation.Web.Config
             services.AddSingleton<CleanAuditLogJob>();
             services.AddSingleton(new JobSchedule(typeof(CleanAuditLogJob), "0 0 5 * * ? *", true));
 
-            // Add Clean Audit Log job
+            // Add Check API AcknowledgeJob Log job
             services.AddSingleton<CheckAPIAcknowledgeJob>();
             services.AddSingleton(new JobSchedule(typeof(CheckAPIAcknowledgeJob), "0 5 * * * ? *", true));
 
