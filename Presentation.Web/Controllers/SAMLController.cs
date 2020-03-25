@@ -62,6 +62,7 @@ namespace Presentation.Web.Controllers.API
                 {
                     user.Person.Mail = email.Value;
                 }
+                _personRepo.Update(user.Person);
                 _personRepo.Save();
                 _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", user.Person.FullName, info.LoginProvider);
                 return Redirect("/index");
