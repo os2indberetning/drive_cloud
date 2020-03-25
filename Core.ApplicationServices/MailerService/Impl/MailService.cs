@@ -72,8 +72,12 @@ namespace Core.ApplicationServices.MailerService.Impl
             {
 
                 var mailAddresses = GetLeadersWithPendingReportsMails();
-                var mailBody = String.IsNullOrEmpty(notification.CustomText) ? _configuration["Mail:DriveMail:Body"] : notification.CustomText;
+                var mailBody = _configuration["Mail:DriveMail:Body"];
                 mailBody = mailBody.Replace("####", Utilities.FromUnixTime(notification.FileGenerationSchedule.DateTimestamp).ToString("dd-MM-yyyy"));
+                if (!String.IsNullOrEmpty(notification.CustomText))
+                {
+                    mailBody += $"\n\n{notification.CustomText}";
+                }                
                 var mailSubject = _configuration["Mail:DriveMail:Subject"];
 
                 foreach (var mailAddress in mailAddresses)
