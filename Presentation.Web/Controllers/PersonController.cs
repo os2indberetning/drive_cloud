@@ -63,31 +63,29 @@ namespace OS2Indberetning.Controllers
         // [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public Person GetCurrentUser()
         {
+            return GetCurrentUserFromPerson(CurrentUser);
+        }
+
+        private Person GetCurrentUserFromPerson(Person person)
+        {
             try
             {
+                var currentUser = person;
                 var currentDateTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-                var employments = _employmentRepo.AsQueryable().Where(x => x.PersonId == CurrentUser.Id && (x.EndDateTimestamp == 0 || x.EndDateTimestamp > currentDateTimestamp));
-                var employmentList = employments.ToList();
-
-                CurrentUser.Employments.Clear();
-
-                foreach (var employment in employmentList)
-                {
-                    CurrentUser.Employments.Add(employment);
-                }
-
-                CurrentUser.CprNumber = "";
-                SetAppInfo();
-                CurrentUser.IsSubstitute = _substituteRepo.AsQueryable().Any(x => x.SubId.Equals(CurrentUser.Id) && x.StartDateTimestamp < currentDateTimestamp && x.EndDateTimestamp > currentDateTimestamp);
+                currentUser.Employments = currentUser.Employments.Where(x => x.EndDateTimestamp == 0 || x.EndDateTimestamp > currentDateTimestamp).ToList();
+                currentUser.CprNumber = "";
+                currentUser.IsSubstitute = currentUser.SubstituteFor.Count + currentUser.SubstituteLeaders.Count > 0;
+                var appLogin = loginRepo.AsQueryableLazy().Where(l => l.PersonId == currentUser.Id).SingleOrDefault();
+                currentUser.HasAppPassword = appLogin != null;
+                currentUser.AppUserName = appLogin?.UserName;
+                return currentUser;
             }
             catch (Exception ex)
             {
                 _logger.LogError($"{GetType().Name}, GetCurrentUser(), Error", ex);
+                throw ex;
             }
-
-            return CurrentUser;
         }
-
 
         /// <summary>
         /// GET API endpoint for distance between CurrentUsers home address and given address.
@@ -98,22 +96,6 @@ namespace OS2Indberetning.Controllers
         {
             var distance = _person.GetDistanceFromHome(CurrentUser,addressId);
             return Ok(distance);
-        }
-
-        private void SetAppInfo()
-        {
-            var appLogin = loginRepo.AsQueryableLazy().Where(l => l.PersonId == CurrentUser.Id).SingleOrDefault();
-            if (appLogin != null)
-            {
-                CurrentUser.HasAppPassword = true;
-                CurrentUser.AppUserName = appLogin.UserName;
-
-            }
-            else
-            {
-                CurrentUser.HasAppPassword = false;
-                CurrentUser.AppUserName = null;
-            }
         }
 
         /// <summary>
@@ -127,24 +109,8 @@ namespace OS2Indberetning.Controllers
         // [ResponseCache(Duration = 300, VaryByHeader = "Cookie")]
         public Person GetUserAsCurrentUser(int id)
         {
-            var result = Repo.AsQueryable().First(x => x.Id == id);
-
-            var currentDateTimestamp = (int)(DateTime.UtcNow.Subtract(new DateTime(1970, 1, 1))).TotalSeconds;
-            var employments = _employmentRepo.AsQueryable().Where(x => x.PersonId == id && (x.EndDateTimestamp == 0 || x.EndDateTimestamp > currentDateTimestamp));
-            var employmentList = employments.ToList();
-
-            result.Employments.Clear();
-
-            foreach (var employment in employmentList)
-            {
-                result.Employments.Add(employment);
-            }
-
-            result.CprNumber = "";
-            SetAppInfo();
-            result.IsSubstitute = _substituteRepo.AsQueryable().Any(x => x.SubId.Equals(result.Id) && x.StartDateTimestamp < currentDateTimestamp && x.EndDateTimestamp > currentDateTimestamp);
-
-            return result;
+            var person = Repo.AsQueryable().First(x => x.Id == id);
+            return GetCurrentUserFromPerson(person);
         }
 
         //GET: odata/Person(5)

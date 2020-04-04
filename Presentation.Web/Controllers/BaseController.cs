@@ -29,6 +29,7 @@ namespace OS2Indberetning.Controllers
         private readonly PropertyInfo _primaryKeyProp;
         private readonly UserManager<IdentityPerson> _userManager;
         protected IConfiguration _configuration;
+        private Person _currentUser;
 
         public BaseController(IServiceProvider provider)
         {
@@ -44,9 +45,13 @@ namespace OS2Indberetning.Controllers
         protected Person CurrentUser
         {
             get{
-                var user = _userManager.GetUserAsync(HttpContext.User);
-                user.Wait();
-                return user.Result.Person;
+                if (_currentUser == null)
+                {
+                    var user = _userManager.GetUserAsync(HttpContext.User);
+                    user.Wait();
+                    _currentUser = user.Result.Person;
+                }
+                return _currentUser;                
             }
         }
 
