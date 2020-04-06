@@ -69,7 +69,7 @@ namespace OS2Indberetning.Controllers
                         // Invoiced reports are accepted reports that have been processed for payment.
                         // So they are still accepted reports.
                         queryable =
-                            queryable.Where(dr => dr.Status == ReportStatus.Accepted || dr.Status == ReportStatus.APIReady ||  dr.Status == ReportStatus.Invoiced);
+                            queryable.Where(dr => dr.Status == ReportStatus.Accepted || dr.Status == ReportStatus.APIReady || dr.Status == ReportStatus.APIFetched ||  dr.Status == ReportStatus.Invoiced);
                     }
                     else
                     {

@@ -74,7 +74,10 @@ namespace Core.ApplicationServices
                     TFCodeOptional = reportToPayroll.TFCodeOptional,
                     DistanceMeters = Convert.ToInt32(reportToPayroll.Distance * 1000)
                 });
+                reportToPayroll.Status = ReportStatus.APIFetched;
+                _reportRepo.Update(reportToPayroll);
             }
+            _reportRepo.Save();
             return result;
         }
 

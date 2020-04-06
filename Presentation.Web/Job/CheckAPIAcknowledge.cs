@@ -26,7 +26,7 @@ namespace Presentation.Web.Job
                 var logger = scope.ServiceProvider.GetService<ILogger<CheckAPIAcknowledgeJob>>();
                 var reportRepo = scope.ServiceProvider.GetService<IGenericRepository<Report>>();
                 var min30ago = Utilities.ToUnixTime(DateTime.Now.AddMinutes(-30));
-                var unAckedReports = reportRepo.AsQueryable().Where(r => r.Status == ReportStatus.APIReady && r.ProcessedDateTimestamp <= min30ago);
+                var unAckedReports = reportRepo.AsQueryable().Where(r => (r.Status == ReportStatus.APIReady || r.Status == ReportStatus.APIFetched ) && r.ProcessedDateTimestamp <= min30ago);
                 if (unAckedReports.Any())
                 {
                     logger.LogCritical("Reports not acknowledged from on-premise service");

@@ -11,7 +11,8 @@ namespace Core.DomainModel
         Accepted,
         Rejected,
         Invoiced,
-        APIReady
+        APIReady,
+        APIFetched
     }
 
     public class Report
