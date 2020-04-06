@@ -54,8 +54,11 @@ namespace OS2Indberetning.Controllers
             try
             {
                 queryable = GetQueryable(queryOptions)
+                    .Include(r => r.DriveReportPoints)
+                    .Include(r => r.PersonReports)
                     .Include(r => r.Employment).ThenInclude(e => e.OrgUnit)
-                    .Include(r => r.Person).ThenInclude(p => p.PersonalAddresses);
+                    .Include(r => r.Person).ThenInclude(p => p.PersonalAddresses)
+                    .Include(r => r.ApprovedBy);
 
                 ReportStatus reportStatus;
                 if (ReportStatus.TryParse(status, true, out reportStatus))

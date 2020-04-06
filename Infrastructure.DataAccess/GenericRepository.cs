@@ -61,7 +61,7 @@ namespace Infrastructure.DataAccess
 
         public IQueryable<T> AsQueryable()
         {
-            return _dbSet.AsQueryable().Include(_context.GetIncludePaths(typeof(T)));
+            return _dbSet.AsQueryable();//.Include(_context.GetIncludePaths(typeof(T)));
         }
 
         public IQueryable<T> AsQueryableLazy()
