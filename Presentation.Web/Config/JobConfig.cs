@@ -30,7 +30,7 @@ namespace Presentation.Web.Config
 
             // Add Check API AcknowledgeJob Log job
             services.AddSingleton<CheckAPIAcknowledgeJob>();
-            services.AddSingleton(new JobSchedule(typeof(CheckAPIAcknowledgeJob), "* 0/5 * * * ? *", true));
+            services.AddSingleton(new JobSchedule(typeof(CheckAPIAcknowledgeJob), "0 0/5 * * * ? *", true));
 
             // Add Transfer payroll job
             services.AddSingleton<TransferPayrollJob>();
