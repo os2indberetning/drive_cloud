@@ -45,7 +45,7 @@ namespace Presentation.Web.Controllers.API
             var info = await _signInManager.GetExternalLoginInfoAsync();
             if (info == null)
             {
-                _logger.LogError("Could not get ExternalLoginInfo - Name Id claim was probably not sent correctly");
+                _logger.LogWarning("Could not get ExternalLoginInfo - Name Id claim was probably not sent correctly");
                 return Redirect("/index?loginFailed=true");
             }
             _logger.LogDebug("Received Claims {claims}", info.Principal.Claims);
