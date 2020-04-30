@@ -455,7 +455,7 @@ namespace Core.ApplicationServices
                 if (leaders != null && leaders.Count > 0)
                     return GetResponsibleLeadersForReport(driveReport).FirstOrDefault();
                 else
-                    _logger.LogError($"{this.GetType().Name}, GetActualLeaderForReport(), No leaders found. Report ID: {driveReport.Id}");
+                    _logger.LogWarning($"{this.GetType().Name}, GetActualLeaderForReport(), No leaders found. Report ID: {driveReport.Id}");
                 return null;
             }
 
