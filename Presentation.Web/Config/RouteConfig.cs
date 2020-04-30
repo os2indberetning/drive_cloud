@@ -12,7 +12,7 @@ namespace Presentation.Web.Config
     {
         public static IRouteBuilder Use(IRouteBuilder routeBuilder)
         {
-            routeBuilder.Select().Filter().Expand().Count().MaxTop(100).OrderBy();            
+            routeBuilder.Select().Filter().Expand().Count().MaxTop(300).OrderBy();            
             routeBuilder.MapODataServiceRoute("odata", "odata", GetODataModel());
             return routeBuilder;
         }
