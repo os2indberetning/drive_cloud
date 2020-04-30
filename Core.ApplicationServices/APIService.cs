@@ -442,8 +442,12 @@ namespace Core.ApplicationServices
             var reports = _reportRepo.AsQueryableLazy().Where(r => (r.PersonReports.Count == 0 || r.ActualLeader == null) && r.Status == ReportStatus.Pending ).ToList();
             foreach (var report in reports)
             {
-                report.UpdateResponsibleLeaders(_driveService.GetResponsibleLeadersForReport(report));                
-                report.ActualLeaderId = _driveService.GetActualLeaderForReport(report).Id;
+                report.UpdateResponsibleLeaders(_driveService.GetResponsibleLeadersForReport(report));
+                var actualLeader = _driveService.GetActualLeaderForReport(report);
+                if (actualLeader != null)
+                {
+                    report.ActualLeaderId = actualLeader.Id;
+                }                    
             }
             _reportRepo.DetectChanges();
             _reportRepo.Save();
