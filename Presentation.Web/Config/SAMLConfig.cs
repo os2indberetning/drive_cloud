@@ -29,6 +29,12 @@ namespace Presentation.Web.Config
                             ,MetadataLocation = configuration["SAML:IdpMetadataLocation"]
                         });
                     options.SPOptions.ServiceCertificates.Add(new X509Certificate2(configuration["SAML:CertificateFilename"], configuration["SAML:CertificatePassword"]));
+                    // ignore unsolved bug that throws exception occasionally
+                    // https://github.com/Sustainsys/Saml2/commit/15bdb4784830a877d7b7b3cfd91bb7e6043fabf4
+                    options.Notifications.Unsafe.IgnoreUnexpectedInResponseTo = (r, c) =>
+                    {
+                        return true;
+                    };
                 });
             return services;
         }
