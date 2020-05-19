@@ -395,8 +395,12 @@ namespace Core.ApplicationServices
                     }
                 }
             }
-
-            return responsibleLeaders; // sub != null ? sub.Sub : leaderOfOrgUnit.Person;
+            // if no leader was found, add the actual leader
+            if(responsibleLeaders.Count == 0)
+            {
+                responsibleLeaders.Add(leaderOfOrgUnit.Person);
+            }
+            return responsibleLeaders;
         }
 
         public Person GetActualLeaderForReport(DriveReport driveReport)
