@@ -76,7 +76,7 @@ namespace Infrastructure.AddressServices
         private Adgangsadresse ExecuteAndRead(HttpWebRequest request)
         {
             var responseString = "";
-
+            request.ServerCertificateValidationCallback = delegate { return true; };
             Stream responseStream;
             try
             {

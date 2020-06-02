@@ -224,6 +224,7 @@ namespace Infrastructure.AddressServices
         private string ExecuteAndRead(HttpWebRequest request, bool returnSingle = false)
         {
             var responseString = "";
+            request.ServerCertificateValidationCallback = delegate { return true; };
             Stream responseStream;
             try
             {
