@@ -2,6 +2,7 @@
 using Core.DomainServices.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 using OS2Indberetning.Filters;
 using System.Collections.Generic;
 using System.Linq;
@@ -33,8 +34,16 @@ namespace OS2Indberetning.Controllers
         /// <returns></returns>
         public IActionResult SetCoordinatesOnAddressList([FromBody] IEnumerable<Address> addresses)
         {
-            var result = addresses.Select(address => _coordinates.GetAddressCoordinates(address,true)).ToList();
-            return Ok(result);
+            try
+            {
+                var result = addresses.Select(address => _coordinates.GetAddressCoordinates(address, true)).ToList();
+                return Ok(result);
+            }
+            catch (System.Exception e)
+            {
+                _logger.LogWarning(e, $"Could not SetCoordinatesOnAddressList {JsonConvert.SerializeObject(addresses)}");
+                return BadRequest();
+            }
         }
 
 

@@ -4,6 +4,8 @@ using Core.DomainServices;
 using Core.DomainServices.Interfaces;
 using Core.DomainServices.RoutingClasses;
 using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 
@@ -102,9 +104,9 @@ namespace Core.ApplicationServices
                     _personalAddressRepo.Save();
                 }
             }
-            catch (AddressCoordinatesException ade)
+            catch (Exception e)
             {
-                
+                _logger.LogWarning(e, $"Could not AddCoordinatesToAddressIfNonExisting {JsonConvert.SerializeObject(a)}");
             }
         }       
 
