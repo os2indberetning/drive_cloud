@@ -315,8 +315,8 @@ namespace Core.ApplicationServices
         }
 
         private OrgUnit mapAPIOrgUnit(APIOrgUnit apiOrgUnit, ref OrgUnit orgUnit)
-        {
-            orgUnit.OrgId = int.Parse(apiOrgUnit.Id);
+        {            
+            orgUnit.OrgId = apiOrgUnit.Id;
             if (!String.IsNullOrEmpty(apiOrgUnit.ParentId))
             {
                 orgUnit.ParentId = _orgUnitRepo.AsNoTracking().Where(o => o.OrgId.ToString() == apiOrgUnit.ParentId).Select(o => o.Id).First();

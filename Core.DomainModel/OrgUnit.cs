@@ -5,8 +5,7 @@ namespace Core.DomainModel
     public class OrgUnit
     {
         public int Id { get; set; }
-        public int OrgId { get; set; }
-        public string OrgOUID { get; set; }
+        public string OrgId { get; set; }
         public string ShortDescription { get; set; }
         public string LongDescription { get; set; }
         public bool HasAccessToFourKmRule { get; set; }
