@@ -93,39 +93,6 @@ namespace Infrastructure.AddressServices
             {
                 throw new AddressCoordinatesException("En valgt adresse kunne ikke vaskes.", e);
             }
-            //var request = CreateCoordRequest(correctedAddress.StreetName, correctedAddress.StreetNumber, correctedAddress.ZipCode.ToString());
-
-            //string addressesString = ExecuteAndRead(request);
-            //var addresses = ParseJson(addressesString);
-
-            //if (!addresses.Any())
-            //{
-            //    request = CreateCoordRequest(address.StreetName, null, address.ZipCode.ToString());
-
-            //    addressesString = ExecuteAndRead(request);
-            //    addresses = ParseJson(addressesString);
-            //}
-
-            //if (!addresses.Any())
-            //{
-            //    throw new AddressCoordinatesException("No coordinates returned.");
-            //}
-
-            //if (addresses[0].adgangsadresse.vejstykke.navn == address.StreetName
-            //    && addresses[0].adgangsadresse.postnummer.nr == address.ZipCode.ToString())
-            //{
-            //    correctedAddress.Longitude = addresses[0].adgangsadresse.adgangspunkt.koordinater[0].ToString().Replace(",", ".");
-            //    correctedAddress.Latitude = addresses[0].adgangsadresse.adgangspunkt.koordinater[1].ToString().Replace(",", ".");
-
-            //    correctedAddress.Longitude = correctedAddress.Longitude.Remove(correctedAddress.Longitude.IndexOf('.') + 1 + CoordDecimals);
-            //    correctedAddress.Latitude = correctedAddress.Latitude.Remove(correctedAddress.Latitude.IndexOf('.') + 1 + CoordDecimals);
-            //}
-            //else
-            //{
-            //    throw new AddressCoordinatesException("The addresses returned differ highly from the original, streetname does not exist in zipcode area.");
-            //}
-
-            //return correctedAddress;
         }
 
         /// <summary>

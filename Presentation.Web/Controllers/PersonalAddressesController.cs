@@ -8,16 +8,20 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using Newtonsoft.Json;
 
 namespace OS2Indberetning.Controllers
 {
     public class PersonalAddressesController : BaseController<PersonalAddress>
     {
         private readonly IAddressCoordinates coordinates;
+        private readonly ILogger logger;
         //GET: odata/PersonalAddresses
         public PersonalAddressesController(IServiceProvider provider) : base(provider) 
         {
             coordinates = provider.GetService<IAddressCoordinates>();
+            logger = provider.GetService<ILogger<PersonalAddressesController>>();
         }
 
         /// <summary>
@@ -73,16 +77,22 @@ namespace OS2Indberetning.Controllers
             {
                 return StatusCode(StatusCodes.Status403Forbidden);
             }
-
-            var result = coordinates.GetAddressCoordinates(personalAddress);
-            personalAddress.Latitude = result.Latitude;
-            personalAddress.Longitude = result.Longitude;
-            personalAddress.StreetName = result.StreetName;
-            personalAddress.StreetNumber = result.StreetNumber;
-            personalAddress.ZipCode = result.ZipCode;
-            personalAddress.Town = result.Town;
-
-            return base.Post(personalAddress);
+            try
+            {
+                var result = coordinates.GetAddressCoordinates(personalAddress);
+                personalAddress.Latitude = result.Latitude;
+                personalAddress.Longitude = result.Longitude;
+                personalAddress.StreetName = result.StreetName;
+                personalAddress.StreetNumber = result.StreetNumber;
+                personalAddress.ZipCode = result.ZipCode;
+                personalAddress.Town = result.Town;
+                return base.Post(personalAddress);                
+            }
+            catch (Exception e)
+            {
+                logger.LogWarning(e, $"Could not register personal address: {JsonConvert.SerializeObject(personalAddress)}");
+                return StatusCode(StatusCodes.Status400BadRequest);
+            }
         }
 
         //PATCH: odata/PersonalAddresses(5)
