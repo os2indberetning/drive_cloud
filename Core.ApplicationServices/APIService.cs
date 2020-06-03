@@ -375,7 +375,7 @@ namespace Core.ApplicationServices
                 Description = apiOrgunit.Name
             };
 
-            var existingOrg = _orgUnitRepo.AsNoTracking().FirstOrDefault(x => x.OrgId.Equals(apiOrgunit.Id));
+            var existingOrg = _orgUnitRepo.AsQueryable().FirstOrDefault(x => x.OrgId.Equals(apiOrgunit.Id));
 
             // If the address hasn't changed then set the Id to be the same as the existing one.
             // That way a new address won't be created in the database.
@@ -457,6 +457,11 @@ namespace Core.ApplicationServices
 
         public void UpdateHomeAddress(APIPerson apiPerson, ref Person person)
         {
+            if (apiPerson.Address == null)
+            {
+                _logger.LogWarning($"No home address supplied for {apiPerson.FirstName} {apiPerson.LastName}");
+                return;
+            }
             var splitStreetAddress = SplitAddressOnNumber(apiPerson.Address.Street);
             var apiAddress = new Address
             {
