@@ -72,7 +72,8 @@ namespace Core.ApplicationServices
                     ExtraNumber = reportToPayroll.Employment.ExtraNumber,
                     TFCode = reportToPayroll.TFCode,
                     TFCodeOptional = reportToPayroll.TFCodeOptional,
-                    DistanceMeters = Convert.ToInt32(reportToPayroll.Distance * 1000)
+                    DistanceMeters = Convert.ToInt32(reportToPayroll.Distance * 1000),
+                    InstituteCode = reportToPayroll.Employment.InstituteCode
                 });
                 reportToPayroll.Status = ReportStatus.APIFetched;
                 _reportRepo.Update(reportToPayroll);
@@ -301,7 +302,7 @@ namespace Core.ApplicationServices
                 }
                 var orgUnitId = _orgUnitRepo.AsNoTracking().Where(o => o.OrgId.ToString() == sourceEmployment.OrgUnitId).Select(o => o.Id).First();
                 employment.OrgUnitId = orgUnitId;
-                employment.Position = sourceEmployment.Position ?? "";
+                employment.Position = sourceEmployment.Position ?? "Ingen stillingsbetegnelse";
                 employment.IsLeader = sourceEmployment.Manager;
                 employment.StartDateTimestamp = GetUnixTime( sourceEmployment.FromDate ?? DateTime.Now.Date );
                 employment.ExtraNumber = sourceEmployment.ExtraNumber ?? 0;
@@ -309,6 +310,7 @@ namespace Core.ApplicationServices
                 employment.CostCenter = sourceEmployment.CostCenter == null ? 0 : long.Parse(sourceEmployment.CostCenter);
                 employment.EmploymentId = sourceEmployment.EmployeeNumber;
                 employment.EndDateTimestamp = sourceEmployment.ToDate == null ? 0 : GetUnixTime( sourceEmployment.ToDate.Value.AddDays(1) );
+                employment.InstituteCode = sourceEmployment.InstituteCode;
             }
         }
 

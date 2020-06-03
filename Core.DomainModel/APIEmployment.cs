@@ -13,5 +13,6 @@ namespace Core.DomainModel
         public bool Manager { get; set; }
         public int? ExtraNumber { get; set; }
         public int? EmploymentType { get; set; }
+        public string InstituteCode { get; set; }
     }
 }
