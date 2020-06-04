@@ -15,5 +15,8 @@ namespace Core.DomainModel
         public int ExtraNumber { get; set; }
         public int EmploymentType { get; set; }
         public string InstituteCode { get; set; }
+        public string ApprovedByCpr { get; set; }
+        public string LicensePlate { get; set; }
+
     }
 }

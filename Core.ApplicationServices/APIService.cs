@@ -73,7 +73,9 @@ namespace Core.ApplicationServices
                     TFCode = reportToPayroll.TFCode,
                     TFCodeOptional = reportToPayroll.TFCodeOptional,
                     DistanceMeters = Convert.ToInt32(reportToPayroll.Distance * 1000),
-                    InstituteCode = reportToPayroll.Employment.InstituteCode
+                    InstituteCode = reportToPayroll.Employment.InstituteCode,
+                    ApprovedByCpr = reportToPayroll.ApprovedBy.CprNumber,
+                    LicensePlate = reportToPayroll.LicensePlate
                 });
                 reportToPayroll.Status = ReportStatus.APIFetched;
                 _reportRepo.Update(reportToPayroll);
