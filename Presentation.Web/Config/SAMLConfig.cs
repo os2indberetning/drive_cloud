@@ -25,8 +25,8 @@ namespace Presentation.Web.Config
                         new IdentityProvider(
                             new EntityId(configuration["SAML:IdpEntityId"]), options.SPOptions)
                         {
-                            LoadMetadata = true
-                            ,MetadataLocation = configuration["SAML:IdpMetadataLocation"]
+                            MetadataLocation = configuration["SAML:IdpMetadataLocation"]
+                            ,LoadMetadata = true
                         });
                     options.SPOptions.ServiceCertificates.Add(new X509Certificate2(configuration["SAML:CertificateFilename"], configuration["SAML:CertificatePassword"]));
                     // ignore unsolved bug that throws exception occasionally
