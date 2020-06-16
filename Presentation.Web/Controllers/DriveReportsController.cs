@@ -248,10 +248,16 @@ namespace OS2Indberetning.Controllers
             {
                 return StatusCode(StatusCodes.Status403Forbidden);
             }
-
-            var result = _driveService.Create(driveReport);
-
-            return Ok(result);
+            try
+            {
+                var result = _driveService.Create(driveReport);
+                return Ok(result);
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e, "Could not create Report");
+                return BadRequest(e);
+            }
         }
 
         // PATCH: odata/DriveReports(5)
