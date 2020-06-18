@@ -7742,6 +7742,14 @@ angular.module("application").controller("DrivingController", [
                 return item.Type.TFCode == report.TFCode;
             });
 
+            // if a default rate is set, use that instead
+            if ($rootScope.HelpTexts.DefaultRateTypeId)
+            {
+                $scope.container.KmRateDropDown.select(function (item) {
+                    return item.Type.Id == $rootScope.HelpTexts.DefaultRateTypeId.text;
+                });
+            }
+
             angular.forEach($scope.KmRate, function (rate, key) {
                 if (rate.Type.TFCode == report.TFCode) {
                     $scope.showLicensePlate = rate.Type.RequiresLicensePlate;
