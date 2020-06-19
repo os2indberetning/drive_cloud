@@ -21,6 +21,7 @@ namespace Presentation.Web.Config
                     options.SPOptions.Logger = new AspNetCoreLoggerAdapter(logger);
                     options.SPOptions.EntityId = new EntityId(configuration["SAML:EntityId"]);
                     options.SPOptions.PublicOrigin = new Uri(configuration["SAML:PublicOrigin"]);
+                    options.SPOptions.ReturnUrl = new Uri(options.SPOptions.PublicOrigin, "index");
                     options.IdentityProviders.Add(
                         new IdentityProvider(
                             new EntityId(configuration["SAML:IdpEntityId"]), options.SPOptions)
