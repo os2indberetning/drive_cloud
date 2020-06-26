@@ -8,6 +8,7 @@ using System;
 using System.Linq;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.Logging;
 
 namespace OS2Indberetning.Controllers
 {
@@ -67,7 +68,15 @@ namespace OS2Indberetning.Controllers
         [EnableQuery]
         public new IActionResult Post([FromBody] PersonalRoute personalRoute)
         {
-            return personalRoute.PersonId.Equals(CurrentUser.Id) ? (IActionResult)Ok(_routeService.Create(personalRoute)) : StatusCode(StatusCodes.Status403Forbidden);
+            try
+            {
+                return personalRoute.PersonId.Equals(CurrentUser.Id) ? (IActionResult)Ok(_routeService.Create(personalRoute)) : StatusCode(StatusCodes.Status403Forbidden);
+            }
+            catch (Exception e)
+            {
+                _logger.LogWarning(e, "Fail to save personal address");
+                return StatusCode(StatusCodes.Status500InternalServerError);
+            }
         }
 
         //PATCH: odata/PersonalRoutes(5)
