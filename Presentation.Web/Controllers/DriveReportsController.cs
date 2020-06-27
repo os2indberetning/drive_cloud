@@ -16,22 +16,22 @@ namespace OS2Indberetning.Controllers
     public class DriveReportsController : BaseController<DriveReport>
     {
         private readonly IDriveReportService _driveService;
-        private readonly IGenericRepository<Employment> _employmentRepo;
-        private readonly IGenericRepository<Person> _personRepo;
-        private readonly IGenericRepository<OrgUnit> _orgrepo;
-        private readonly IGenericRepository<BankAccount> _Bankrepo;
-        private readonly IGenericRepository<LicensePlate> _LicensePlateRepo;
+        //private readonly IGenericRepository<Employment> _employmentRepo;
+        //private readonly IGenericRepository<Person> _personRepo;
+        //private readonly IGenericRepository<OrgUnit> _orgrepo;
+        //private readonly IGenericRepository<BankAccount> _Bankrepo;
+        //private readonly IGenericRepository<LicensePlate> _LicensePlateRepo;
         private readonly ITransferToPayrollService _transferToPayrollService;
 
 
         public DriveReportsController(IServiceProvider provider) : base(provider)
         {
             _driveService = provider.GetService<IDriveReportService>();
-            _employmentRepo = provider.GetService<IGenericRepository<Employment>>();
-            _personRepo = provider.GetService<IGenericRepository<Person>>();
-            _orgrepo = provider.GetService<IGenericRepository<OrgUnit>>();
-            _Bankrepo = provider.GetService<IGenericRepository<BankAccount>>();
-            _LicensePlateRepo = provider.GetService<IGenericRepository<LicensePlate>>();
+            //_employmentRepo = provider.GetService<IGenericRepository<Employment>>();
+            //_personRepo = provider.GetService<IGenericRepository<Person>>();
+            //_orgrepo = provider.GetService<IGenericRepository<OrgUnit>>();
+            //_Bankrepo = provider.GetService<IGenericRepository<BankAccount>>();
+            //_LicensePlateRepo = provider.GetService<IGenericRepository<LicensePlate>>();
             _transferToPayrollService = provider.GetService<ITransferToPayrollService>();
         }
 
@@ -233,7 +233,7 @@ namespace OS2Indberetning.Controllers
         /// <param name="driveReport"></param>
         /// <returns>The posted report.</returns>
         [EnableQuery]
-        public new IActionResult Post([FromBody] DriveReport driveReport, string emailText)
+        public IActionResult Post([FromBody] DriveReport driveReport, string emailText)
         {
             if (CurrentUser.IsAdmin && emailText != null && driveReport.Status == ReportStatus.Accepted)
             {

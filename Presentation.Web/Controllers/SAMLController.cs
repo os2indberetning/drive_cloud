@@ -42,33 +42,41 @@ namespace Presentation.Web.Controllers.API
 
         public async Task<ActionResult> Callback()
         {
-            var info = await _signInManager.GetExternalLoginInfoAsync();
-            if (info == null)
+            try
             {
-                _logger.LogWarning("Could not get ExternalLoginInfo - Name Id claim was probably not sent correctly");
-                return Redirect("/index?loginFailed=true");
-            }
-            _logger.LogDebug("Received Claims {claims}", info.Principal.Claims);
-            _signInManager.ClaimsFactory = new Saml2ClaimsFactory(_signInManager.ClaimsFactory, info);
-            var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
-
-            if (result.Succeeded)
-            {
-                // update user admin and email field from claims
-                var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
-                user.Person.IsAdmin = info.Principal.Claims.Any(c => c.Type == "roles" && c.Value == "administrator");
-                var email = info.Principal.Claims.Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").FirstOrDefault();
-                if (email != null)
+                var info = await _signInManager.GetExternalLoginInfoAsync();
+                if (info == null)
                 {
-                    user.Person.Mail = email.Value;
+                    _logger.LogWarning("Could not get ExternalLoginInfo - Name Id claim was probably not sent correctly");
+                    return Redirect("/index?loginFailed=true");
                 }
-                _personRepo.Update(user.Person);
-                _personRepo.Save();
-                _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", user.Person.FullName, info.LoginProvider);
-                return Redirect("/index");
+                _logger.LogDebug("Received Claims {claims}", info.Principal.Claims);
+                _signInManager.ClaimsFactory = new Saml2ClaimsFactory(_signInManager.ClaimsFactory, info);
+                var result = await _signInManager.ExternalLoginSignInAsync(info.LoginProvider, info.ProviderKey, isPersistent: false, bypassTwoFactor: true);
+
+                if (result.Succeeded)
+                {
+                    // update user admin and email field from claims
+                    var user = await _userManager.FindByLoginAsync(info.LoginProvider, info.ProviderKey);
+                    user.Person.IsAdmin = info.Principal.Claims.Any(c => c.Type == "roles" && c.Value == "administrator");
+                    var email = info.Principal.Claims.Where(c => c.Type == "http://schemas.xmlsoap.org/ws/2005/05/identity/claims/emailaddress").FirstOrDefault();
+                    if (email != null)
+                    {
+                        user.Person.Mail = email.Value;
+                    }
+                    _personRepo.Update(user.Person);
+                    _personRepo.Save();
+                    _logger.LogInformation("{Name} logged in with {LoginProvider} provider.", user.Person.FullName, info.LoginProvider);
+                    return Redirect("/index");
+                }
+                else
+                {
+                    return Redirect("/index?loginFailed=true");
+                }
             }
-            else
+            catch (System.Exception e)
             {
+                _logger.LogWarning(e, "Login failed");
                 return Redirect("/index?loginFailed=true");
             }
         }
