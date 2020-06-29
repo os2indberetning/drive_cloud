@@ -18,7 +18,7 @@ namespace Presentation.Web.Config
             services.AddAuthentication()
                 .AddSaml2(options =>
                 {
-                    //options.SPOptions.Logger = new AspNetCoreLoggerAdapter(logger);
+                    options.SPOptions.Logger = new AspNetCoreLoggerAdapter(logger);
                     options.SPOptions.EntityId = new EntityId(configuration["SAML:EntityId"]);
                     options.SPOptions.PublicOrigin = new Uri(configuration["SAML:PublicOrigin"]);
                     options.SPOptions.ReturnUrl = new Uri(options.SPOptions.PublicOrigin, "index");                    
