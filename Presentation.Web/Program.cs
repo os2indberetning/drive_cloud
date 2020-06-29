@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.Extensions.Configuration;
+using Presentation.Web.Config;
 using Serilog;
 using System.IO;
 
@@ -13,10 +14,12 @@ namespace Presentation.Web
             var config = new ConfigurationBuilder()
                 .SetBasePath(Directory.GetCurrentDirectory())
                 .AddJsonFile("appsettings.json")
+                .AddEnvironmentVariables()
                 .Build();
 
             Log.Logger = new LoggerConfiguration()
-                .ReadFrom.Configuration(config)
+                .ReadFrom.Configuration(config)                
+                .Enrich.With(new SilentLogEnricher(config))
                 .CreateLogger();
 
             CreateWebHostBuilder(args).Build().Run();
