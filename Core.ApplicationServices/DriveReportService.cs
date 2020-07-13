@@ -203,6 +203,11 @@ namespace Core.ApplicationServices
         {
             var report = _driveReportRepository.AsQueryable().FirstOrDefault(r => r.Id == key);
             var recipient = "";
+            if (report != null && !report.Person.IsActive)
+            {
+                _logger.LogWarning("Forsøg på at sende mail til en inaktiv person." + report.Person.FullName + " har derfor ikke modtaget en mailadvisering");
+                return;
+            }
             if (report != null && !string.IsNullOrEmpty(report.Person.Mail))
             {
                 recipient = report.Person.Mail;
@@ -268,7 +273,7 @@ namespace Core.ApplicationServices
             // Send mail to leader.
             foreach (var leader in report.PersonReports)
             {
-                if (leader.Person.RecieveMail && !string.IsNullOrEmpty(leader.Person.Mail))
+                if (leader.Person.RecieveMail && !string.IsNullOrEmpty(leader.Person.Mail) && leader.Person.IsActive)
                 {
                     _mailService.SendMail(leader.Person.Mail, $"{report.Person.FullName} har angivet brug af 60-dages reglen", $"Brugeren {report.Person.FirstName} {report.Person.LastName} med medarbejdernummer {report.Employment.EmploymentId} har angivet at være omfattet af 60-dages reglen");
                 }
@@ -491,10 +496,14 @@ namespace Core.ApplicationServices
             + "Hvis du mener at dette er en fejl, så kontakt mig da venligst på " + admin.Mail + Environment.NewLine
             + "Med venlig hilsen " + admin.FullName + Environment.NewLine + Environment.NewLine
             + "Besked fra administrator: " + Environment.NewLine + emailText;
-
-            _mailService.SendMail(report.Person.Mail, "En administrator har ændret i din indberetning.", mailContent);
-
-            _mailService.SendMail(report.ApprovedBy.Mail, "En administrator har ændret i en indberetning du har godkendt.", mailContent);
+            if (report.Person.IsActive)
+            {
+                _mailService.SendMail(report.Person.Mail, "En administrator har ændret i din indberetning.", mailContent);
+            }
+            if (report.ApprovedBy.IsActive)
+            {
+                _mailService.SendMail(report.ApprovedBy.Mail, "En administrator har ændret i en indberetning du har godkendt.", mailContent);
+            }
         }
     }
 }
