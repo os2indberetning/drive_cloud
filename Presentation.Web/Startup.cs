@@ -2,16 +2,20 @@
 using Microsoft.AspNet.OData.Extensions;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.DataProtection;
+using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json.Serialization;
 using Presentation.Web.Auth;
 using Presentation.Web.Config;
 using System.IO;
+using System.Net;
 
 namespace Presentation.Web
 {
@@ -57,6 +61,7 @@ namespace Presentation.Web
             {
                 app.UseHsts();
             }
+            ConfigureExceptionHandler(app);
             InitializeDatabase(app);
             app.UseAuthentication();
             app.UseResponseCaching();
@@ -71,6 +76,31 @@ namespace Presentation.Web
             {
                 scope.ServiceProvider.GetRequiredService<DataContext>().Database.Migrate();
             }
+        }
+
+        private void ConfigureExceptionHandler(IApplicationBuilder app)
+        {
+            var logger = app.ApplicationServices.GetService<ILogger<Startup>>();
+            app.UseExceptionHandler(appError =>
+            {
+                appError.Run(async context =>
+                {
+                    context.Response.StatusCode = (int)HttpStatusCode.InternalServerError;
+                    context.Response.ContentType = "application/json";
+
+                    var contextFeature = context.Features.Get<IExceptionHandlerFeature>();
+                    if (contextFeature != null)
+                    {
+                        // log unhandled errors as warnings for monitoring purposes
+                        logger.LogWarning($"Unhandled error caught by middleware: {contextFeature.Error}");
+                        await context.Response.WriteAsync(new
+                        {
+                            context.Response.StatusCode,
+                            Message = "Internal Server Error"
+                        }.ToString());
+                    }
+                });
+            });
         }
     }
 }
