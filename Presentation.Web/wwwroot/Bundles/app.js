@@ -3313,11 +3313,17 @@ angular.module("application").controller("AdminAcceptedReportsController", [
 
        var getDataUrl = function (from, to, fullName, longDescription) {
            var url = "/odata/DriveReports?status=Accepted &getReportsWhereSubExists=true &$expand=DriveReportPoints,ApprovedBy,Employment($expand=OrgUnit)";
-           var filters = "&$filter=DriveDateTimestamp ge " + from + " and DriveDateTimestamp le " + to;
-           if (fullName != undefined && fullName != "") {
+           var filters = "&$filter=Id ge 0"; // dummy filter always true
+           if (!isNaN(from)) {
+               filters += " and DriveDateTimestamp ge " + from;
+           }
+           if (!isNaN(to)) {
+               filters += " and DriveDateTimestamp le " + to;
+           }
+           if (fullName != undefined && fullName != "" && $scope.person.chosenId != undefined && $scope.person.chosenId > 0) {
                filters += " and PersonId eq " + $scope.person.chosenId;
            }
-           if (longDescription != undefined && longDescription != "") {
+           if (longDescription != undefined && longDescription != "" && $scope.orgUnit.chosenId != undefined && $scope.orgUnit.chosenId > 0) {
                filters += " and Employment/OrgUnitId eq " + $scope.orgUnit.chosenId;
            }
            var result = url + filters;
@@ -3694,11 +3700,17 @@ angular.module("application").controller("AdminPendingReportsController", [
 
        var getDataUrl = function (from, to, fullName, longDescription) {
            var url = "/odata/DriveReports?status=Pending &getReportsWhereSubExists=true &$expand=DriveReportPoints,PersonReports($expand=Person),Employment($expand=OrgUnit)";
-           var filters = "&$filter=DriveDateTimestamp ge " + from + " and DriveDateTimestamp le " + to;
-           if (fullName != undefined && fullName != "") {
+           var filters = "&$filter=Id ge 0"; // dummy filter always true
+           if (!isNaN(from)) {
+               filters += " and DriveDateTimestamp ge " + from;
+           }
+           if (!isNaN(to)) {
+               filters += " and DriveDateTimestamp le " + to;
+           }
+           if (fullName != undefined && fullName != "" && $scope.person.chosenId != undefined && $scope.person.chosenId > 0) {
                filters += " and PersonId eq " + $scope.person.chosenId;
            }
-           if (longDescription != undefined && longDescription != "") {
+           if (longDescription != undefined && longDescription != "" && $scope.orgUnit.chosenId != undefined && $scope.orgUnit.chosenId > 0) {
                filters += " and Employment/OrgUnitId eq " + $scope.orgUnit.chosenId;
            }
            var result = url + filters;
@@ -4042,11 +4054,17 @@ angular.module("application").controller("AdminRejectedReportsController", [
 
        var getDataUrl = function (from, to, fullName, longDescription) {
            var url = "/odata/DriveReports?status=Rejected &getReportsWhereSubExists=true &$expand=DriveReportPoints,ApprovedBy,Employment($expand=OrgUnit)";
-           var filters = "&$filter=DriveDateTimestamp ge " + from + " and DriveDateTimestamp le " + to;
-           if (fullName != undefined && fullName != "") {
+           var filters = "&$filter=Id ge 0"; // dummy filter always true
+           if (!isNaN(from)) {
+               filters += " and DriveDateTimestamp ge " + from;
+           }
+           if (!isNaN(to)) {
+               filters += " and DriveDateTimestamp le " + to;
+           }
+           if (fullName != undefined && fullName != "" && $scope.person.chosenId != undefined && $scope.person.chosenId > 0) {
                filters += " and PersonId eq " + $scope.person.chosenId;
            }
-           if (longDescription != undefined && longDescription != "") {
+           if (longDescription != undefined && longDescription != "" && $scope.orgUnit.chosenId != undefined && $scope.orgUnit.chosenId > 0) {
                filters += " and Employment/OrgUnitId eq " + $scope.orgUnit.chosenId;
            }
            var result = url + filters;
@@ -4562,12 +4580,17 @@ angular.module("application").controller("AcceptedReportsController", [
 
        var getDataUrl = function (from, to, fullName, longDescription) {
            var url = "/odata/DriveReports?from=approve&leaderId=" + personId + "&status=Accepted" + "&getReportsWhereSubExists=" + $scope.checkboxes.showSubbed + " &$expand=Employment($expand=OrgUnit),DriveReportPoints";
-           var filters = "&$filter=DriveDateTimestamp ge " + from + " and DriveDateTimestamp le " + to;
-           
-           if (fullName != undefined && fullName != "") {
+           var filters = "&$filter=Id ge 0"; // dummy filter always true
+           if (!isNaN(from)) {
+               filters += " and DriveDateTimestamp ge " + from;
+           }
+           if (!isNaN(to)) {
+               filters += " and DriveDateTimestamp le " + to;
+           }
+           if (fullName != undefined && fullName != "" && $scope.person.chosenId != undefined && $scope.person.chosenId > 0) {
                filters += " and PersonId eq " + $scope.person.chosenId;
            }
-           if (longDescription != undefined && longDescription != "") {
+           if (longDescription != undefined && longDescription != "" && $scope.orgUnit.chosenId != undefined && $scope.orgUnit.chosenId > 0) {
                filters += " and Employment/OrgUnitId eq " + $scope.orgUnit.chosenId;
            }
            
@@ -6607,19 +6630,21 @@ angular.module("application").controller("PendingReportsController", [
 
        var getDataUrl = function (from, to, fullName, longDescription) {
            var url = "/odata/DriveReports?from=approve&status=Pending&$expand=Employment($expand=OrgUnit),DriveReportPoints,PersonReports($expand=Person)";
-
-           var removeOwn = "";
-
-           removeOwn = " and PersonId ne " + $scope.CurrentUser.Id;
-
-           var filters = "&$filter=DriveDateTimestamp ge " + from + " and DriveDateTimestamp le " + to;
-           if (fullName != undefined && fullName != "") {
+           var filters = "&$filter=Id ge 0"; // dummy filter always true
+           if (!isNaN(from)) {
+               filters += " and DriveDateTimestamp ge " + from;
+           }
+           if (!isNaN(to)) {
+               filters += " and DriveDateTimestamp le " + to;
+           }
+           if (fullName != undefined && fullName != "" && $scope.person.chosenId != undefined && $scope.person.chosenId > 0) {
                filters += " and PersonId eq " + $scope.person.chosenId;
            }
-           if (longDescription != undefined && longDescription != "") {
+           if (longDescription != undefined && longDescription != "" && $scope.orgUnit.chosenId != undefined && $scope.orgUnit.chosenId > 0) {
                filters += " and Employment/OrgUnitId eq " + $scope.orgUnit.chosenId;
            }
-           filters += removeOwn;
+           // remove own
+           filters += " and PersonId ne " + $scope.CurrentUser.Id;
 
            var result = url + filters;
            return result;
@@ -7127,12 +7152,17 @@ angular.module("application").controller("RejectedReportsController", [
 
        var getDataUrl = function (from, to, fullName, longDescription) {
            var url = "/odata/DriveReports?from=approve&leaderId=" + personId + "&status=Rejected" + "&getReportsWhereSubExists=" + $scope.checkboxes.showSubbed + " &$expand=Employment($expand=OrgUnit),DriveReportPoints";
-           var filters = "&$filter=DriveDateTimestamp ge " + from + " and DriveDateTimestamp le " + to;          
-
-           if (fullName != undefined && fullName != "") {
+           var filters = "&$filter=Id ge 0"; // dummy filter always true
+           if (!isNaN(from)) {
+               filters += " and DriveDateTimestamp ge " + from;
+           }
+           if (!isNaN(to)) {
+               filters += " and DriveDateTimestamp le " + to;
+           }
+           if (fullName != undefined && fullName != "" && $scope.person.chosenId != undefined && $scope.person.chosenId > 0) {
                filters += " and PersonId eq " + $scope.person.chosenId;
            }
-           if (longDescription != undefined && longDescription != "") {
+           if (longDescription != undefined && longDescription != "" && $scope.orgUnit.chosenId != undefined && $scope.orgUnit.chosenId > 0) {
                filters += " and Employment/OrgUnitId eq " + $scope.orgUnit.chosenId;
            }
 

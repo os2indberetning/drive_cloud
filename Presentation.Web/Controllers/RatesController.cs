@@ -109,7 +109,7 @@ namespace OS2Indberetning.Controllers
                 result = Repo.AsQueryable().Where(x => x.Active);
             }catch(Exception e)
             {
-                _logger.LogError($"{GetType().Name}, ThisYearsRates(), Error", e);
+                _logger.LogError(e, $"{GetType().Name}, ThisYearsRates(), Error");
             }
             return result;
         }

@@ -74,12 +74,17 @@
 
        var getDataUrl = function (from, to, fullName, longDescription) {
            var url = "/odata/DriveReports?from=approve&leaderId=" + personId + "&status=Rejected" + "&getReportsWhereSubExists=" + $scope.checkboxes.showSubbed + " &$expand=Employment($expand=OrgUnit),DriveReportPoints";
-           var filters = "&$filter=DriveDateTimestamp ge " + from + " and DriveDateTimestamp le " + to;          
-
-           if (fullName != undefined && fullName != "") {
+           var filters = "&$filter=Id ge 0"; // dummy filter always true
+           if (!isNaN(from)) {
+               filters += " and DriveDateTimestamp ge " + from;
+           }
+           if (!isNaN(to)) {
+               filters += " and DriveDateTimestamp le " + to;
+           }
+           if (fullName != undefined && fullName != "" && $scope.person.chosenId != undefined && $scope.person.chosenId > 0) {
                filters += " and PersonId eq " + $scope.person.chosenId;
            }
-           if (longDescription != undefined && longDescription != "") {
+           if (longDescription != undefined && longDescription != "" && $scope.orgUnit.chosenId != undefined && $scope.orgUnit.chosenId > 0) {
                filters += " and Employment/OrgUnitId eq " + $scope.orgUnit.chosenId;
            }
 

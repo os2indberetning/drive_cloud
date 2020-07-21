@@ -82,7 +82,7 @@ namespace OS2Indberetning.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{GetType().Name}, GetCurrentUser(), Error", ex);
+                _logger.LogError(ex, $"{GetType().Name}, GetCurrentUser(), Error");
                 throw ex;
             }
         }

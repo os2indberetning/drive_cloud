@@ -88,7 +88,7 @@ namespace OS2Indberetning.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{GetType().Name}, Get(), queryOption={queryOptions}, status={status}, leaderId={leaderId}, getReportsWhereSubExists={getReportsWhereSubExists}", ex);
+                _logger.LogError(ex,$"{GetType().Name}, Get(), queryOption={queryOptions}, status={status}, leaderId={leaderId}, getReportsWhereSubExists={getReportsWhereSubExists}");
             }
             return Ok(queryable);
         }
@@ -162,7 +162,7 @@ namespace OS2Indberetning.Controllers
             }
             catch (Exception ex)
             {
-                _logger.LogError($"{GetType().Name}, GetLatestReportForUser(), personId={personId}", ex);
+                _logger.LogError(ex, $"{GetType().Name}, GetLatestReportForUser(), personId={personId}");
             }
             _logger.LogDebug($"{GetType().Name}, GetLatestReportForUser(), personId={personId}, statusCode=204 No Content");
             return StatusCode(StatusCodes.Status204NoContent);
@@ -195,7 +195,7 @@ namespace OS2Indberetning.Controllers
             }
             catch (Exception e)
             {
-                _logger.LogError($"{GetType().Name}, Get(), Error when transfering reports to payroll, Status Code: 500 Internal Server Error", e);
+                _logger.LogError(e, $"{GetType().Name}, Get(), Error when transfering reports to payroll, Status Code: 500 Internal Server Error");
                 return StatusCode(StatusCodes.Status500InternalServerError);
             }
         }
@@ -344,7 +344,7 @@ namespace OS2Indberetning.Controllers
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"{GetType().Name}, Patch(), Error when trying to update report status for user {report.Person.FullName}", ex);
+                        _logger.LogError(ex, $"{GetType().Name}, Patch(), Error when trying to update report status for user {report.Person.FullName}");
                         return StatusCode(StatusCodes.Status500InternalServerError);
                         
                     }
