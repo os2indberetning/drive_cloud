@@ -295,7 +295,7 @@ namespace Core.ApplicationServices
             personToInsert.IsActive = false;
             foreach (var sourceEmployment in apiPerson.Employments)
             {
-                var employment = personToInsert.Employments.Where(d => d.EmploymentId.ToString() == sourceEmployment.EmployeeNumber && (d.EndDateTimestamp == 0 || d.EndDateTimestamp >= GetUnixTime(DateTime.Now.Date))).SingleOrDefault();
+                var employment = personToInsert.Employments.Where(d => d.EmploymentId.ToString() == sourceEmployment.EmployeeNumber && (d.EndDateTimestamp == 0 || d.EndDateTimestamp >= GetUnixTime(DateTime.Now.Date))).FirstOrDefault();
 
                 if (employment == null)
                 {
