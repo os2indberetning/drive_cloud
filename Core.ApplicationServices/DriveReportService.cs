@@ -214,8 +214,8 @@ namespace Core.ApplicationServices
             }
             else
             {
-                _logger.LogError("Forsøg på at sende mail om afvist indberetning til " + report.Person.FullName + ", men der findes ingen emailadresse. " + report.Person.FullName + " har derfor ikke modtaget en mailadvisering");
-                throw new Exception("Forsøg på at sende mail til person uden emailaddresse");
+                _logger.LogWarning("Forsøg på at sende mail om afvist indberetning til " + report.Person.FullName + ", men der findes ingen emailadresse. " + report.Person.FullName + " har derfor ikke modtaget en mailadvisering");
+                return;
             }
             var comment = new object();
             if (delta.TryGetPropertyValue("Comment", out comment))
