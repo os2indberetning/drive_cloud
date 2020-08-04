@@ -57,7 +57,7 @@ namespace OS2Indberetning.Filters
             }
             catch (Exception e)
             {
-                _logger.LogError(e, "OnActionExecuting(), Auditlogging failed.");
+                _logger.LogWarning(e, "OnActionExecuting(), Auditlogging failed.");
                 context.Result = new BadRequestResult();
             }
             base.OnActionExecuting(context);
