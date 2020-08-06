@@ -226,6 +226,11 @@ angular.module("application").controller("AdminMenuController", [
 
    }
 ]);
+angular.module("application").controller("AdminController", [
+   "$scope", function ($scope) {
+       
+   }
+]);
 angular.module("application").controller("AccountController", [
     "$scope", "$modal", "BankAccount", "NotificationService", "$rootScope",
     function ($scope, $modal, BankAccount, NotificationService, $rootScope) {
@@ -949,11 +954,6 @@ angular.module("application").controller("AddressLaundryController", [
            $scope.container.grid.dataSource.filter([]);
        }
 
-   }
-]);
-angular.module("application").controller("AdminController", [
-   "$scope", function ($scope) {
-       
    }
 ]);
 angular.module("application").controller("AdministrationController", [
@@ -1993,8 +1993,8 @@ angular.module("application").controller("RateController", [
 ]);
 
 angular.module('application').controller('ReportController', [
-    "$scope", "$rootScope", "$window", "$state", "Person", "Autocomplete", "OrgUnit", "MkColumnFormatter", "RouteColumnFormatter",
-    function ($scope, $rootScope, $window, $state, Person, Autocomplete, OrgUnit, MkColumnFormatter, RouteColumnFormatter) {
+    "$scope", "$rootScope", "$window", "$state", "Person", "Autocomplete", "OrgUnit", "MkColumnFormatter", "RouteColumnFormatter","RateType",
+    function ($scope, $rootScope, $window, $state, Person, Autocomplete, OrgUnit, MkColumnFormatter, RouteColumnFormatter,RateType) {
 
         $scope.gridContainer = {};
         $scope.dateContainer = {};
@@ -2003,7 +2003,10 @@ angular.module('application').controller('ReportController', [
         $scope.persons = Autocomplete.allUsers();
         $scope.orgUnits = Autocomplete.orgUnits();
         $scope.showReport = false;
-        
+
+        RateType.getAll().$promise.then(function (res) {
+            $scope.rateTypes = res;
+        });        
 
         $scope.dateOptions = {
             format: "dd/MM/yyyy",
@@ -2413,6 +2416,18 @@ angular.module('application').controller('ReportController', [
                         return data.AmountToReimburse.toFixed(2).toString().replace('.', ',') + " kr.";
                     }, 
                     footerTemplate: "Total: #= kendo.toString(sum, '0.00').replace('.',',') # Kr.",
+                    width: 100,
+                },
+                {
+                    field: "TFCode",
+                    title: "Taksttype",
+                    template: function (data) {
+                        for (var i = 0; i < $scope.rateTypes.length; i++) {
+                            if ($scope.rateTypes[i].TFCode == data.TFCode) {
+                                return $scope.rateTypes[i].Description;
+                            }
+                        }
+                    },
                     width: 100,
                 },
                 { 
@@ -4899,8 +4914,8 @@ angular.module("application").controller("ApproveReportsController", [
    }
 ]);
 angular.module('application').controller('ApproveReportsReportController', [
-    "$scope", "$rootScope", "$window", "$state", "Person", "Autocomplete", "OrgUnit", "MkColumnFormatter", "RouteColumnFormatter",
-    function ($scope, $rootScope, $window, $state, Person, Autocomplete, OrgUnit, MkColumnFormatter, RouteColumnFormatter) {
+    "$scope", "$rootScope", "$window", "$state", "Person", "Autocomplete", "OrgUnit", "MkColumnFormatter", "RouteColumnFormatter","RateType",
+    function ($scope, $rootScope, $window, $state, Person, Autocomplete, OrgUnit, MkColumnFormatter, RouteColumnFormatter, RateType) {
 
         $scope.gridContainer = {};
         $scope.dateContainer = {};
@@ -4909,7 +4924,10 @@ angular.module('application').controller('ApproveReportsReportController', [
         $scope.persons = Autocomplete.allEmployeesForLeader();
         $scope.orgUnits = Autocomplete.allOrgUnitsForLeader();
         $scope.showReport = false;
-        
+
+        RateType.getAll().$promise.then(function (res) {
+            $scope.rateTypes = res;
+        });                    
 
         $scope.dateOptions = {
             format: "dd/MM/yyyy",
@@ -5318,6 +5336,18 @@ angular.module('application').controller('ApproveReportsReportController', [
                         return data.AmountToReimburse.toFixed(2).toString().replace('.', ',') + " kr.";
                     }, 
                     footerTemplate: "Total: #= kendo.toString(sum, '0.00').replace('.',',') # Kr.",
+                    width: 100,
+                },
+                {
+                    field: "TFCode",
+                    title: "Taksttype",
+                    template: function (data) {
+                        for (var i = 0; i < $scope.rateTypes.length; i++) {
+                            if ($scope.rateTypes[i].TFCode == data.TFCode) {
+                                return $scope.rateTypes[i].Description;
+                            }
+                        }
+                    },
                     width: 100,
                 },
                 { 
@@ -6078,455 +6108,6 @@ angular.module("application").controller("ApproveReportsSettingsController", [
 
         }
     }
-]);
-angular.module("application").controller("AcceptController", [
-   "$scope", "$modalInstance", "itemId", "NotificationService" +
-    "", "pageNumber", function ($scope, $modalInstance, itemId, NotificationService, pageNumber) {
-
-       $scope.itemId = itemId;
-       $scope.pageNumber = pageNumber;
-
-       $scope.noClicked = function () {
-           $modalInstance.dismiss('cancel');
-           NotificationService.AutoFadeNotification("warning", "", "Godkendelsen blev annulleret.");
-       }
-
-       $scope.yesClicked = function () {
-           $modalInstance.close($scope.itemId);
-           NotificationService.AutoFadeNotification("success", "", "Indberetningen blev godkendt.");
-       }
-
-       $scope.approveSelectedClick = function () {
-           $modalInstance.close();
-           NotificationService.AutoFadeNotification("success", "", "De markerede indberetninger blev godkendt.");
-       }
-
-   }
-]);
-angular.module("application").controller("AcceptWithAccountController", [
-   "$scope", "$modalInstance", "itemId", "BankAccount", "NotificationService", "pageNumber", function ($scope, $modalInstance, itemId, BankAccount, NotificationService, pageNumber) {
-
-       $scope.itemId = itemId;
-
-       $scope.result = {};
-
-       $scope.pageNumber = pageNumber;
-
-       BankAccount.get().$promise.then(function (res) {
-           $scope.accounts = res.value;
-       });
-
-       $scope.noClicked = function () {
-           $modalInstance.dismiss('cancel');
-           NotificationService.AutoFadeNotification("warning", "", "Godkendelsen af indberetningen blev annulleret.");
-       }
-
-       $scope.yesClicked = function () {
-           if ($scope.selectedAccount == undefined) {
-               $scope.errorMessage = "* Du skal vælge en konto";
-           } else {
-               $scope.result.AccountNumber = $scope.selectedAccount.Number;
-               $scope.result.Id = itemId;
-               $modalInstance.close($scope.result);
-               NotificationService.AutoFadeNotification("success", "", "Indberetningen blev godkendt med kontering " + $scope.selectedAccount.Description + " - " + $scope.selectedAccount.Number);
-           }
-       }
-
-       $scope.approveAllWithAccountClick = function () {
-           if ($scope.selectedAccount == undefined) {
-               $scope.errorMessage = "* Du skal vælge en konto";
-           } else {
-               $modalInstance.close($scope.selectedAccount.Number);
-               NotificationService.AutoFadeNotification("success", "", "Indberetningerne blev godkendt med kontering " + $scope.selectedAccount.Description + " - " + $scope.selectedAccount.Number);
-           }
-       }
-
-       $scope.approveSelectedWithAccountClick = function () {
-           if ($scope.selectedAccount == undefined) {
-               $scope.errorMessage = "* Du skal vælge en konto";
-           } else {
-               $modalInstance.close($scope.selectedAccount.Number);
-               NotificationService.AutoFadeNotification("success", "", "Indberetningerne blev godkendt med kontering " + $scope.selectedAccount.Description + " - " + $scope.selectedAccount.Number);
-           }
-       }
-
-   }
-]);
-angular.module('application').controller('ConfirmDeleteApproverModalInstanceController',
-    ["$scope", "$modalInstance", "persons", "orgUnits", "leader", "Substitute", "Person", "NotificationService", "substituteId",
-        function ($scope, $modalInstance, persons, orgUnits, leader, Substitute, Person, NotificationService, substituteId) {
-
-        $scope.loadingPromise = null;
-
-        $scope.persons = persons;
-        $scope.orgUnits = orgUnits;
-
-        $scope.substitute = Substitute.get({ id: substituteId }, function (data) {
-
-            $scope.substitute = data.value[0]; // This is bad, but can't change the service
-            $scope.sub = $scope.substitute.Sub;
-            $scope.person = $scope.substitute.Person;
-            $scope.substituteFromDate = new Date($scope.substitute.StartDateTimestamp * 1000).toLocaleDateString();
-            if ($scope.substitute.EndDateTimestamp == 9999999999) {
-                $scope.substituteToDate = "På ubestemt tid";
-            } else {
-                $scope.substituteToDate = new Date($scope.substitute.EndDateTimestamp * 1000).toLocaleDateString();
-            }
-        });
-
-        $scope.orgUnitSelected = function (id) {
-        }
-
-        $scope.deleteSubstitute = function () {
-
-            var sub = new Substitute();
-
-            $scope.showSpinner = true;
-
-            $scope.loadingPromise = sub.$delete({ id: $scope.substitute.Id }, function (data) {
-                NotificationService.AutoFadeNotification("success", "", "Personlig godkender er blevet slettet");
-                $modalInstance.close();
-            }, function () {
-                NotificationService.AutoFadeNotification("danger", "", "Kunne ikke slette personlig godkender");
-            });
-        };
-
-        $scope.cancelSubstitute = function () {
-            $modalInstance.dismiss('cancel');
-        };
-    }]);
-angular.module('application').controller('ConfirmDeleteSubstituteModalInstanceController',
-    ["$scope", "$modalInstance", "persons", "orgUnits", "leader", "Substitute", "Person", "NotificationService", "substituteId",
-        function ($scope, $modalInstance, persons, orgUnits, leader, Substitute, Person, NotificationService, substituteId) {
-
-        $scope.loadingPromise = null;
-
-        $scope.persons = persons;
-        $scope.orgUnits = orgUnits;
-
-        $scope.substitute = Substitute.get({ id: substituteId }, function (data) {
-
-            $scope.substitute = data.value[0]; // This is bad, but can't change the service
-            $scope.person = $scope.substitute.Sub;
-            $scope.substituteFromDate = new Date($scope.substitute.StartDateTimestamp * 1000).toLocaleDateString();
-            if ($scope.substitute.EndDateTimestamp == 9999999999) {
-                $scope.substituteToDate = "På ubestemt tid";
-            } else {
-                $scope.substituteToDate = new Date($scope.substitute.EndDateTimestamp * 1000).toLocaleDateString();
-            }
-        });
-
-        
-        $scope.orgUnitSelected = function (id) {
-        }
-
-        $scope.deleteSubstitute = function () {
-
-            var sub = new Substitute();
-
-            $scope.showSpinner = true;
-
-            $scope.loadingPromise = sub.$delete({ id: $scope.substitute.Id }, function (data) {
-                NotificationService.AutoFadeNotification("success", "", "Stedfortræderen blev slettet.");
-                $modalInstance.close();
-            }, function () {
-                NotificationService.AutoFadeNotification("danger", "", "Kunne ikke slette stedfortræder");
-            });
-        };
-
-        $scope.cancelSubstitute = function () {
-            $modalInstance.dismiss('cancel');
-        };
-    }]);
-angular.module('application').controller('EditApproverModalInstanceController',
-    ["$scope", "$modalInstance", "persons", "orgUnits", "leader", "Substitute", "Person", "NotificationService", "substituteId","Autocomplete",
-        function ($scope, $modalInstance, persons, orgUnits, leader, Substitute, Person, NotificationService, substituteId,Autocomplete) {
-
-            $scope.persons = persons;
-            $scope.orgUnits = orgUnits;
-            $scope.orgUnit = $scope.orgUnits[0];
-
-            $scope.loadingPromise = null;
-
-            $scope.personsWithoutLeader = Autocomplete.activeUsersWithoutLeader(leader.Id);
-
-            $scope.autoCompleteOptionsFor = {
-                select: function (e) {
-                    $scope.target = this.dataItem(e.item.index());
-                }
-            }
-
-            $scope.autoCompleteOptionsSub = {
-                select: function (e) {
-                    $scope.approver = this.dataItem(e.item.index());
-                }
-            }
-          
-
-            $scope.substitute = Substitute.get({ id: substituteId }, function (data) {
-
-                if (data.value[0].EndDateTimestamp == 9999999999) {
-                    $scope.infinitePeriod = true;
-                }
-
-
-                $scope.substitute = data.value[0]; // Should change the service
-
-                $scope.target = $scope.substitute.Person;
-                $scope.approver = $scope.substitute.Sub;
-
-                $scope.approverFromDate = new Date($scope.substitute.StartDateTimestamp * 1000);
-                $scope.approverToDate = new Date($scope.substitute.EndDateTimestamp * 1000);
-                $scope.orgUnit = $.grep($scope.orgUnits, function (e) { return e.Id == $scope.substitute.OrgUnitId; })[0];
-                $scope.container.autoCompleteFor.value($scope.target.FullName);
-                $scope.container.autoCompleteSub.value($scope.approver.FullName);
-            });
-
-            $scope.saveNewApprover = function () {
-                if ($scope.approver == undefined) {
-                    NotificationService.AutoFadeNotification("danger", "", "Du skal vælge en godkender");
-                    return;
-                }
-
-                if ($scope.target == undefined) {
-                    NotificationService.AutoFadeNotification("danger", "", "Du skal vælge en ansat");
-                    return;
-                }
-
-                var sub = new Substitute({
-                    StartDateTimestamp: Math.floor($scope.approverFromDate.getTime() / 1000),
-                    EndDateTimestamp: Math.floor($scope.approverToDate.getTime() / 1000),
-                    SubId: $scope.approver.Id,
-                    OrgUnitId: 1,
-                    PersonId: $scope.target.Id,
-                    CreatedById: leader.Id
-                });
-
-                if ($scope.infinitePeriod) {
-                    sub.EndDateTimestamp = 9999999999;
-                }
-
-                $scope.showSpinner = true;
-
-                $scope.loadingPromise = sub.$patch({ id: substituteId }, function (data) {
-                    NotificationService.AutoFadeNotification("success", "", "Godkender blev redigeret");
-                    $modalInstance.close();
-                }, function () {
-                    NotificationService.AutoFadeNotification("danger", "", "Kunne ikke oprette godkender");
-                });
-            };
-
-            $scope.cancelNewApprover = function () {
-                $modalInstance.dismiss('cancel');
-            };
-        }]);
-angular.module('application').controller('EditSubstituteModalInstanceController',
-    ["$scope", "$modalInstance", "persons", "OrgUnit", "leader", "Substitute", "Person", "NotificationService", "substituteId", function ($scope, $modalInstance, persons, OrgUnit, leader, Substitute, Person, NotificationService, substituteId) {
-
-        $scope.container = {};
-
-        $scope.persons = persons;
-
-        $scope.loadingPromise = null;
-
-        $scope.person = [];
-
-        $scope.autoCompleteOptions = {
-            select: function (e) {
-                $scope.person[0] = this.dataItem(e.item.index());
-            }
-        }
-
-        $scope.substitute = Substitute.get({ id: substituteId }, function (data) {
-            if (data.value[0].EndDateTimestamp == 9999999999) {
-                $scope.infinitePeriod = true;
-            }
-
-            OrgUnit.getWhereUserIsLeader({ id: data.value[0].PersonId }).$promise.then(function(res) {
-                $scope.orgUnits = res;
-            });
-
-            $scope.substitute = data.value[0]; // This is bad, but can't change the service
-            $scope.orgUnit = $scope.substitute.OrgUnit;
-            $scope.person[0] = $scope.substitute.Sub;
-            $scope.substituteFromDate = new Date($scope.substitute.StartDateTimestamp * 1000);
-            $scope.substituteToDate = new Date($scope.substitute.EndDateTimestamp * 1000);
-            $scope.takesOverOriginalLeaderReports = $scope.substitute.TakesOverOriginalLeaderReports;
-            $scope.container.autoComplete.value($scope.substitute.Sub.FullName);
-        });
-
-        $scope.saveNewSubstitute = function () {
-            if ($scope.person == undefined) {
-                NotificationService.AutoFadeNotification("danger", "", "Du skal vælge en person");
-                return;
-            }
-
-            var sub = new Substitute({
-                StartDateTimestamp: Math.floor($scope.substituteFromDate.getTime() / 1000),
-                EndDateTimestamp: Math.floor($scope.substituteToDate.getTime() / 1000),
-                SubId: $scope.person[0].Id,
-                OrgUnitId: $scope.orgUnit.Id,
-                CreatedById: leader.Id,
-                TakesOverOriginalLeaderReports: $scope.takesOverOriginalLeaderReports
-            });
-            console.log("EditSubstituteModalInstanceController50.sub.TakesOverOriginalLeaderReports: " + sub.TakesOverOriginalLeaderReports)
-
-            if ($scope.infinitePeriod) {
-                sub.EndDateTimestamp = 9999999999;
-            }
-
-            $scope.showSpinner = true;
-            
-            $scope.loadingPromise = sub.$patch({ id: $scope.substitute.Id }, function (data) {
-                NotificationService.AutoFadeNotification("success", "", "Stedfortræder blev gemt");
-                $modalInstance.close();
-            }, function () {
-                NotificationService.AutoFadeNotification("danger", "", "Kunne ikke gemme stedfortræder (Du kan ikke oprette 2 stedfortrædere for samme organisation i samme periode)");
-            });
-        };
-
-        $scope.cancelNewSubstitute = function () {
-            $modalInstance.dismiss('cancel');
-        };
-    }]);
-angular.module('application').controller('NewApproverModalInstanceController',
-    ["$scope", "$modalInstance", "persons", "orgUnits", "leader", "Substitute", "Person", "NotificationService","Autocomplete", function ($scope, $modalInstance, persons, orgUnits, leader, Substitute, Person, NotificationService,Autocomplete) {
-
-        $scope.loadingPromise = null;
-
-        $scope.persons = persons;
-        $scope.approverFromDate = new Date();
-        $scope.approverToDate = new Date();
-        $scope.orgUnits = orgUnits;
-        $scope.orgUnit = $scope.orgUnits[0];
-
-        $scope.autoCompleteOptions = {
-            filter: "contains"
-        };
-
-        $scope.personsWithoutLeader = Autocomplete.activeUsersWithoutLeader(leader.Id); 
-
-    
-        $scope.saveNewApprover = function () {
-            if ($scope.approver == undefined) {
-                NotificationService.AutoFadeNotification("danger", "", "Du skal vælge en godkender");
-                return;
-            }
-
-            if ($scope.target == undefined) {
-                NotificationService.AutoFadeNotification("danger", "", "Du skal vælge en ansat");
-                return;
-            }
-            
-
-
-            var sub = new Substitute({
-                StartDateTimestamp: Math.floor($scope.approverFromDate.getTime() / 1000),
-                EndDateTimestamp: Math.floor($scope.approverToDate.getTime() / 1000),
-                LeaderId: leader.Id,
-                SubId: $scope.approver[0].Id,
-                OrgUnitId: 1,
-                PersonId: $scope.target[0].Id,
-                CreatedById: leader.Id,
-            });
-
-            if ($scope.infinitePeriod) {
-                sub.EndDateTimestamp = 9999999999;
-            }
-
-            $scope.showSpinner = true;
-
-            $scope.loadingPromise = sub.$post(function (data) {
-                NotificationService.AutoFadeNotification("success", "", "Godkender blev oprettet");
-                $modalInstance.close();
-            }, function () {
-                NotificationService.AutoFadeNotification("danger", "", "Kunne ikke oprette godkender (Du kan ikke oprette 2 godkendere for samme person i samme periode)");
-                $modalInstance.close();
-            });
-        };
-
-        $scope.cancelNewApprover = function () {
-            $modalInstance.dismiss('cancel');
-        };
-    }]);
-angular.module('application').controller('NewSubstituteModalInstanceController',
-    ["$scope", "$modalInstance", "persons", "OrgUnit", "leader", "Substitute", "Person", "NotificationService", "Autocomplete", function ($scope, $modalInstance, persons, OrgUnit, leader, Substitute, Person, NotificationService, Autocomplete) {
-
-        $scope.loadingPromise = null;
-
-        $scope.persons = persons;
-        $scope.substituteFromDate = new Date();
-        $scope.substituteToDate = new Date();
-
-        $scope.orgUnits = $scope.orgUnits = OrgUnit.getWhereUserIsLeader({ id: leader.Id }, function() {
-            $scope.orgUnit = $scope.orgUnits[0];
-        });
-        
-        $scope.autoCompleteOptions = {
-            filter: "contains"
-        };
-
-        $scope.personsWithoutLeader = Autocomplete.activeUsersWithoutLeader(leader.Id);
-
-        $scope.saveNewSubstitute = function () {
-            if ($scope.person == undefined) {
-                NotificationService.AutoFadeNotification("danger", "", "Du skal vælge en person");
-                return;
-            }
-
-            var sub = new Substitute({
-                StartDateTimestamp: Math.floor($scope.substituteFromDate.getTime() / 1000),
-                EndDateTimestamp: Math.floor($scope.substituteToDate.getTime() / 1000),
-                LeaderId: leader.Id,
-                SubId: $scope.person[0].Id,
-                OrgUnitId: $scope.orgUnit.Id,
-                PersonId: leader.Id,
-                CreatedById: leader.Id
-            });
-
-            if ($scope.infinitePeriod) {
-                sub.EndDateTimestamp = 9999999999;
-            }
-
-            $scope.showSpinner = true;
-
-            $scope.loadingPromise = sub.$post(function (data) {
-                NotificationService.AutoFadeNotification("success", "", "Stedfortræder blev oprettet");
-                $modalInstance.close();
-            }, function () {
-                NotificationService.AutoFadeNotification("danger", "", "Kunne ikke oprette stedfortræder");
-            });
-        };
-
-        $scope.cancelNewSubstitute = function () {
-            $modalInstance.dismiss('cancel');
-        };
-    }]);
-angular.module("application").controller("RejectController", [
-   "$scope", "$modalInstance", "itemId", "NotificationService", function ($scope, $modalInstance, itemId, NotificationService) {
-
-       $scope.itemId = itemId;
-
-       $scope.result = {};
-
-
-       $scope.noClicked = function () {
-           $modalInstance.dismiss('cancel');
-           NotificationService.AutoFadeNotification("warning", "", "Afvisning af indberetningen blev annulleret.");
-       }
-
-       $scope.yesClicked = function () {
-           if ($scope.comment == undefined) {
-               $scope.errorMessage = "* Du skal angive en kommentar.";
-           } else {
-               $scope.result.Comment = $scope.comment;
-               $scope.result.Id = itemId;
-               $modalInstance.close($scope.result);
-           }
-           
-       }
-
-   }
 ]);
 angular.module("application").controller("PendingReportsController", [
    "$scope", "$modal", "$rootScope", "Report", "OrgUnit", "Person", "$timeout", "NotificationService", "RateType", "OrgUnit", "Person", "Autocomplete", "MkColumnFormatter", "RouteColumnFormatter", function ($scope, $modal, $rootScope, Report, OrgUnit, Person, $timeout, NotificationService, RateType, OrgUnit, Person, Autocomplete,MkColumnFormatter, RouteColumnFormatter) {
@@ -7373,6 +6954,455 @@ angular.module("application").controller("RejectedReportsController", [
        $scope.refreshGrid = function () {
            $scope.gridContainer.grid.dataSource.read();
        }
+   }
+]);
+angular.module("application").controller("AcceptController", [
+   "$scope", "$modalInstance", "itemId", "NotificationService" +
+    "", "pageNumber", function ($scope, $modalInstance, itemId, NotificationService, pageNumber) {
+
+       $scope.itemId = itemId;
+       $scope.pageNumber = pageNumber;
+
+       $scope.noClicked = function () {
+           $modalInstance.dismiss('cancel');
+           NotificationService.AutoFadeNotification("warning", "", "Godkendelsen blev annulleret.");
+       }
+
+       $scope.yesClicked = function () {
+           $modalInstance.close($scope.itemId);
+           NotificationService.AutoFadeNotification("success", "", "Indberetningen blev godkendt.");
+       }
+
+       $scope.approveSelectedClick = function () {
+           $modalInstance.close();
+           NotificationService.AutoFadeNotification("success", "", "De markerede indberetninger blev godkendt.");
+       }
+
+   }
+]);
+angular.module("application").controller("AcceptWithAccountController", [
+   "$scope", "$modalInstance", "itemId", "BankAccount", "NotificationService", "pageNumber", function ($scope, $modalInstance, itemId, BankAccount, NotificationService, pageNumber) {
+
+       $scope.itemId = itemId;
+
+       $scope.result = {};
+
+       $scope.pageNumber = pageNumber;
+
+       BankAccount.get().$promise.then(function (res) {
+           $scope.accounts = res.value;
+       });
+
+       $scope.noClicked = function () {
+           $modalInstance.dismiss('cancel');
+           NotificationService.AutoFadeNotification("warning", "", "Godkendelsen af indberetningen blev annulleret.");
+       }
+
+       $scope.yesClicked = function () {
+           if ($scope.selectedAccount == undefined) {
+               $scope.errorMessage = "* Du skal vælge en konto";
+           } else {
+               $scope.result.AccountNumber = $scope.selectedAccount.Number;
+               $scope.result.Id = itemId;
+               $modalInstance.close($scope.result);
+               NotificationService.AutoFadeNotification("success", "", "Indberetningen blev godkendt med kontering " + $scope.selectedAccount.Description + " - " + $scope.selectedAccount.Number);
+           }
+       }
+
+       $scope.approveAllWithAccountClick = function () {
+           if ($scope.selectedAccount == undefined) {
+               $scope.errorMessage = "* Du skal vælge en konto";
+           } else {
+               $modalInstance.close($scope.selectedAccount.Number);
+               NotificationService.AutoFadeNotification("success", "", "Indberetningerne blev godkendt med kontering " + $scope.selectedAccount.Description + " - " + $scope.selectedAccount.Number);
+           }
+       }
+
+       $scope.approveSelectedWithAccountClick = function () {
+           if ($scope.selectedAccount == undefined) {
+               $scope.errorMessage = "* Du skal vælge en konto";
+           } else {
+               $modalInstance.close($scope.selectedAccount.Number);
+               NotificationService.AutoFadeNotification("success", "", "Indberetningerne blev godkendt med kontering " + $scope.selectedAccount.Description + " - " + $scope.selectedAccount.Number);
+           }
+       }
+
+   }
+]);
+angular.module('application').controller('ConfirmDeleteApproverModalInstanceController',
+    ["$scope", "$modalInstance", "persons", "orgUnits", "leader", "Substitute", "Person", "NotificationService", "substituteId",
+        function ($scope, $modalInstance, persons, orgUnits, leader, Substitute, Person, NotificationService, substituteId) {
+
+        $scope.loadingPromise = null;
+
+        $scope.persons = persons;
+        $scope.orgUnits = orgUnits;
+
+        $scope.substitute = Substitute.get({ id: substituteId }, function (data) {
+
+            $scope.substitute = data.value[0]; // This is bad, but can't change the service
+            $scope.sub = $scope.substitute.Sub;
+            $scope.person = $scope.substitute.Person;
+            $scope.substituteFromDate = new Date($scope.substitute.StartDateTimestamp * 1000).toLocaleDateString();
+            if ($scope.substitute.EndDateTimestamp == 9999999999) {
+                $scope.substituteToDate = "På ubestemt tid";
+            } else {
+                $scope.substituteToDate = new Date($scope.substitute.EndDateTimestamp * 1000).toLocaleDateString();
+            }
+        });
+
+        $scope.orgUnitSelected = function (id) {
+        }
+
+        $scope.deleteSubstitute = function () {
+
+            var sub = new Substitute();
+
+            $scope.showSpinner = true;
+
+            $scope.loadingPromise = sub.$delete({ id: $scope.substitute.Id }, function (data) {
+                NotificationService.AutoFadeNotification("success", "", "Personlig godkender er blevet slettet");
+                $modalInstance.close();
+            }, function () {
+                NotificationService.AutoFadeNotification("danger", "", "Kunne ikke slette personlig godkender");
+            });
+        };
+
+        $scope.cancelSubstitute = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    }]);
+angular.module('application').controller('ConfirmDeleteSubstituteModalInstanceController',
+    ["$scope", "$modalInstance", "persons", "orgUnits", "leader", "Substitute", "Person", "NotificationService", "substituteId",
+        function ($scope, $modalInstance, persons, orgUnits, leader, Substitute, Person, NotificationService, substituteId) {
+
+        $scope.loadingPromise = null;
+
+        $scope.persons = persons;
+        $scope.orgUnits = orgUnits;
+
+        $scope.substitute = Substitute.get({ id: substituteId }, function (data) {
+
+            $scope.substitute = data.value[0]; // This is bad, but can't change the service
+            $scope.person = $scope.substitute.Sub;
+            $scope.substituteFromDate = new Date($scope.substitute.StartDateTimestamp * 1000).toLocaleDateString();
+            if ($scope.substitute.EndDateTimestamp == 9999999999) {
+                $scope.substituteToDate = "På ubestemt tid";
+            } else {
+                $scope.substituteToDate = new Date($scope.substitute.EndDateTimestamp * 1000).toLocaleDateString();
+            }
+        });
+
+        
+        $scope.orgUnitSelected = function (id) {
+        }
+
+        $scope.deleteSubstitute = function () {
+
+            var sub = new Substitute();
+
+            $scope.showSpinner = true;
+
+            $scope.loadingPromise = sub.$delete({ id: $scope.substitute.Id }, function (data) {
+                NotificationService.AutoFadeNotification("success", "", "Stedfortræderen blev slettet.");
+                $modalInstance.close();
+            }, function () {
+                NotificationService.AutoFadeNotification("danger", "", "Kunne ikke slette stedfortræder");
+            });
+        };
+
+        $scope.cancelSubstitute = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    }]);
+angular.module('application').controller('EditApproverModalInstanceController',
+    ["$scope", "$modalInstance", "persons", "orgUnits", "leader", "Substitute", "Person", "NotificationService", "substituteId","Autocomplete",
+        function ($scope, $modalInstance, persons, orgUnits, leader, Substitute, Person, NotificationService, substituteId,Autocomplete) {
+
+            $scope.persons = persons;
+            $scope.orgUnits = orgUnits;
+            $scope.orgUnit = $scope.orgUnits[0];
+
+            $scope.loadingPromise = null;
+
+            $scope.personsWithoutLeader = Autocomplete.activeUsersWithoutLeader(leader.Id);
+
+            $scope.autoCompleteOptionsFor = {
+                select: function (e) {
+                    $scope.target = this.dataItem(e.item.index());
+                }
+            }
+
+            $scope.autoCompleteOptionsSub = {
+                select: function (e) {
+                    $scope.approver = this.dataItem(e.item.index());
+                }
+            }
+          
+
+            $scope.substitute = Substitute.get({ id: substituteId }, function (data) {
+
+                if (data.value[0].EndDateTimestamp == 9999999999) {
+                    $scope.infinitePeriod = true;
+                }
+
+
+                $scope.substitute = data.value[0]; // Should change the service
+
+                $scope.target = $scope.substitute.Person;
+                $scope.approver = $scope.substitute.Sub;
+
+                $scope.approverFromDate = new Date($scope.substitute.StartDateTimestamp * 1000);
+                $scope.approverToDate = new Date($scope.substitute.EndDateTimestamp * 1000);
+                $scope.orgUnit = $.grep($scope.orgUnits, function (e) { return e.Id == $scope.substitute.OrgUnitId; })[0];
+                $scope.container.autoCompleteFor.value($scope.target.FullName);
+                $scope.container.autoCompleteSub.value($scope.approver.FullName);
+            });
+
+            $scope.saveNewApprover = function () {
+                if ($scope.approver == undefined) {
+                    NotificationService.AutoFadeNotification("danger", "", "Du skal vælge en godkender");
+                    return;
+                }
+
+                if ($scope.target == undefined) {
+                    NotificationService.AutoFadeNotification("danger", "", "Du skal vælge en ansat");
+                    return;
+                }
+
+                var sub = new Substitute({
+                    StartDateTimestamp: Math.floor($scope.approverFromDate.getTime() / 1000),
+                    EndDateTimestamp: Math.floor($scope.approverToDate.getTime() / 1000),
+                    SubId: $scope.approver.Id,
+                    OrgUnitId: 1,
+                    PersonId: $scope.target.Id,
+                    CreatedById: leader.Id
+                });
+
+                if ($scope.infinitePeriod) {
+                    sub.EndDateTimestamp = 9999999999;
+                }
+
+                $scope.showSpinner = true;
+
+                $scope.loadingPromise = sub.$patch({ id: substituteId }, function (data) {
+                    NotificationService.AutoFadeNotification("success", "", "Godkender blev redigeret");
+                    $modalInstance.close();
+                }, function () {
+                    NotificationService.AutoFadeNotification("danger", "", "Kunne ikke oprette godkender");
+                });
+            };
+
+            $scope.cancelNewApprover = function () {
+                $modalInstance.dismiss('cancel');
+            };
+        }]);
+angular.module('application').controller('EditSubstituteModalInstanceController',
+    ["$scope", "$modalInstance", "persons", "OrgUnit", "leader", "Substitute", "Person", "NotificationService", "substituteId", function ($scope, $modalInstance, persons, OrgUnit, leader, Substitute, Person, NotificationService, substituteId) {
+
+        $scope.container = {};
+
+        $scope.persons = persons;
+
+        $scope.loadingPromise = null;
+
+        $scope.person = [];
+
+        $scope.autoCompleteOptions = {
+            select: function (e) {
+                $scope.person[0] = this.dataItem(e.item.index());
+            }
+        }
+
+        $scope.substitute = Substitute.get({ id: substituteId }, function (data) {
+            if (data.value[0].EndDateTimestamp == 9999999999) {
+                $scope.infinitePeriod = true;
+            }
+
+            OrgUnit.getWhereUserIsLeader({ id: data.value[0].PersonId }).$promise.then(function(res) {
+                $scope.orgUnits = res;
+            });
+
+            $scope.substitute = data.value[0]; // This is bad, but can't change the service
+            $scope.orgUnit = $scope.substitute.OrgUnit;
+            $scope.person[0] = $scope.substitute.Sub;
+            $scope.substituteFromDate = new Date($scope.substitute.StartDateTimestamp * 1000);
+            $scope.substituteToDate = new Date($scope.substitute.EndDateTimestamp * 1000);
+            $scope.takesOverOriginalLeaderReports = $scope.substitute.TakesOverOriginalLeaderReports;
+            $scope.container.autoComplete.value($scope.substitute.Sub.FullName);
+        });
+
+        $scope.saveNewSubstitute = function () {
+            if ($scope.person == undefined) {
+                NotificationService.AutoFadeNotification("danger", "", "Du skal vælge en person");
+                return;
+            }
+
+            var sub = new Substitute({
+                StartDateTimestamp: Math.floor($scope.substituteFromDate.getTime() / 1000),
+                EndDateTimestamp: Math.floor($scope.substituteToDate.getTime() / 1000),
+                SubId: $scope.person[0].Id,
+                OrgUnitId: $scope.orgUnit.Id,
+                CreatedById: leader.Id,
+                TakesOverOriginalLeaderReports: $scope.takesOverOriginalLeaderReports
+            });
+            console.log("EditSubstituteModalInstanceController50.sub.TakesOverOriginalLeaderReports: " + sub.TakesOverOriginalLeaderReports)
+
+            if ($scope.infinitePeriod) {
+                sub.EndDateTimestamp = 9999999999;
+            }
+
+            $scope.showSpinner = true;
+            
+            $scope.loadingPromise = sub.$patch({ id: $scope.substitute.Id }, function (data) {
+                NotificationService.AutoFadeNotification("success", "", "Stedfortræder blev gemt");
+                $modalInstance.close();
+            }, function () {
+                NotificationService.AutoFadeNotification("danger", "", "Kunne ikke gemme stedfortræder (Du kan ikke oprette 2 stedfortrædere for samme organisation i samme periode)");
+            });
+        };
+
+        $scope.cancelNewSubstitute = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    }]);
+angular.module('application').controller('NewApproverModalInstanceController',
+    ["$scope", "$modalInstance", "persons", "orgUnits", "leader", "Substitute", "Person", "NotificationService","Autocomplete", function ($scope, $modalInstance, persons, orgUnits, leader, Substitute, Person, NotificationService,Autocomplete) {
+
+        $scope.loadingPromise = null;
+
+        $scope.persons = persons;
+        $scope.approverFromDate = new Date();
+        $scope.approverToDate = new Date();
+        $scope.orgUnits = orgUnits;
+        $scope.orgUnit = $scope.orgUnits[0];
+
+        $scope.autoCompleteOptions = {
+            filter: "contains"
+        };
+
+        $scope.personsWithoutLeader = Autocomplete.activeUsersWithoutLeader(leader.Id); 
+
+    
+        $scope.saveNewApprover = function () {
+            if ($scope.approver == undefined) {
+                NotificationService.AutoFadeNotification("danger", "", "Du skal vælge en godkender");
+                return;
+            }
+
+            if ($scope.target == undefined) {
+                NotificationService.AutoFadeNotification("danger", "", "Du skal vælge en ansat");
+                return;
+            }
+            
+
+
+            var sub = new Substitute({
+                StartDateTimestamp: Math.floor($scope.approverFromDate.getTime() / 1000),
+                EndDateTimestamp: Math.floor($scope.approverToDate.getTime() / 1000),
+                LeaderId: leader.Id,
+                SubId: $scope.approver[0].Id,
+                OrgUnitId: 1,
+                PersonId: $scope.target[0].Id,
+                CreatedById: leader.Id,
+            });
+
+            if ($scope.infinitePeriod) {
+                sub.EndDateTimestamp = 9999999999;
+            }
+
+            $scope.showSpinner = true;
+
+            $scope.loadingPromise = sub.$post(function (data) {
+                NotificationService.AutoFadeNotification("success", "", "Godkender blev oprettet");
+                $modalInstance.close();
+            }, function () {
+                NotificationService.AutoFadeNotification("danger", "", "Kunne ikke oprette godkender (Du kan ikke oprette 2 godkendere for samme person i samme periode)");
+                $modalInstance.close();
+            });
+        };
+
+        $scope.cancelNewApprover = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    }]);
+angular.module('application').controller('NewSubstituteModalInstanceController',
+    ["$scope", "$modalInstance", "persons", "OrgUnit", "leader", "Substitute", "Person", "NotificationService", "Autocomplete", function ($scope, $modalInstance, persons, OrgUnit, leader, Substitute, Person, NotificationService, Autocomplete) {
+
+        $scope.loadingPromise = null;
+
+        $scope.persons = persons;
+        $scope.substituteFromDate = new Date();
+        $scope.substituteToDate = new Date();
+
+        $scope.orgUnits = $scope.orgUnits = OrgUnit.getWhereUserIsLeader({ id: leader.Id }, function() {
+            $scope.orgUnit = $scope.orgUnits[0];
+        });
+        
+        $scope.autoCompleteOptions = {
+            filter: "contains"
+        };
+
+        $scope.personsWithoutLeader = Autocomplete.activeUsersWithoutLeader(leader.Id);
+
+        $scope.saveNewSubstitute = function () {
+            if ($scope.person == undefined) {
+                NotificationService.AutoFadeNotification("danger", "", "Du skal vælge en person");
+                return;
+            }
+
+            var sub = new Substitute({
+                StartDateTimestamp: Math.floor($scope.substituteFromDate.getTime() / 1000),
+                EndDateTimestamp: Math.floor($scope.substituteToDate.getTime() / 1000),
+                LeaderId: leader.Id,
+                SubId: $scope.person[0].Id,
+                OrgUnitId: $scope.orgUnit.Id,
+                PersonId: leader.Id,
+                CreatedById: leader.Id
+            });
+
+            if ($scope.infinitePeriod) {
+                sub.EndDateTimestamp = 9999999999;
+            }
+
+            $scope.showSpinner = true;
+
+            $scope.loadingPromise = sub.$post(function (data) {
+                NotificationService.AutoFadeNotification("success", "", "Stedfortræder blev oprettet");
+                $modalInstance.close();
+            }, function () {
+                NotificationService.AutoFadeNotification("danger", "", "Kunne ikke oprette stedfortræder");
+            });
+        };
+
+        $scope.cancelNewSubstitute = function () {
+            $modalInstance.dismiss('cancel');
+        };
+    }]);
+angular.module("application").controller("RejectController", [
+   "$scope", "$modalInstance", "itemId", "NotificationService", function ($scope, $modalInstance, itemId, NotificationService) {
+
+       $scope.itemId = itemId;
+
+       $scope.result = {};
+
+
+       $scope.noClicked = function () {
+           $modalInstance.dismiss('cancel');
+           NotificationService.AutoFadeNotification("warning", "", "Afvisning af indberetningen blev annulleret.");
+       }
+
+       $scope.yesClicked = function () {
+           if ($scope.comment == undefined) {
+               $scope.errorMessage = "* Du skal angive en kommentar.";
+           } else {
+               $scope.result.Comment = $scope.comment;
+               $scope.result.Id = itemId;
+               $modalInstance.close($scope.result);
+           }
+           
+       }
+
    }
 ]);
 // Is not used.
@@ -9813,8 +9843,8 @@ angular.module("application").controller("MyReportsController", [
    }
 ]);
 angular.module('application').controller('MyReportsReportController', [
-    "$scope", "$rootScope", "$window", "$state", "Person", "Autocomplete", "OrgUnit", "MkColumnFormatter", "RouteColumnFormatter", "PersonEmployments",
-    function ($scope, $rootScope, $window, $state, Person, Autocomplete, OrgUnit, MkColumnFormatter, RouteColumnFormatter, PersonEmployments) {
+    "$scope", "$rootScope", "$window", "$state", "Person", "Autocomplete", "OrgUnit", "MkColumnFormatter", "RouteColumnFormatter", "PersonEmployments","RateType",
+    function ($scope, $rootScope, $window, $state, Person, Autocomplete, OrgUnit, MkColumnFormatter, RouteColumnFormatter, PersonEmployments, RateType) {
 
         $scope.gridContainer = {};
         $scope.dateContainer = {};
@@ -9828,7 +9858,10 @@ angular.module('application').controller('MyReportsReportController', [
         angular.forEach($rootScope.CurrentUser.Employments, function (value, key) {
             value.PresentationString = value.Position + " - " + value.OrgUnit.LongDescription + " (" + value.EmploymentId + ")";
         });
-            
+
+        RateType.getAll().$promise.then(function (res) {
+            $scope.rateTypes = res;
+        });                    
 
         $scope.dateOptions = {
             format: "dd/MM/yyyy" 
@@ -10209,6 +10242,18 @@ angular.module('application').controller('MyReportsReportController', [
                         return data.AmountToReimburse.toFixed(2).toString().replace('.', ',') + " kr.";
                     }, 
                     footerTemplate: "Total: #= kendo.toString(sum, '0.00').replace('.',',') # Kr.",
+                    width: 100,
+                },
+                {
+                    field: "TFCode",
+                    title: "Taksttype",
+                    template: function (data) {
+                        for (var i = 0; i < $scope.rateTypes.length; i++) {
+                            if ($scope.rateTypes[i].TFCode == data.TFCode) {
+                                return $scope.rateTypes[i].Description;
+                            }
+                        }
+                    },
                     width: 100,
                 },
                 { 
@@ -11296,18 +11341,6 @@ angular.module("application").service('EmailNotification', ["$resource", functio
         "post": { method: "POST", isArray: false }
     });
 }]);
-angular.module("application").controller("ServiceErrorController", [
-   "$scope", "$modalInstance", "errorMsg",
-   function ($scope, $modalInstance, errorMsg) {
-
-       $scope.errorMsg = errorMsg;
-
-       $scope.close = function () {
-           $modalInstance.close();
-       }
-
-   }
-]);
 angular.module("application").service('FileGenerationSchedule', ["$resource", function ($resource) {
     return $resource("/odata/FileGenerationSchedule(:id)", { id: "@id" }, {
         "get": { method: "GET", isArray: false, transformResponse: function(data) {
@@ -12041,6 +12074,18 @@ angular.module("application").service('Substitute', ["$resource", function ($res
         'delete': {method:'DELETE'}
     });
 }]);
+angular.module("application").controller("ServiceErrorController", [
+   "$scope", "$modalInstance", "errorMsg",
+   function ($scope, $modalInstance, errorMsg) {
+
+       $scope.errorMsg = errorMsg;
+
+       $scope.close = function () {
+           $modalInstance.close();
+       }
+
+   }
+]);
 angular.module("application").controller('AlternativeAddressController', ["$scope", "SmartAdresseSource", "$rootScope", "$timeout", "PersonEmployments", "AddressFormatter", "Address", "NotificationService", "PersonalAddress", function ($scope, SmartAdresseSource, $rootScope, $timeout, PersonEmployments, AddressFormatter, Address, NotificationService, PersonalAddress) {
 
     $scope.employments = $rootScope.CurrentUser.Employments;
@@ -12377,276 +12422,6 @@ angular.module("application").controller('AlternativeAddressController', ["$scop
     $scope.SmartAddress = SmartAdresseSource;
 
 }]);
-angular.module("application").controller('AddressDeleteModalInstanceController', [
-    "$scope", "Address", "Point", "NotificationService", "$modalInstance", "addressId", "personId", "AddressFormatter", function ($scope, Address, Point, NotificationService, $modalInstance, addressId, personId, AddressFormatter) {
-
-        $scope.confirmDelete = function () {
-            Address.delete({ id: addressId }, function () {
-                NotificationService.AutoFadeNotification("success", "", "Adresse slettet");
-                $modalInstance.close('');
-            });
-        }
-
-        $scope.cancelDelete = function () {
-            $modalInstance.dismiss('');
-        }
-
-    }]);
-angular.module("application").controller('AddressEditModalInstanceController', ["$scope", "$modalInstance", "Address", "personId", "addressId", "NotificationService", "AddressFormatter", "SmartAdresseSource", function ($scope, $modalInstance, Address, personId, addressId, NotificationService, AddressFormatter, SmartAdresseSource) {
-    $scope.newAddress = "";
-    $scope.oldAddressId = 0;
-    $scope.oldAddress = "";
-    $scope.addressDescription = "";
-
-    $scope.loadAddressData= function() {
-        if (addressId != undefined) {
-            Address.get({ query: "$filter=Id eq " + addressId }, function (data) {
-                $scope.oldAddressId = data.value[0].Id;
-                $scope.addressDescription = data.value[0].Description;
-                $scope.oldAddress = data.value[0].StreetName + " " + data.value[0].StreetNumber + ", " + data.value[0].ZipCode + " " + data.value[0].Town;
-            });
-        }
-    }
-
-    $scope.loadAddressData();
-
-    $scope.addressNotFound = false;
-
-    $scope.addressFieldOptions = {
-            dataBound: function () {
-                $scope.addressNotFound = this.dataSource._data.length == 0;
-                $scope.$apply();
-            }
-        }
-
-    $scope.saveEditedAddress = function () {
-
-        if ($scope.addressNotFound) return;
-
-        $scope.newAddress = $scope.oldAddress;
-
-        var result = AddressFormatter.fn($scope.newAddress);
-
-        if (addressId != undefined) {
-            result.Id = $scope.oldAddressId;
-            result.PersonId = personId;
-
-            result.Description = $scope.addressDescription;
-
-            var updatedAddress = new Address({
-                PersonId: personId,
-                StreetName: result.StreetName,
-                StreetNumber: result.StreetNumber,
-                ZipCode: parseInt(result.ZipCode),
-                Town: result.Town,
-                Description: $scope.addressDescription
-            });
-
-            updatedAddress.$patch({ id: result.Id }, function () {
-                NotificationService.AutoFadeNotification("success", "", "Adresse opdateret");
-                $modalInstance.close('');
-            }, function () {
-                NotificationService.AutoFadeNotification("danger", "", "Adresse blev ikke opdateret");
-            });
-        } else {
-            var newAddress = new Address({
-                PersonId: personId,
-                StreetName: result.StreetName,
-                StreetNumber: result.StreetNumber,
-                ZipCode: parseInt(result.ZipCode),
-                Town: result.Town,
-                Description: $scope.addressDescription,
-                Latitude: "",
-                Longitude: "",
-                Type: "Standard"
-            });
-
-            newAddress.$post(function() {
-                NotificationService.AutoFadeNotification("success", "", "Adresse oprettet");
-                $modalInstance.close('');
-            }, function() {
-                NotificationService.AutoFadeNotification("danger", "", "Adresse blev ikke oprettet");
-            });
-        }
-
-    }
-
-    $scope.SmartAddress = SmartAdresseSource;
-
-    $scope.closeAddressEditModal = function () {
-        $modalInstance.close({
-
-        });
-    };
-}]);
-angular.module("application").controller('TokenInstanceController', ["$scope", "NotificationService", "$modalInstance", "Token", "personId", "$modal", function ($scope, NotificationService, $modalInstance, Token, personId, $modal) {
-
-
-
-
-}]);
-
-
-angular.module('application').controller('AppLoginModalController', ["$scope","$modalInstance", function ($scope, $modalInstance) {
-    
-    $scope.confirmDelete = function () {
-        $modalInstance.close();
-    };
-
-    $scope.cancelDelete = function () {
-        $modalInstance.dismiss('cancel');
-    };
-
-    $scope.createAppPassword = function () {
-        $modalInstance.close($scope);
-    }
-}]);
-angular.module("application").controller('RouteDeleteModalInstanceController', [
-    "$scope", "Route", "Point", "NotificationService" +
-    "", "$modalInstance", "routeId", "personId", "AddressFormatter", function ($scope, Route, Point, NotificationService, $modalInstance, routeId, personId, AddressFormatter) {
-  
-        $scope.confirmDelete = function () {
-            Route.delete({ id: routeId }, function() {
-                NotificationService.AutoFadeNotification("success", "", "Rute slettet");
-                $modalInstance.close('');
-            });
-        }
-
-        $scope.cancelDelete = function() {
-            $modalInstance.dismiss('');
-        }
-    
-}]);
-angular.module("application").controller('RouteEditModalInstanceController', [
-    "$scope", "Route", "Point", "NotificationService", "$modalInstance", "routeId", "personId", "AddressFormatter", "SmartAdresseSource", function ($scope, Route, Point, NotificationService, $modalInstance, routeId, personId, AddressFormatter, SmartAdresseSource) {
-
-
-        //Contains addresses as strings ex. "Road 1, 8220 Aarhus"
-        $scope.viaPointModels = [];
-
-        $scope.isSaveDisabled = false;
-
-        $scope.addressFieldOptions = {
-            dataBound: function () {
-                $scope.addressNotFound = this.dataSource._data.length == 0;
-                $scope.$apply();
-            }
-        }
-
-        if (routeId != undefined) {
-            Route.getSingle({ id: routeId }, function (res) {
-                $scope.newRouteDescription = res.Description;
-
-                $scope.newStartPoint = res.Points[0].StreetName + " " + res.Points[0].StreetNumber + ", " + res.Points[0].ZipCode + " " + res.Points[0].Town;
-                $scope.newEndPoint = res.Points[res.Points.length - 1].StreetName + " " + res.Points[res.Points.length - 1].StreetNumber + ", " + res.Points[res.Points.length - 1].ZipCode + " " + res.Points[res.Points.length - 1].Town;
-
-                angular.forEach(res.Points, function (viaPoint, key) {
-                    if (key != 0 && key != res.Points.length - 1) {
-                        // If its not the first or last element -> Its a via point
-                        var pointModel = viaPoint.StreetName + " " + viaPoint.StreetNumber + ", " + viaPoint.ZipCode + " " + viaPoint.Town;
-                        $scope.viaPointModels.push(pointModel);
-                    }
-                });
-            });
-        }
-
-        $scope.saveRoute = function () {
-            if ($scope.addressNotFound) return;
-            $scope.isSaveDisabled = true;
-            if (routeId != undefined) {
-                // routeId is defined -> User is editing existing route ->  Delete it, and then post the edited route as a new route.
-                Route.delete({ id: routeId }, function () {
-                    handleSaveRoute();
-                });
-            } else {
-                // routeId is undefined -> User is making a new route.
-                handleSaveRoute();
-            }
-
-        }
-
-        var handleSaveRoute = function () {
-            // Validate start and end point
-            if ($scope.newStartPoint == undefined || $scope.newStartPoint == "" || $scope.newEndPoint == undefined || $scope.newEndPoint == "") {
-                NotificationService.AutoFadeNotification("danger", "", "Start- og slutadresse skal udfyldes.");
-                $scope.isSaveDisabled = false;
-                return;
-            }
-
-            // Validate description
-            if ($scope.newRouteDescription == "" || $scope.newRouteDescription == undefined) {
-                NotificationService.AutoFadeNotification("danger", "", "Beskrivelse må ikke være tom.");
-                $scope.isSaveDisabled = false;
-                return;
-            }
-
-            var points = [];
-
-            var startAddress = AddressFormatter.fn($scope.newStartPoint);
-
-            points.push({
-                "StreetName": startAddress.StreetName,
-                "StreetNumber": startAddress.StreetNumber,
-                "ZipCode": startAddress.ZipCode,
-                "Town": startAddress.Town,
-                "Latitude": "",
-                "Longitude": "",
-                "Description": ""
-            });
-            angular.forEach($scope.viaPointModels, function (address, key) {
-                var point = AddressFormatter.fn(address);
-
-                points.push({
-                    "StreetName": point.StreetName,
-                    "StreetNumber": point.StreetNumber,
-                    "ZipCode": point.ZipCode,
-                    "Town": point.Town,
-                    "Latitude": "",
-                    "Longitude": "",
-                    "Description": ""
-                });
-            });
-
-            var endAddress = AddressFormatter.fn($scope.newEndPoint);
-
-            points.push({
-                "StreetName": endAddress.StreetName,
-                "StreetNumber": endAddress.StreetNumber,
-                "ZipCode": endAddress.ZipCode,
-                "Town": endAddress.Town,
-                "Latitude": "",
-                "Longitude": "",
-                "Description": ""
-            });
-
-            Route.post({
-                "Description": $scope.newRouteDescription,
-                "PersonId": personId,
-                "Points": points
-            }, function () {
-                if (routeId != undefined) {
-                    NotificationService.AutoFadeNotification("success", "", "Personlig rute blev redigeret.");
-                } else {
-                    NotificationService.AutoFadeNotification("success", "", "Personlig rute blev oprettet.");
-                }
-                $modalInstance.close();
-            });
-        }
-
-        $scope.removeViaPoint = function ($index) {
-           $scope.viaPointModels.splice($index, 1);
-        }
-
-        $scope.addNewViaPoint = function () {
-            $scope.viaPointModels.push("");
-        }
-
-        $scope.closeRouteEditModal = function () {
-            $modalInstance.dismiss();
-        };
-
-        $scope.SmartAddress = SmartAdresseSource;
-    }]);
 angular.module("application").controller("SettingController", [
     "$scope", "$modal", "Person", "LicensePlate", "PersonalRoute", "Point", "Address", "Route", "AddressFormatter", "$http", "NotificationService", "SmartAdresseSource", "$rootScope", "$timeout", "AppLogin",
     function ($scope, $modal, Person, LicensePlate, Personalroute, Point, Address, Route, AddressFormatter, $http, NotificationService, SmartAdresseSource, $rootScope, $timeout, AppLogin) {
@@ -13284,6 +13059,276 @@ angular.module("application").controller("SettingController", [
         });
     }
 ]);
+angular.module("application").controller('AddressDeleteModalInstanceController', [
+    "$scope", "Address", "Point", "NotificationService", "$modalInstance", "addressId", "personId", "AddressFormatter", function ($scope, Address, Point, NotificationService, $modalInstance, addressId, personId, AddressFormatter) {
+
+        $scope.confirmDelete = function () {
+            Address.delete({ id: addressId }, function () {
+                NotificationService.AutoFadeNotification("success", "", "Adresse slettet");
+                $modalInstance.close('');
+            });
+        }
+
+        $scope.cancelDelete = function () {
+            $modalInstance.dismiss('');
+        }
+
+    }]);
+angular.module("application").controller('AddressEditModalInstanceController', ["$scope", "$modalInstance", "Address", "personId", "addressId", "NotificationService", "AddressFormatter", "SmartAdresseSource", function ($scope, $modalInstance, Address, personId, addressId, NotificationService, AddressFormatter, SmartAdresseSource) {
+    $scope.newAddress = "";
+    $scope.oldAddressId = 0;
+    $scope.oldAddress = "";
+    $scope.addressDescription = "";
+
+    $scope.loadAddressData= function() {
+        if (addressId != undefined) {
+            Address.get({ query: "$filter=Id eq " + addressId }, function (data) {
+                $scope.oldAddressId = data.value[0].Id;
+                $scope.addressDescription = data.value[0].Description;
+                $scope.oldAddress = data.value[0].StreetName + " " + data.value[0].StreetNumber + ", " + data.value[0].ZipCode + " " + data.value[0].Town;
+            });
+        }
+    }
+
+    $scope.loadAddressData();
+
+    $scope.addressNotFound = false;
+
+    $scope.addressFieldOptions = {
+            dataBound: function () {
+                $scope.addressNotFound = this.dataSource._data.length == 0;
+                $scope.$apply();
+            }
+        }
+
+    $scope.saveEditedAddress = function () {
+
+        if ($scope.addressNotFound) return;
+
+        $scope.newAddress = $scope.oldAddress;
+
+        var result = AddressFormatter.fn($scope.newAddress);
+
+        if (addressId != undefined) {
+            result.Id = $scope.oldAddressId;
+            result.PersonId = personId;
+
+            result.Description = $scope.addressDescription;
+
+            var updatedAddress = new Address({
+                PersonId: personId,
+                StreetName: result.StreetName,
+                StreetNumber: result.StreetNumber,
+                ZipCode: parseInt(result.ZipCode),
+                Town: result.Town,
+                Description: $scope.addressDescription
+            });
+
+            updatedAddress.$patch({ id: result.Id }, function () {
+                NotificationService.AutoFadeNotification("success", "", "Adresse opdateret");
+                $modalInstance.close('');
+            }, function () {
+                NotificationService.AutoFadeNotification("danger", "", "Adresse blev ikke opdateret");
+            });
+        } else {
+            var newAddress = new Address({
+                PersonId: personId,
+                StreetName: result.StreetName,
+                StreetNumber: result.StreetNumber,
+                ZipCode: parseInt(result.ZipCode),
+                Town: result.Town,
+                Description: $scope.addressDescription,
+                Latitude: "",
+                Longitude: "",
+                Type: "Standard"
+            });
+
+            newAddress.$post(function() {
+                NotificationService.AutoFadeNotification("success", "", "Adresse oprettet");
+                $modalInstance.close('');
+            }, function() {
+                NotificationService.AutoFadeNotification("danger", "", "Adresse blev ikke oprettet");
+            });
+        }
+
+    }
+
+    $scope.SmartAddress = SmartAdresseSource;
+
+    $scope.closeAddressEditModal = function () {
+        $modalInstance.close({
+
+        });
+    };
+}]);
+angular.module("application").controller('TokenInstanceController', ["$scope", "NotificationService", "$modalInstance", "Token", "personId", "$modal", function ($scope, NotificationService, $modalInstance, Token, personId, $modal) {
+
+
+
+
+}]);
+
+
+angular.module('application').controller('AppLoginModalController', ["$scope","$modalInstance", function ($scope, $modalInstance) {
+    
+    $scope.confirmDelete = function () {
+        $modalInstance.close();
+    };
+
+    $scope.cancelDelete = function () {
+        $modalInstance.dismiss('cancel');
+    };
+
+    $scope.createAppPassword = function () {
+        $modalInstance.close($scope);
+    }
+}]);
+angular.module("application").controller('RouteDeleteModalInstanceController', [
+    "$scope", "Route", "Point", "NotificationService" +
+    "", "$modalInstance", "routeId", "personId", "AddressFormatter", function ($scope, Route, Point, NotificationService, $modalInstance, routeId, personId, AddressFormatter) {
+  
+        $scope.confirmDelete = function () {
+            Route.delete({ id: routeId }, function() {
+                NotificationService.AutoFadeNotification("success", "", "Rute slettet");
+                $modalInstance.close('');
+            });
+        }
+
+        $scope.cancelDelete = function() {
+            $modalInstance.dismiss('');
+        }
+    
+}]);
+angular.module("application").controller('RouteEditModalInstanceController', [
+    "$scope", "Route", "Point", "NotificationService", "$modalInstance", "routeId", "personId", "AddressFormatter", "SmartAdresseSource", function ($scope, Route, Point, NotificationService, $modalInstance, routeId, personId, AddressFormatter, SmartAdresseSource) {
+
+
+        //Contains addresses as strings ex. "Road 1, 8220 Aarhus"
+        $scope.viaPointModels = [];
+
+        $scope.isSaveDisabled = false;
+
+        $scope.addressFieldOptions = {
+            dataBound: function () {
+                $scope.addressNotFound = this.dataSource._data.length == 0;
+                $scope.$apply();
+            }
+        }
+
+        if (routeId != undefined) {
+            Route.getSingle({ id: routeId }, function (res) {
+                $scope.newRouteDescription = res.Description;
+
+                $scope.newStartPoint = res.Points[0].StreetName + " " + res.Points[0].StreetNumber + ", " + res.Points[0].ZipCode + " " + res.Points[0].Town;
+                $scope.newEndPoint = res.Points[res.Points.length - 1].StreetName + " " + res.Points[res.Points.length - 1].StreetNumber + ", " + res.Points[res.Points.length - 1].ZipCode + " " + res.Points[res.Points.length - 1].Town;
+
+                angular.forEach(res.Points, function (viaPoint, key) {
+                    if (key != 0 && key != res.Points.length - 1) {
+                        // If its not the first or last element -> Its a via point
+                        var pointModel = viaPoint.StreetName + " " + viaPoint.StreetNumber + ", " + viaPoint.ZipCode + " " + viaPoint.Town;
+                        $scope.viaPointModels.push(pointModel);
+                    }
+                });
+            });
+        }
+
+        $scope.saveRoute = function () {
+            if ($scope.addressNotFound) return;
+            $scope.isSaveDisabled = true;
+            if (routeId != undefined) {
+                // routeId is defined -> User is editing existing route ->  Delete it, and then post the edited route as a new route.
+                Route.delete({ id: routeId }, function () {
+                    handleSaveRoute();
+                });
+            } else {
+                // routeId is undefined -> User is making a new route.
+                handleSaveRoute();
+            }
+
+        }
+
+        var handleSaveRoute = function () {
+            // Validate start and end point
+            if ($scope.newStartPoint == undefined || $scope.newStartPoint == "" || $scope.newEndPoint == undefined || $scope.newEndPoint == "") {
+                NotificationService.AutoFadeNotification("danger", "", "Start- og slutadresse skal udfyldes.");
+                $scope.isSaveDisabled = false;
+                return;
+            }
+
+            // Validate description
+            if ($scope.newRouteDescription == "" || $scope.newRouteDescription == undefined) {
+                NotificationService.AutoFadeNotification("danger", "", "Beskrivelse må ikke være tom.");
+                $scope.isSaveDisabled = false;
+                return;
+            }
+
+            var points = [];
+
+            var startAddress = AddressFormatter.fn($scope.newStartPoint);
+
+            points.push({
+                "StreetName": startAddress.StreetName,
+                "StreetNumber": startAddress.StreetNumber,
+                "ZipCode": startAddress.ZipCode,
+                "Town": startAddress.Town,
+                "Latitude": "",
+                "Longitude": "",
+                "Description": ""
+            });
+            angular.forEach($scope.viaPointModels, function (address, key) {
+                var point = AddressFormatter.fn(address);
+
+                points.push({
+                    "StreetName": point.StreetName,
+                    "StreetNumber": point.StreetNumber,
+                    "ZipCode": point.ZipCode,
+                    "Town": point.Town,
+                    "Latitude": "",
+                    "Longitude": "",
+                    "Description": ""
+                });
+            });
+
+            var endAddress = AddressFormatter.fn($scope.newEndPoint);
+
+            points.push({
+                "StreetName": endAddress.StreetName,
+                "StreetNumber": endAddress.StreetNumber,
+                "ZipCode": endAddress.ZipCode,
+                "Town": endAddress.Town,
+                "Latitude": "",
+                "Longitude": "",
+                "Description": ""
+            });
+
+            Route.post({
+                "Description": $scope.newRouteDescription,
+                "PersonId": personId,
+                "Points": points
+            }, function () {
+                if (routeId != undefined) {
+                    NotificationService.AutoFadeNotification("success", "", "Personlig rute blev redigeret.");
+                } else {
+                    NotificationService.AutoFadeNotification("success", "", "Personlig rute blev oprettet.");
+                }
+                $modalInstance.close();
+            });
+        }
+
+        $scope.removeViaPoint = function ($index) {
+           $scope.viaPointModels.splice($index, 1);
+        }
+
+        $scope.addNewViaPoint = function () {
+            $scope.viaPointModels.push("");
+        }
+
+        $scope.closeRouteEditModal = function () {
+            $modalInstance.dismiss();
+        };
+
+        $scope.SmartAddress = SmartAdresseSource;
+    }]);
 angular.module("application").controller("SubstituteController", [
     "$scope", "$rootScope", "$modal", "NotificationService", "$timeout", "Person", "OrgUnit", "Autocomplete",
     function ($scope, $rootScope, $modal, NotificationService, $timeout, Person, OrgUnit, Autocomplete) {

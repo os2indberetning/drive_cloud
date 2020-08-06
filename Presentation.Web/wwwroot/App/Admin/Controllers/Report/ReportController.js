@@ -1,6 +1,6 @@
 ﻿angular.module('application').controller('ReportController', [
-    "$scope", "$rootScope", "$window", "$state", "Person", "Autocomplete", "OrgUnit", "MkColumnFormatter", "RouteColumnFormatter",
-    function ($scope, $rootScope, $window, $state, Person, Autocomplete, OrgUnit, MkColumnFormatter, RouteColumnFormatter) {
+    "$scope", "$rootScope", "$window", "$state", "Person", "Autocomplete", "OrgUnit", "MkColumnFormatter", "RouteColumnFormatter","RateType",
+    function ($scope, $rootScope, $window, $state, Person, Autocomplete, OrgUnit, MkColumnFormatter, RouteColumnFormatter,RateType) {
 
         $scope.gridContainer = {};
         $scope.dateContainer = {};
@@ -9,7 +9,10 @@
         $scope.persons = Autocomplete.allUsers();
         $scope.orgUnits = Autocomplete.orgUnits();
         $scope.showReport = false;
-        
+
+        RateType.getAll().$promise.then(function (res) {
+            $scope.rateTypes = res;
+        });        
 
         $scope.dateOptions = {
             format: "dd/MM/yyyy",
@@ -419,6 +422,18 @@
                         return data.AmountToReimburse.toFixed(2).toString().replace('.', ',') + " kr.";
                     }, 
                     footerTemplate: "Total: #= kendo.toString(sum, '0.00').replace('.',',') # Kr.",
+                    width: 100,
+                },
+                {
+                    field: "TFCode",
+                    title: "Taksttype",
+                    template: function (data) {
+                        for (var i = 0; i < $scope.rateTypes.length; i++) {
+                            if ($scope.rateTypes[i].TFCode == data.TFCode) {
+                                return $scope.rateTypes[i].Description;
+                            }
+                        }
+                    },
                     width: 100,
                 },
                 { 

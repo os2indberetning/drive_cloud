@@ -1,6 +1,6 @@
 ﻿angular.module('application').controller('MyReportsReportController', [
-    "$scope", "$rootScope", "$window", "$state", "Person", "Autocomplete", "OrgUnit", "MkColumnFormatter", "RouteColumnFormatter", "PersonEmployments",
-    function ($scope, $rootScope, $window, $state, Person, Autocomplete, OrgUnit, MkColumnFormatter, RouteColumnFormatter, PersonEmployments) {
+    "$scope", "$rootScope", "$window", "$state", "Person", "Autocomplete", "OrgUnit", "MkColumnFormatter", "RouteColumnFormatter", "PersonEmployments","RateType",
+    function ($scope, $rootScope, $window, $state, Person, Autocomplete, OrgUnit, MkColumnFormatter, RouteColumnFormatter, PersonEmployments, RateType) {
 
         $scope.gridContainer = {};
         $scope.dateContainer = {};
@@ -14,7 +14,10 @@
         angular.forEach($rootScope.CurrentUser.Employments, function (value, key) {
             value.PresentationString = value.Position + " - " + value.OrgUnit.LongDescription + " (" + value.EmploymentId + ")";
         });
-            
+
+        RateType.getAll().$promise.then(function (res) {
+            $scope.rateTypes = res;
+        });                    
 
         $scope.dateOptions = {
             format: "dd/MM/yyyy" 
@@ -395,6 +398,18 @@
                         return data.AmountToReimburse.toFixed(2).toString().replace('.', ',') + " kr.";
                     }, 
                     footerTemplate: "Total: #= kendo.toString(sum, '0.00').replace('.',',') # Kr.",
+                    width: 100,
+                },
+                {
+                    field: "TFCode",
+                    title: "Taksttype",
+                    template: function (data) {
+                        for (var i = 0; i < $scope.rateTypes.length; i++) {
+                            if ($scope.rateTypes[i].TFCode == data.TFCode) {
+                                return $scope.rateTypes[i].Description;
+                            }
+                        }
+                    },
                     width: 100,
                 },
                 { 
